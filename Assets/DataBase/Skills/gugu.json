@@ -1,0 +1,20 @@
+{
+    "name" : "gugu",
+    "level" : 1,
+    "damage" : 3,
+    "upgradeDamage" : 2,
+    "cost" : 1,
+
+    "isBuff" : false,
+    "effectedStatus" : "defense",
+    "buffBonus" : 3,
+    "bonusDamage" : 0,
+
+    "isTargetedEnemy" : true,
+    "availableRange": [0,0],
+    "attackRange": [0,1],
+    "isSplash": true,
+    
+    "skillIconName": "skillIcon",
+    "skillDescription": "gugu punch"
+}

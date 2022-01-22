@@ -1,0 +1,20 @@
+{
+    "name" : "attack",
+    "level" : 1,
+    "damage" : 10,
+    "upgradeDamage" : 1,
+    "cost" : 1,
+
+    "isBuff" : false,
+    "effectedStatus" : "stepSpeed",
+    "buffBonus" : 3,
+    "bonusDamage" : 0,
+    "isTargetedEnemy" : true,
+
+    "availableRange": [0,1],
+    "attackRange": [0,0],
+    "isSplash": false,
+    
+    "skillIconName": "skillIcon",
+    "skillDescription": "just test"
+}

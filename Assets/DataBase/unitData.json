@@ -1,0 +1,14 @@
+{
+    "unitName": "ine_normal",
+    "isEnemyUnit": false,
+    "maxHp": 15.0,
+    "stepSpeed": 5,
+    "attackPowerRange": [4,8],
+    "defense": 1,
+    "accuracy": 90,
+    "critical": 10,
+    "avoidability": 10,
+    
+    "skillNames": ["skillData", "gugu", "debuff"],
+    "unitIconName": "ine_head"
+}
