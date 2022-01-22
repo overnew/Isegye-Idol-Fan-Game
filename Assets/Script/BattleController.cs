@@ -9,6 +9,7 @@ public class BattleController : MonoBehaviour
 {
     private const int RANGE_START_IDX = 0;
     private const int RANGE_END_IDX = 1;
+    private const int STEP_BONUS_MAX = 8; 
 
     public GameObject[] units;
     public GameObject[] enemys;
@@ -27,7 +28,7 @@ public class BattleController : MonoBehaviour
     private List<SkillData> skills;
     private SkillData selectedSkill;
 
-    private float turnCounter = 0;
+    private int roundCounter = 0;
     private bool isTurnEnd = false;
 
     private bool posChangerActive = false;
@@ -56,12 +57,7 @@ public class BattleController : MonoBehaviour
         blurCamera = GameObject.Find("BlurCamera");
         unitStatusText = GameObject.Find("unitStatus").GetComponent<Text>();
 
-        AddUnitToField(squadList);
-        AddUnitToField(enemyList);
-
-        turnList.Sort((KeyValuePair<float, GameObject> pairA, KeyValuePair<float, GameObject> pairB)
-            => (int)(pairA.Key - pairB.Key));  //오름차순 정렬
-
+        roundCounter = 0;
         BattleStart();
         postVolume.enabled = false;
     }
@@ -98,16 +94,6 @@ public class BattleController : MonoBehaviour
             enemyList.Add(Instantiate(enemys[i], instantPosition + (Vector3.right * (i * 2 + 1)), Quaternion.identity)) ;
     }
 
-    private void AddUnitToField(List<GameObject> units)
-    {
-        foreach (GameObject obj in units)
-        {
-            float stepSpeed = obj.GetComponent<UnitInterface>().GetStepSpeed();
-            //characterMap.Add(stepSpeed, obj);
-            turnList.Add(new KeyValuePair<float, GameObject>(stepSpeed, obj));
-        }
-    }
-
     private void BattleStart()
     {
         StartCoroutine(WaitTurnEnding());
@@ -117,6 +103,12 @@ public class BattleController : MonoBehaviour
     {
         while (true)
         {
+            if (turnList.Count == 0)
+            {
+                ++roundCounter;
+                turnList = SetUnitsTurnOrder();
+            }
+
             PlayTurn();
             yield return new WaitUntil(() => isTurnEnd);
         }
@@ -126,17 +118,11 @@ public class BattleController : MonoBehaviour
     {
         isTurnEnd = false;
 
-        KeyValuePair<float, GameObject> frontUnit = turnList[FRONT_IDX];
+        turnUnit = turnList[FRONT_IDX].Value;
         turnList.RemoveAt(FRONT_IDX);
-        turnUnit = frontUnit.Value;
-        turnCounter += frontUnit.Key;
 
         turnUnit.GetComponent<UnitInterface>().SetTurnBar(true);
         turnUnitData = turnUnit.GetComponent<UnitInterface>().GetUnitData();
-
-        turnList.Add(new KeyValuePair<float, GameObject>(turnCounter + turnUnitData.GetStepSpeed(), frontUnit.Value));
-        turnList.Sort((KeyValuePair<float, GameObject> pairA, KeyValuePair<float, GameObject> pairB)
-            => (int)(pairA.Key - pairB.Key));  //오름차순 정렬
 
         if (turnUnitData.GetIsEnemy())
         {
@@ -147,6 +133,24 @@ public class BattleController : MonoBehaviour
             turnUnitPosition = squadList.IndexOf(turnUnit);
             LoadTurnUnitStatus();
         }
+    }
+
+    private List<KeyValuePair<float, GameObject>> SetUnitsTurnOrder()
+    {
+        List<KeyValuePair<float, GameObject>> turnOrderList = new List<KeyValuePair<float, GameObject>>();
+
+        for (int i=0; i<squadList.Count ; ++i)
+            turnOrderList.Add(new KeyValuePair<float, GameObject>
+                (UnityEngine.Random.Range(0,STEP_BONUS_MAX) + squadList[i].GetComponent<UnitInterface>().GetStepSpeed(),squadList[i]));
+
+        for (int i = 0; i < enemyList.Count; ++i)
+            turnOrderList.Add(new KeyValuePair<float, GameObject>
+                (UnityEngine.Random.Range(0, STEP_BONUS_MAX) + enemyList[i].GetComponent<UnitInterface>().GetStepSpeed(),enemyList[i]));
+
+        turnOrderList.Sort((KeyValuePair<float, GameObject> pairA, KeyValuePair<float, GameObject> pairB)
+            => (int)(pairB.Key -pairA.Key));  //내림차순 정렬
+
+        return turnOrderList;
     }
 
     private void LoadTurnUnitStatus()
