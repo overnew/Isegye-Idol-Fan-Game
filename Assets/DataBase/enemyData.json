@@ -9,6 +9,6 @@
     "critical": 10,
     "avoidability": 10,
     
-    "skillNames": ["skillData", "gugu", "debuff"],
+    "skillNames": ["skillData", "gugu", "debuff", "posChange"],
     "unitIconName": "ine_head"
 }

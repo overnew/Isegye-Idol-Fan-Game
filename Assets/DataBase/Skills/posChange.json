@@ -1,23 +1,23 @@
 {
     "name" : "attack",
     "level" : 1,
-    "damage" : 10,
+    "damage" : 0,
     "upgradeDamage" : 1,
     "cost" : 1,
 
     "isBuff" : false,
-    "effectedStatus" : "stepSpeed",
-    "buffBonus" : 3,
-    "effectedRound" : 0,
+    "effectedStatus" : "defense",
+    "buffBonus" : -1,
+    "effectedRound" : 1,
     "bonusDamage" : 0,
 
-    "isPosChanger": false,
+    "isPosChanger": true,
 
     "isTargetedEnemy" : true,
-    "availableRange": [0,1],
-    "attackRange": [0,1],
+    "availableRange": [0,3],
+    "attackRange": [1,3],
     "isSplash": false,
     
     "skillIconName": "skillIcon",
-    "skillDescription": "just test"
+    "skillDescription": "posChanger"
 }

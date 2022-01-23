@@ -152,6 +152,14 @@ public class INEScript : MonoBehaviour, UnitInterface
             return;
         }
 
+        if (battleController.GetSelectedSkillData().GetIsPosChanger())
+        {
+            battleController.PullUnitToFront(gameObject);
+            battleController.SkillExcute(gameObject);
+            battleController.EndUnitTurn();
+            return;
+        }
+
         battleController.SkillExcute(gameObject);
         
         battleController.EndUnitTurn();
@@ -213,7 +221,6 @@ public class INEScript : MonoBehaviour, UnitInterface
                 unitData.ApplyBuffEffect(buffList[i], true);
 
             buffEndRound.RemoveAt(storedIndex);
-            Debug.Log("buffEnds");
         }
 
     }

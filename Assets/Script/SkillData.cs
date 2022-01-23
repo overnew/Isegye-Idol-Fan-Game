@@ -19,6 +19,8 @@ public class SkillData
     [SerializeField] private int effectedRound;
     [SerializeField] private float bonusDamage;
 
+    [SerializeField] private bool isPosChanger;
+
     [SerializeField] private bool isTargetedEnemy;
     [SerializeField] private int[] availableRange;
     [SerializeField] private int[] attackRange;
@@ -48,5 +50,7 @@ public class SkillData
     public float GetBuffBonus() { return buffBonus; }
     public int GetEffectedRound() { return effectedRound; }
     public string GetBuffEffectedStatus() { return effectedStatus; }
+
+    public bool GetIsPosChanger() { return isPosChanger; }
     public string GetSkillDescription() { return SetSkillDescription(); }
 }

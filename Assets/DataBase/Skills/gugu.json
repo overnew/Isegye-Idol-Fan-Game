@@ -1,7 +1,7 @@
 {
     "name" : "gugu",
     "level" : 1,
-    "damage" : 3,
+    "damage" : 5,
     "upgradeDamage" : 2,
     "cost" : 1,
 
@@ -10,6 +10,8 @@
     "buffBonus" : 3,
     "effectedRound" : 0,
     "bonusDamage" : 0,
+
+    "isPosChanger": false,
 
     "isTargetedEnemy" : true,
     "availableRange": [0,0],

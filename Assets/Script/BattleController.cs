@@ -197,6 +197,52 @@ public class BattleController : MonoBehaviour
         isTurnEnd = true;
     }
 
+    public void PullUnitToFront(GameObject selectedUnit)
+    {
+        List<GameObject> selectedList = squadList;
+        bool isRightSide = selectedUnit.GetComponent<UnitInterface>().GetUnitData().GetIsEnemy();
+
+        if (isRightSide)
+            selectedList = enemyList;
+
+        int selectedIndex = selectedList.IndexOf(selectedUnit);
+        List<float> xPosList = new List<float>();
+
+        for (int idx = 0; idx <= selectedIndex; ++idx)
+            xPosList.Add(selectedList[idx].transform.position.x);
+        
+        for (int idx = selectedIndex ; idx>0 ; --idx)
+        {
+            StartCoroutine(PullUnitCoroutine(selectedList[idx-1], xPosList[idx], isRightSide));
+            selectedList[idx] = selectedList[idx - 1];
+        }
+
+        StartCoroutine(PullUnitCoroutine(selectedUnit, xPosList[FRONT_IDX], isRightSide));
+        selectedList[FRONT_IDX] = selectedUnit;
+    }
+
+    private IEnumerator PullUnitCoroutine(GameObject moveUnit, float destXpos, bool isRightSide)
+    {
+        const float SPEED_DIV = 10f;
+        float moveSpeed = (moveUnit.transform.position.x - destXpos)/ SPEED_DIV;
+
+        if (isRightSide)
+            moveSpeed *= -1;
+
+        int repeatCnt = 0;
+        Vector3 movePostion = new Vector3(moveSpeed,0,0);
+        while (++repeatCnt < SPEED_DIV)
+        {
+            moveUnit.transform.position += movePostion;
+            moveUnit.GetComponent<UnitInterface>().SetUnitUIPosition();
+            yield return new WaitForSeconds(0.02f);
+        }
+
+        moveUnit.transform.position = new Vector3(destXpos, moveUnit.transform.position.y, 0);
+
+        moveUnit.GetComponent<UnitInterface>().SetUnitUIPosition();
+    }
+
     private void EndedBuffCheck()
     {
         for (int i=0; i<squadList.Count ; ++i)
@@ -209,12 +255,13 @@ public class BattleController : MonoBehaviour
 
     public void SkillExcute(GameObject selectedUnit)
     {
-        GameObject[] targeredUnits = GetTargetedEnemy(selectedSkill.GetAttackRange(), selectedSkill.GetIsTargetedEnemy());
-        SkillAnimationStart(targeredUnits);
+        GameObject[] targeredUnits;
 
         blurCamera.GetComponent<BlurCamera>().CameraAction(true, turnUnitData.GetIsEnemy());
         if (selectedSkill.GetIsSplashSkill())
         {
+            targeredUnits = GetTargetedEnemy(selectedSkill.GetAttackRange(), selectedSkill.GetIsTargetedEnemy());
+            SkillAnimationStart(targeredUnits);
             for (int i = 0; i < targeredUnits.Length; ++i)
             {
                 if (selectedSkill.GetIsBuff())
@@ -225,6 +272,9 @@ public class BattleController : MonoBehaviour
             }
             return;
         }
+
+        targeredUnits = new GameObject[] {selectedUnit};
+        SkillAnimationStart(targeredUnits);
 
         if (selectedSkill.GetIsBuff())
             selectedUnit.GetComponent<UnitInterface>().BuffSkillExcute(selectedSkill, roundCounter);
@@ -343,36 +393,19 @@ public class BattleController : MonoBehaviour
         Destroy(unit);
     }
 
-    private void AlignUnitsInList(GameObject unit ,List<GameObject> list)
+    private void AlignUnitsInList(GameObject alignUnit ,List<GameObject> alignList)
     {
-        int unitIndex = list.IndexOf(unit);
-        Vector3 nextPosition;
-        Vector3 movePosition = unit.transform.position;
-        list.Remove(unit);
+        int unitIndex = alignList.IndexOf(alignUnit);
+        float nextXpos, currentXpos = alignUnit.transform.position.x;
+        bool isRightSide = alignUnit.GetComponent<UnitInterface>().GetUnitData().GetIsEnemy();
+        alignList.Remove(alignUnit);
 
-        for (int i = unitIndex; i < list.Count; ++i)
+        for (int i = unitIndex; i < alignList.Count; ++i)
         {
-            nextPosition = list[i].transform.position;
-            StartCoroutine(moveUnitToDest(list[i], movePosition));
-            movePosition = nextPosition;
+            nextXpos = alignList[unitIndex].transform.position.x;
+            StartCoroutine(PullUnitCoroutine(alignList[i], currentXpos, isRightSide));
+            currentXpos = nextXpos;
         }
-    }
-    private IEnumerator moveUnitToDest(GameObject unit, Vector3 dest)
-    {
-        Vector3 destDir = Vector3.right;
-        float moveSpeed = (unit.transform.position.x - dest.x) / 20f;
-
-        if (unit.transform.position.x - dest.x >= 0)
-            destDir = Vector3.left;
-
-        while (!(destDir.Equals(Vector3.left) && unit.transform.position.x <= dest.x) &&
-            !(destDir.Equals(Vector3.right) && unit.transform.position.x >= dest.x))
-        {
-            unit.transform.Translate(destDir * moveSpeed);
-            unit.GetComponent<UnitInterface>().SetUnitUIPosition();
-            yield return new WaitForSeconds(0.01f);
-        }
-        unit.transform.position = dest;
     }
 
     public void OffAllTargerBar()
