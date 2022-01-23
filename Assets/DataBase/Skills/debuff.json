@@ -7,10 +7,11 @@
 
     "isBuff" : true,
     "effectedStatus" : "defense",
-    "buffBonus" : 5,
+    "buffBonus" : -1,
+    "effectedRound" : 1,
     "bonusDamage" : 0,
-    "isTargetedEnemy" : true,
 
+    "isTargetedEnemy" : true,
     "availableRange": [0,2],
     "attackRange": [0,2],
     "isSplash": true,

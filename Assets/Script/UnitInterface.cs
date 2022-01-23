@@ -6,7 +6,8 @@ using UnityEngine.UI;
 public interface UnitInterface
 {
     public void AIBattleExecute();
-
+    public void BuffSkillExcute(SkillData buffSkill, int roundNum);
+    public void EndBuffEffect(int roundNum);
     public float GetStepSpeed();
     public float GetHp();
     public void GetDamage();

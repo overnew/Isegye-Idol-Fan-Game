@@ -16,6 +16,7 @@ public class SkillData
     [SerializeField] private bool isBuff;
     [SerializeField] private string effectedStatus = "";
     [SerializeField] private float buffBonus;
+    [SerializeField] private int effectedRound;
     [SerializeField] private float bonusDamage;
 
     [SerializeField] private bool isTargetedEnemy;
@@ -33,10 +34,7 @@ public class SkillData
         ++level;
     }
 
-    private string SetSkillDescription()
-    {
-        return string.Format(skillDescriptionSetting, name, damage, skillDescription);
-    }
+    private string SetSkillDescription(){ return string.Format(skillDescriptionSetting, name, damage, skillDescription);}
 
     public string GetIconName(){return skillIconName;}
     public float GetSkillDamage() { return damage;}
@@ -48,6 +46,7 @@ public class SkillData
 
     public bool GetIsBuff() { return isBuff; }
     public float GetBuffBonus() { return buffBonus; }
+    public int GetEffectedRound() { return effectedRound; }
     public string GetBuffEffectedStatus() { return effectedStatus; }
     public string GetSkillDescription() { return SetSkillDescription(); }
 }

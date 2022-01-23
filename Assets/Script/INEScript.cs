@@ -25,6 +25,7 @@ public class INEScript : MonoBehaviour, UnitInterface
     [SerializeField] private UnitData unitData;
 
     private List<SkillData> skillsData;
+    List<KeyValuePair<int, List<SkillData>>> buffEndRound;
 
     //À¯´Ö ½ºÅÝ
     private float hp;
@@ -54,8 +55,11 @@ public class INEScript : MonoBehaviour, UnitInterface
 
         battleController = GameObject.Find("BattleController").GetComponent<BattleController>();
         Canvas unitCanvas = UIcanvas.GetComponent<Canvas>();
-        Camera ca = GameObject.Find("Main Camera").GetComponent<Camera>();
-        unitCanvas.worldCamera = ca;
+        Camera cam = GameObject.Find("Main Camera").GetComponent<Camera>();
+        unitCanvas.worldCamera = cam;
+
+        buffEndRound = new List<KeyValuePair<int, List<SkillData>>>();
+
     }
     void LoadUnitDataFromJson()
     {
@@ -67,7 +71,6 @@ public class INEScript : MonoBehaviour, UnitInterface
 
     void Start()
     {
-
         hp = unitData.GetMaxHp();
         SetUnitUIPosition();
         SetTargetBar(false);
@@ -179,6 +182,41 @@ public class INEScript : MonoBehaviour, UnitInterface
             battleController.DestoryUnit(gameObject);
     }
 
+    public void BuffSkillExcute(SkillData buffSkill, int roundNum)
+    {
+        StoreRoundEndBuff(buffSkill, roundNum);
+        unitData.ApplyBuffEffect(buffSkill, false);
+    }
+    private void StoreRoundEndBuff(SkillData buffSkill, int roundNum)
+    {
+        int storedIndex = buffEndRound.FindIndex((data) => (data.Key.Equals(roundNum)));
+        if ( storedIndex != -1)
+        {
+            buffEndRound[storedIndex].Value.Add(buffSkill);
+        }
+        else
+        {
+            List<SkillData> buffList = new List<SkillData>();
+            buffList.Add(buffSkill);
+            buffEndRound.Add(new KeyValuePair<int, List<SkillData>>(buffSkill.GetEffectedRound() + roundNum, buffList));
+        }
+    }
+
+    public void EndBuffEffect(int roundNum)
+    {
+        int storedIndex = buffEndRound.FindIndex((data) => (data.Key.Equals(roundNum)));
+        if (storedIndex != -1)
+        {
+            List<SkillData> buffList = buffEndRound[storedIndex].Value;
+            
+            for(int i=0; i <buffList.Count ;++i )
+                unitData.ApplyBuffEffect(buffList[i], true);
+
+            buffEndRound.RemoveAt(storedIndex);
+            Debug.Log("buffEnds");
+        }
+
+    }
     public void SetTurnBar(bool Setting)
     {
         turnBar.SetActive(Setting);

@@ -8,6 +8,7 @@
     "isBuff" : false,
     "effectedStatus" : "defense",
     "buffBonus" : 3,
+    "effectedRound" : 0,
     "bonusDamage" : 0,
 
     "isTargetedEnemy" : true,

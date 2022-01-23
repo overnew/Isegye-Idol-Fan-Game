@@ -106,6 +106,7 @@ public class BattleController : MonoBehaviour
             if (turnList.Count == 0)
             {
                 ++roundCounter;
+                EndedBuffCheck();
                 turnList = SetUnitsTurnOrder();
             }
 
@@ -196,6 +197,16 @@ public class BattleController : MonoBehaviour
         isTurnEnd = true;
     }
 
+    private void EndedBuffCheck()
+    {
+        for (int i=0; i<squadList.Count ; ++i)
+            squadList[i].GetComponent<UnitInterface>().EndBuffEffect(roundCounter);
+
+        for (int i = 0; i < enemyList.Count; ++i)
+            enemyList[i].GetComponent<UnitInterface>().EndBuffEffect(roundCounter);
+
+    }
+
     public void SkillExcute(GameObject selectedUnit)
     {
         GameObject[] targeredUnits = GetTargetedEnemy(selectedSkill.GetAttackRange(), selectedSkill.GetIsTargetedEnemy());
@@ -207,7 +218,7 @@ public class BattleController : MonoBehaviour
             for (int i = 0; i < targeredUnits.Length; ++i)
             {
                 if (selectedSkill.GetIsBuff())
-                    targeredUnits[i].GetComponent<UnitInterface>().GetUnitData().BuffEffectExcute(selectedSkill);
+                    targeredUnits[i].GetComponent<UnitInterface>().BuffSkillExcute(selectedSkill, roundCounter);
 
                 if(selectedSkill.GetSkillDamage() != 0)
                     targeredUnits[i].GetComponent<UnitInterface>().GetDamage();
@@ -216,7 +227,7 @@ public class BattleController : MonoBehaviour
         }
 
         if (selectedSkill.GetIsBuff())
-            selectedUnit.GetComponent<UnitInterface>().GetUnitData().BuffEffectExcute(selectedSkill);
+            selectedUnit.GetComponent<UnitInterface>().BuffSkillExcute(selectedSkill, roundCounter);
 
         if (selectedSkill.GetSkillDamage() != 0)
             selectedUnit.GetComponent<UnitInterface>().GetDamage();

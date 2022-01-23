@@ -39,24 +39,19 @@ public class UnitData
         return JsonUtility.FromJson<SkillData>(jsonData);
     }
 
-    public void BuffEffectExcute(SkillData skillData)
+    public void ApplyBuffEffect(SkillData skillData, bool isBuffCancle)
     {
         var bindingFlags = BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Static;
         string effectedStatus = skillData.GetBuffEffectedStatus();
         float statusValue = (float)this.GetType().GetField(effectedStatus, bindingFlags).GetValue(this);
-        this.GetType().GetField(effectedStatus, bindingFlags).SetValue(this, statusValue + skillData.GetBuffBonus());
+        float buffValue = skillData.GetBuffBonus();
 
-        Debug.Log(effectedStatus + this.GetType().GetField(effectedStatus, bindingFlags).GetValue(this));
+        if (isBuffCancle)
+            buffValue *= -1;
+
+        this.GetType().GetField(effectedStatus, bindingFlags).SetValue(this, statusValue + buffValue);
     }
 
-    /*
-    override
-    public string ToString()
-    {
-        StringBuilder statusInfo = new StringBuilder(unitName);
-        statusInfo.Append();
-
-    }*/
     public string GetName() { return unitName; }
     public string GetUnitIconName() { return unitIconName; }
     public float GetMaxHp() { return maxHp; }
