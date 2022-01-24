@@ -32,12 +32,6 @@ public class BattleController : MonoBehaviour
     private bool isTurnEnd = false;
 
     private bool posChangerActive = false;
-    private bool posSwitching = false;
-    private GameObject switchingUnit;
-    private float turnXpos;
-    private float selectedXpos;
-    private float switchSpeed;
-    private Vector3 moveDirection;
 
     private List<KeyValuePair<float, GameObject>> turnList = new List<KeyValuePair<float, GameObject>>();
     
@@ -62,26 +56,7 @@ public class BattleController : MonoBehaviour
         postVolume.enabled = false;
     }
 
-    void Update()
-    {
-        if (posSwitching) // 위치 변경
-        {
-            turnUnit.transform.Translate(moveDirection * switchSpeed);
-            turnUnit.GetComponent<UnitInterface>().SetUnitUIPosition();
-
-            switchingUnit.transform.Translate(-moveDirection * switchSpeed);
-            switchingUnit.GetComponent<UnitInterface>().SetUnitUIPosition();
-
-            if (turnUnit.transform.position.x <= selectedXpos && moveDirection == Vector3.right
-                || turnUnit.transform.position.x >= selectedXpos && moveDirection == Vector3.left)
-            {
-                switchingUnit.transform.position = new Vector3(turnXpos, switchingUnit.transform.position.y, 0);
-                turnUnit.transform.position = new Vector3(selectedXpos, turnUnit.transform.position.y, 0);
-                posSwitching = false;
-            }
-                
-        }
-    }
+    void Update() { }
 
     private void BattleInit()
     {   
@@ -118,6 +93,12 @@ public class BattleController : MonoBehaviour
     private void PlayTurn()
     {
         isTurnEnd = false;
+
+        for (int i = 0; i < squadList.Count; ++i)
+            squadList[i].GetComponent<UnitInterface>().SetUnitUIPosition();
+
+        for (int i = 0; i < enemyList.Count; ++i)
+            enemyList[i].GetComponent<UnitInterface>().SetUnitUIPosition();
 
         turnUnit = turnList[FRONT_IDX].Value;
         turnList.RemoveAt(FRONT_IDX);
@@ -172,27 +153,28 @@ public class BattleController : MonoBehaviour
 
     public void SwitchPositionWithTurnUnit(GameObject selectedUnit)
     {
-        switchingUnit = selectedUnit;
-        turnXpos = turnUnit.transform.position.x;
-        selectedXpos = selectedUnit.transform.position.x;
-        switchSpeed = Math.Abs(turnXpos - selectedXpos)/20f;
-        moveDirection = Vector3.right;
-
-        if ((turnXpos - selectedXpos) < 0)
-            moveDirection = Vector3.left;
-
-        posSwitching = true;
-        StartCoroutine(SwitchPosCoroutine());
+        float turnUnitXpos = turnUnit.transform.position.x;
+        float selectedUnitXpos = selectedUnit.transform.position.x;
 
         //list내 순서 변경
         int selectedUnitIndex = squadList.IndexOf(selectedUnit);
         int turnUnitIndex = squadList.IndexOf(turnUnit);
         squadList[selectedUnitIndex] = turnUnit;
         squadList[turnUnitIndex] = selectedUnit;
+
+        StartCoroutine(PullUnitCoroutine(selectedUnit, turnUnitXpos, true));
+        StartCoroutine(PullUnitCoroutine(turnUnit, selectedUnitXpos, true));
+
+        StartCoroutine(WaitSwitchingEndCoroutine(selectedUnit,turnUnitXpos));
     }
-    private IEnumerator SwitchPosCoroutine()
+
+    private IEnumerator WaitSwitchingEndCoroutine(GameObject selectedUnit, float destXpos)
     {
-        yield return new WaitUntil(() => !posSwitching);
+        while (selectedUnit.transform.position.x != destXpos)
+        {
+            yield return new WaitForSeconds(0.1f);
+        }
+
         EndUnitTurn();
         isTurnEnd = true;
     }
@@ -231,7 +213,7 @@ public class BattleController : MonoBehaviour
 
         int repeatCnt = 0;
         Vector3 movePostion = new Vector3(moveSpeed,0,0);
-        while (++repeatCnt < SPEED_DIV)
+        while (++repeatCnt <= SPEED_DIV)
         {
             moveUnit.transform.position += movePostion;
             moveUnit.GetComponent<UnitInterface>().SetUnitUIPosition();
@@ -239,8 +221,6 @@ public class BattleController : MonoBehaviour
         }
 
         moveUnit.transform.position = new Vector3(destXpos, moveUnit.transform.position.y, 0);
-
-        moveUnit.GetComponent<UnitInterface>().SetUnitUIPosition();
     }
 
     private void EndedBuffCheck()
@@ -323,6 +303,7 @@ public class BattleController : MonoBehaviour
         {
             yield return new WaitForSeconds(0.5f);
         }
+
         isTurnEnd = true;
     }
 
