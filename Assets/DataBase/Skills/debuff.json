@@ -6,10 +6,9 @@
     "cost" : 1,
 
     "isBuff" : true,
-    "effectedStatus" : "defense",
-    "buffBonus" : -1,
+    "effectedStatus" : "bonusPower",
+    "buffBonus" : -3,
     "effectedRound" : 1,
-    "bonusDamage" : 0,
 
     "isPosChanger": false,
 

@@ -12,6 +12,7 @@ public class UnitData
     [SerializeField] private float maxHp;
     [SerializeField] private float stepSpeed;
     [SerializeField] private int[] attackPowerRange;
+    [SerializeField] private float bonusPower;
     [SerializeField] private float defense;
     [SerializeField] private float accuracy;
     [SerializeField] private float critical;
@@ -58,6 +59,8 @@ public class UnitData
     public bool GetIsEnemy() { return isEnemyUnit; }
     public float GetStepSpeed() { return stepSpeed; }
     public int[] GetAttackPower() { return attackPowerRange; }
+    public float GetBonusPower() { return bonusPower; }
+
     public float GetDefense() { return defense; }
     public float GetAccuracy() { return accuracy; }
     public float GetCritical() { return critical; }

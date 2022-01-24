@@ -9,7 +9,6 @@
     "effectedStatus" : "defense",
     "buffBonus" : -1,
     "effectedRound" : 1,
-    "bonusDamage" : 0,
 
     "isPosChanger": true,
 

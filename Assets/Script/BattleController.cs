@@ -464,7 +464,7 @@ public class BattleController : MonoBehaviour
         if (UnityEngine.Random.Range(0, 100f) > turnUnitData.GetAccuracy())
             return 0f;  //명중이 안되는 경우
 
-        float totalDamage = random.Next(attackPowerRange[0], attackPowerRange[1] + 1) + selectedSkill.GetSkillDamage();
+        float totalDamage = random.Next(attackPowerRange[0], attackPowerRange[1] + 1) + (int)turnUnitData.GetBonusPower() + selectedSkill.GetSkillDamage();
 
         if (UnityEngine.Random.Range(0, 100f) <= turnUnitData.GetCritical())
             totalDamage *= 2f;

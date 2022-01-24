@@ -4,6 +4,8 @@
     "maxHp": 12.0,
     "stepSpeed": 7,
     "attackPowerRange": [1,5],
+    "bonusPower" : 0,
+
     "defense": 1,
     "accuracy": 80,
     "critical": 10,

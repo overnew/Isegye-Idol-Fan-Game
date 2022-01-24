@@ -17,7 +17,6 @@ public class SkillData
     [SerializeField] private string effectedStatus = "";
     [SerializeField] private float buffBonus;
     [SerializeField] private int effectedRound;
-    [SerializeField] private float bonusDamage;
 
     [SerializeField] private bool isPosChanger;
 
