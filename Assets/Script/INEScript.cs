@@ -97,6 +97,9 @@ public class INEScript : MonoBehaviour, UnitInterface
     }
     private void ScaleSet()
     {
+        if (!unitData.GetIsEnemy())
+            hpBar.transform.localEulerAngles = new Vector3(0, 180f, 0);
+
         hpBar.transform.localScale = targetBar.transform.localScale = changeBar.transform.localScale
             = turnBar.transform.localScale = new Vector3(0.025f, 0.025f,0f);
         unitButton.transform.localScale = new Vector3(0.5f, 0.5f, 0f);

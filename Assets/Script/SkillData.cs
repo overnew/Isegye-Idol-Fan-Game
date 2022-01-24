@@ -1,12 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using System.IO;
+using System.Text;
 
 [System.Serializable]
 public class SkillData 
 {
-    private const string skillDescriptionSetting = "{0}\n데미지: {1}\n{2}";
+    private const string skillDescriptionSetting = "{0}\n{1}\n데미지: {2}\n{3}";
     [SerializeField] private string name;
     [SerializeField] private int level;
     [SerializeField] private float damage;
@@ -35,7 +35,32 @@ public class SkillData
         ++level;
     }
 
-    private string SetSkillDescription(){ return string.Format(skillDescriptionSetting, name, damage, skillDescription);}
+    private string RangeVisualToString()
+    {
+        StringBuilder rangeText = new StringBuilder();
+
+        for (int i=3; i>=0 ;--i )
+        {
+            if (availableRange[0] <= i && i <= availableRange[1])
+                rangeText.Append("<color=#F1C600>o</color>");
+            else
+                rangeText.Append("<color=#919191>o</color>");
+        }
+
+        rangeText.Append("   ");
+
+        for (int i = 0; i <4; ++i)
+        {
+            if (attackRange[0] <= i && i <= attackRange[1])
+                rangeText.Append("<color=red>o</color>");
+            else
+                rangeText.Append("<color=#919191>o</color>");
+        }
+
+        return rangeText.ToString();
+    }
+
+    private string SetSkillDescription(){ return string.Format(skillDescriptionSetting,RangeVisualToString() ,name, damage, skillDescription);}
 
     public string GetIconName(){return skillIconName;}
     public float GetSkillDamage() { return damage;}

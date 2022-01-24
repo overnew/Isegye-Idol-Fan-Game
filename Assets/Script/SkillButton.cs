@@ -26,7 +26,7 @@ public class SkillButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
     public void OnClickSelect()
     {
         battleController.SetSelectedSkillData(skillData);
-        battleController.OffAllTargerBar();
+        battleController.OffAllUnitsBar();
         SetEnemyTargetBar(battleController.GetTargetedEnemy(skillData.GetAttackRange(), skillData.GetIsTargetedEnemy()), true);
     }
 

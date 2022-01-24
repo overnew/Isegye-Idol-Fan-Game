@@ -18,12 +18,13 @@ public class PositionChanger : MonoBehaviour, IPointerEnterHandler, IPointerExit
     {
         desc.text = descInfo;
         descFrame.SetActive(false);
+
+        battleController = GameObject.Find("BattleController").GetComponent<BattleController>();
     }
 
     public void OnClickPositionChanger()
     {
-        battleController = GameObject.Find("BattleController").GetComponent<BattleController>();
-        battleController.OffAllTargerBar();
+        battleController.OffAllUnitsBar();
         battleController.SetPosChanger(true);
 
         GameObject turnUnit = battleController.GetTurnUnit();

@@ -386,31 +386,30 @@ public class BattleController : MonoBehaviour
     {
         int unitIndex = alignList.IndexOf(alignUnit);
         float nextXpos, currentXpos = alignUnit.transform.position.x;
-        bool isRightSide = alignUnit.GetComponent<UnitInterface>().GetUnitData().GetIsEnemy();
         alignList.Remove(alignUnit);
 
         for (int i = unitIndex; i < alignList.Count; ++i)
         {
             nextXpos = alignList[unitIndex].transform.position.x;
-            StartCoroutine(PullUnitCoroutine(alignList[i], currentXpos, isRightSide));
+            StartCoroutine(PullUnitCoroutine(alignList[i], currentXpos, true));
             currentXpos = nextXpos;
         }
+
     }
 
-    public void OffAllTargerBar()
+    public void OffAllUnitsBar()
     {
-        if (turnUnitData.GetIsEnemy())
+        posChangerActive = false;
+        for (int i = 0; i < squadList.Count; ++i)
         {
-            for (int i=0; i<squadList.Count ;++i )
-            {
-                squadList[i].GetComponent<UnitInterface>().SetTargetBar(false);
-            }
-            return;
+            squadList[i].GetComponent<UnitInterface>().SetTargetBar(false);
+            squadList[i].GetComponent<UnitInterface>().SetChangeBar(false);
         }
 
         for (int i = 0; i < enemyList.Count; ++i)
         {
             enemyList[i].GetComponent<UnitInterface>().SetTargetBar(false);
+            enemyList[i].GetComponent<UnitInterface>().SetChangeBar(false);
         }
     }
 
