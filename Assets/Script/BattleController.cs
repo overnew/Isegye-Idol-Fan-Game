@@ -9,6 +9,7 @@ public class BattleController : MonoBehaviour
 {
     private const int RANGE_START_IDX = 0;
     private const int RANGE_END_IDX = 1;
+    private const int POS_CHANGER_IDX = 4;
     private const int STEP_BONUS_MAX = 8; 
 
     public GameObject[] units;
@@ -27,6 +28,7 @@ public class BattleController : MonoBehaviour
     private GameObject skillPanel;
     private List<SkillData> skills;
     private SkillData selectedSkill;
+    private Button[] skillButtons;
 
     private int roundCounter = 0;
     private bool isTurnEnd = false;
@@ -47,9 +49,11 @@ public class BattleController : MonoBehaviour
 
     void Start()
     {
-        skillPanel = GameObject.Find("skillPanel");
         blurCamera = GameObject.Find("BlurCamera");
         unitStatusText = GameObject.Find("unitStatus").GetComponent<Text>();
+
+        skillPanel = GameObject.Find("skillPanel");
+        skillButtons = skillPanel.GetComponentsInChildren<Button>();
 
         roundCounter = 0;
         BattleStart();
@@ -108,10 +112,15 @@ public class BattleController : MonoBehaviour
 
         if (turnUnitData.GetIsEnemy())
         {
+            for (int i=0; i<skillButtons.Length ; ++i)  //적 턴에는 버튼 클릭 금지
+                skillButtons[i].interactable = false;
+            
             turnUnitPosition = enemyList.IndexOf(turnUnit);
             turnUnit.GetComponent<UnitInterface>().AIBattleExecute();
+
         }else
         {
+            skillButtons[POS_CHANGER_IDX].interactable = true;
             turnUnitPosition = squadList.IndexOf(turnUnit);
             LoadTurnUnitStatus();
         }
@@ -140,11 +149,10 @@ public class BattleController : MonoBehaviour
         turnUnitIcon.sprite = turnUnit.GetComponent<UnitInterface>().GetUnitIcon();
         unitStatusText.text = turnUnitData.GetUnitStatus();
 
-        Button[] skillButtons = skillPanel.GetComponentsInChildren<Button>();
         skills = turnUnit.GetComponent<UnitInterface>().GetUnitSkills();
         const string path = "SkillsIcon/";
 
-        for (int i=0; i< skillButtons.Length -1  ; ++i )    // execept posChangerButton in last
+        for (int i=0; i< POS_CHANGER_IDX; ++i )    // execept posChangerButton in last
         {
             skillButtons[i].GetComponent<Image>().sprite = Resources.Load<Sprite>(path + skills[i].GetIconName());
             skillButtons[i].GetComponent<SkillButton>().SetSkillToButton(skills[i]);
