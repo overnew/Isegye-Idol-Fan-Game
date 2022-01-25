@@ -327,10 +327,10 @@ public class BattleController : MonoBehaviour
     private void UndisplayAllUnitDamage()
     {
         for (int i=0; i<squadList.Count ;++i )
-            squadList[i].GetComponent<UnitInterface>().UndisplayDamage();
+            squadList[i].GetComponent<UnitInterface>().UndisplayCondition();
 
         for (int i = 0; i < enemyList.Count; ++i)
-            enemyList[i].GetComponent<UnitInterface>().UndisplayDamage();
+            enemyList[i].GetComponent<UnitInterface>().UndisplayCondition();
 
     }
 

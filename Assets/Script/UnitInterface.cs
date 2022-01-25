@@ -9,8 +9,8 @@ public interface UnitInterface
     public void BuffSkillExcute(SkillData buffSkill, int roundNum);
     public void EndBuffEffect(int roundNum);
 
-    public void DisplayDamage(float totalDamage);
-    public void UndisplayDamage();
+    public void DisplayCondition(string condition);
+    public void UndisplayCondition();
     public float GetStepSpeed();
     public float GetHp();
     public void GetDamage();

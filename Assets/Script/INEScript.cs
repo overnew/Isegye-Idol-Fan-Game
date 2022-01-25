@@ -6,6 +6,8 @@ using System.IO;
 
 public class INEScript : MonoBehaviour, UnitInterface
 {
+    const string AVOID_SUCCESS = "회피";
+
     public GameObject unit;
     public Animator animator;
     public GameObject unitButton;
@@ -189,9 +191,13 @@ public class INEScript : MonoBehaviour, UnitInterface
         float skillDamage = battleController.GetTotalDamage() - unitData.GetDefense();
         
         //회피 기동
-        if (skillDamage > 0 && (UnityEngine.Random.Range(0, 100f) > unitData.GetAvoidability()))
+        if(UnityEngine.Random.Range(0, 100f) <= unitData.GetAvoidability())
         {
-            DisplayDamage(skillDamage);
+            DisplayCondition(AVOID_SUCCESS);
+        }
+        else if (skillDamage >= 0)
+        {
+            DisplayCondition(skillDamage.ToString());
             hp -= skillDamage;
             hpBarImage.fillAmount = hp / unitData.GetMaxHp();
         }
@@ -199,13 +205,13 @@ public class INEScript : MonoBehaviour, UnitInterface
         if(hp <= 0)
             battleController.ReserveUnitToDestory(gameObject);
     }
-    public void DisplayDamage(float skillDamage)
+    public void DisplayCondition(string condition)
     {
         damageText.SetActive(true);
-        damageText.GetComponent<Text>().text = skillDamage.ToString();
+        damageText.GetComponent<Text>().text = condition;
     }
 
-    public void UndisplayDamage()
+    public void UndisplayCondition()
     {
         damageText.SetActive(false);
     }
