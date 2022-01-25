@@ -247,7 +247,7 @@ public class BattleController : MonoBehaviour
 
     public void SkillExcute(GameObject selectedUnit)
     {
-        GameObject[] targeredUnits;
+        GameObject[] targeredUnits = null;
 
         blurCamera.GetComponent<BlurCamera>().CameraAction(true, turnUnitData.GetIsEnemy());
         if (selectedSkill.GetIsSplashSkill())
@@ -265,7 +265,8 @@ public class BattleController : MonoBehaviour
             return;
         }
 
-        targeredUnits = new GameObject[] {selectedUnit};
+        if(!selectedSkill.GetIsPosChanger())
+            targeredUnits = new GameObject[] { selectedUnit };
         SkillAnimationStart(targeredUnits);
 
         if (selectedSkill.GetIsBuff())

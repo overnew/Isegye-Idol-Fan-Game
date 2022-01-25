@@ -206,9 +206,9 @@ public class INEScript : MonoBehaviour, UnitInterface
             battleController.ReserveUnitToDestory(gameObject);
     }
     public void DisplayCondition(string condition)
-    {
+    {//<color=#FE4554>o</color>/ //4BE198
         damageText.SetActive(true);
-        damageText.GetComponent<Text>().text = condition;
+        damageText.GetComponent<Text>().text = "<color=#FE4554>" + condition + "</color>";
     }
 
     public void UndisplayCondition()

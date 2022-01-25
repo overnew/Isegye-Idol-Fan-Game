@@ -52,7 +52,7 @@ public class SkillData
         for (int i = 0; i <4; ++i)
         {
             if (attackRange[0] <= i && i <= attackRange[1])
-                rangeText.Append("<color=red>o</color>");
+                rangeText.Append("<color=#FE4554>o</color>");
             else
                 rangeText.Append("<color=#919191>o</color>");
         }
