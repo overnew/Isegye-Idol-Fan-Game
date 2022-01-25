@@ -28,10 +28,11 @@ public class INEScript : MonoBehaviour, UnitInterface
     private List<SkillData> skillsData;
     List<KeyValuePair<int, List<SkillData>>> buffEndRound;
 
-    //À¯´Ö ½ºÅÝ
     private float hp;
     private float height = -0.4f;
     private float buttonHeight = 1.3f;
+    private float damageHeight = 2f;
+    private float damageXpos = -0.4f;
 
     /*
     [ContextMenu("To Json Data")]
@@ -93,17 +94,19 @@ public class INEScript : MonoBehaviour, UnitInterface
     }
     public void SetUnitUIPosition()
     {
+        if (!unitData.GetIsEnemy())
+            damageXpos *= -1;
         Vector3 hpBarPos = new Vector3(transform.position.x, transform.position.y + height, 0);
         targetBar.transform.position = turnBar.transform.position = changeBar.transform.position = hpBar.transform.position = hpBarPos;
         unitButton.transform.position = Camera.main.WorldToScreenPoint(new Vector3(transform.position.x, transform.position.y + buttonHeight, 0));
-        damageText.transform.position = Camera.main.WorldToScreenPoint(new Vector3(transform.position.x, transform.position.y + buttonHeight, 0));
+        damageText.transform.position = new Vector3(transform.position.x + damageXpos, transform.position.y + damageHeight, 0);
     }
     private void ScaleSet()
     {
         if (!unitData.GetIsEnemy())
-            hpBar.transform.localEulerAngles = new Vector3(0, 180f, 0);
+            hpBar.transform.localEulerAngles = damageText.transform.localEulerAngles = new Vector3(0, 180f, 0);
 
-        hpBar.transform.localScale = targetBar.transform.localScale = changeBar.transform.localScale
+        hpBar.transform.localScale = targetBar.transform.localScale = changeBar.transform.localScale = damageText.transform.localScale
             = turnBar.transform.localScale = new Vector3(0.025f, 0.025f,0f);
         unitButton.transform.localScale = new Vector3(0.5f, 0.5f, 0f);
     }
@@ -188,6 +191,7 @@ public class INEScript : MonoBehaviour, UnitInterface
         //È¸ÇÇ ±âµ¿
         if (skillDamage > 0 && (UnityEngine.Random.Range(0, 100f) > unitData.GetAvoidability()))
         {
+            DisplayDamage(skillDamage);
             hp -= skillDamage;
             hpBarImage.fillAmount = hp / unitData.GetMaxHp();
         }
@@ -199,6 +203,11 @@ public class INEScript : MonoBehaviour, UnitInterface
     {
         damageText.SetActive(true);
         damageText.GetComponent<Text>().text = skillDamage.ToString();
+    }
+
+    public void UndisplayDamage()
+    {
+        damageText.SetActive(false);
     }
 
     public void BuffSkillExcute(SkillData buffSkill, int roundNum)

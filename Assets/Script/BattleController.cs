@@ -311,6 +311,8 @@ public class BattleController : MonoBehaviour
             yield return new WaitForSeconds(0.1f);
         }
 
+        UndisplayAllUnitDamage();
+
         postVolume.enabled = false;
 
         blurCamera.GetComponent<BlurCamera>().CameraAction(false, turnUnitData.GetIsEnemy());
@@ -320,6 +322,16 @@ public class BattleController : MonoBehaviour
         }
 
         isTurnEnd = true;
+    }
+
+    private void UndisplayAllUnitDamage()
+    {
+        for (int i=0; i<squadList.Count ;++i )
+            squadList[i].GetComponent<UnitInterface>().UndisplayDamage();
+
+        for (int i = 0; i < enemyList.Count; ++i)
+            enemyList[i].GetComponent<UnitInterface>().UndisplayDamage();
+
     }
 
     private void SkillAnimationTrigger(List<GameObject> animationUnits, Vector3 instantPosition)
