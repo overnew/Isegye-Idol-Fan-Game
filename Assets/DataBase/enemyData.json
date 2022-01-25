@@ -1,15 +1,15 @@
 {
     "unitName": "pigon",
     "isEnemyUnit": true,
-    "maxHp": 12.0,
-    "stepSpeed": 10,
+    "maxHp": 3.0,
+    "stepSpeed": 2,
     "attackPowerRange": [1,5],
     "bonusPower" : 0,
 
     "defense": 1,
-    "accuracy": 80,
+    "accuracy": 100,
     "critical": 10,
-    "avoidability": 10,
+    "avoidability": 0,
     
     "skillNames": ["skillData", "gugu", "debuff", "posChange"],
     "unitIconName": "ine_head"

@@ -1,7 +1,7 @@
 {
     "name" : "gugu",
     "level" : 1,
-    "damage" : 5,
+    "damage" : 20,
     "upgradeDamage" : 2,
     "cost" : 1,
 

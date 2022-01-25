@@ -1,7 +1,7 @@
 {
     "name" : "attack",
     "level" : 1,
-    "damage" : 10,
+    "damage" : 20,
     "upgradeDamage" : 1,
     "cost" : 1,
 

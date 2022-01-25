@@ -193,7 +193,7 @@ public class INEScript : MonoBehaviour, UnitInterface
         }
 
         if(hp <= 0)
-            battleController.DestoryUnit(gameObject);
+            battleController.ReserveUnitToDestory(gameObject);
     }
     public void DisplayDamage(float skillDamage)
     {

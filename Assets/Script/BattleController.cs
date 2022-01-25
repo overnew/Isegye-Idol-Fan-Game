@@ -36,7 +36,8 @@ public class BattleController : MonoBehaviour
     private bool posChangerActive = false;
 
     private List<KeyValuePair<float, GameObject>> turnList = new List<KeyValuePair<float, GameObject>>();
-    
+    private List<GameObject> destoryList = new List<GameObject>();
+
     private GameObject blurCamera;
     public PostProcessVolume postVolume;
     private int endedAnimationCount = 0;
@@ -82,6 +83,7 @@ public class BattleController : MonoBehaviour
     {
         while (true)
         {
+            
             if (turnList.Count == 0)
             {
                 ++roundCounter;
@@ -91,6 +93,8 @@ public class BattleController : MonoBehaviour
 
             PlayTurn();
             yield return new WaitUntil(() => isTurnEnd);
+            DestoryReservedUnits();
+            yield return new WaitForSeconds(2.0f);  //잠시 대기
         }
     }
 
@@ -394,36 +398,59 @@ public class BattleController : MonoBehaviour
         turnUnit.GetComponent<UnitInterface>().SetTurnBar(false);
     }
 
-    public void DestoryUnit(GameObject unit)
+    private void DestoryReservedUnits()
     {
-        if (unit.GetComponent<UnitInterface>().GetUnitData().GetIsEnemy())
-            AlignUnitsInList(unit, enemyList);
-        else
-            AlignUnitsInList(unit, squadList);
+        if (destoryList.Count == 0)
+            return;
 
-        for (int i=0; i<turnList.Count ;++i)
-            if (turnList[i].Value.Equals(unit))
+        List<GameObject> enemyDestroyList = new List<GameObject>();
+        List<GameObject> squadDestroyList = new List<GameObject>();
+
+        for (int i=0; i < destoryList.Count; ++i) 
+        {
+            if (destoryList[i].GetComponent<UnitInterface>().GetUnitData().GetIsEnemy())
+                enemyDestroyList.Add(destoryList[i]);
+            else
+                squadDestroyList.Add(destoryList[i]);
+        }
+        destoryList.Clear();
+
+        AlignUnitsInList(enemyDestroyList, enemyList);
+        AlignUnitsInList(squadDestroyList, squadList);
+    }
+
+    public void ReserveUnitToDestory(GameObject reserveUnit)
+    {
+        for (int i = 0; i < turnList.Count; ++i)
+            if (turnList[i].Value.Equals(reserveUnit))
             {
                 turnList.RemoveAt(i);
                 break;
             }
-
-        Destroy(unit);
+        destoryList.Add(reserveUnit);
     }
 
-    private void AlignUnitsInList(GameObject alignUnit ,List<GameObject> alignList)
+    private void AlignUnitsInList(List<GameObject> unitList ,List<GameObject> targetList)
     {
-        int unitIndex = alignList.IndexOf(alignUnit);
-        float nextXpos, currentXpos = alignUnit.transform.position.x;
-        alignList.Remove(alignUnit);
+        if (unitList.Count == 0)
+            return;
 
-        for (int i = unitIndex; i < alignList.Count; ++i)
+        for (int i=0; i<unitList.Count ;++i )
         {
-            nextXpos = alignList[unitIndex].transform.position.x;
-            StartCoroutine(PullUnitCoroutine(alignList[i], currentXpos, true));
-            currentXpos = nextXpos;
+            targetList.Remove(unitList[i]);
+            Destroy(unitList[i]);
         }
 
+        float destXpos;
+
+        for (int i = 0; i < targetList.Count; ++i)
+        {
+            destXpos = 1 + (i * 2);
+            if (targetList == squadList)
+                destXpos *= -1;
+
+            StartCoroutine(PullUnitCoroutine(targetList[i], destXpos, true));
+        }
     }
 
     public void OffAllUnitsBar()

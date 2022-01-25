@@ -7,9 +7,9 @@
     "bonusPower" : 0,
 
     "defense": 1,
-    "accuracy": 90,
+    "accuracy": 100,
     "critical": 10,
-    "avoidability": 10,
+    "avoidability": 0,
     
     "skillNames": ["skillData", "gugu", "debuff", "posChange"],
     "unitIconName": "ine_head"
