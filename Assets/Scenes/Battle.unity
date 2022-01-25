@@ -416,7 +416,6 @@ MonoBehaviour:
     effectedStatus: 
     buffBonus: 0
     effectedRound: 0
-    bonusDamage: 0
     isPosChanger: 0
     isTargetedEnemy: 0
     availableRange: 
@@ -891,7 +890,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: --++
+  m_Text: xoox
 --- !u!222 &661780781
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -1038,7 +1037,6 @@ MonoBehaviour:
     effectedStatus: 
     buffBonus: 0
     effectedRound: 0
-    bonusDamage: 0
     isPosChanger: 0
     isTargetedEnemy: 0
     availableRange: 
@@ -1508,7 +1506,6 @@ MonoBehaviour:
     effectedStatus: 
     buffBonus: 0
     effectedRound: 0
-    bonusDamage: 0
     isPosChanger: 0
     isTargetedEnemy: 0
     availableRange: 
@@ -2441,7 +2438,6 @@ MonoBehaviour:
     effectedStatus: 
     buffBonus: 0
     effectedRound: 0
-    bonusDamage: 0
     isPosChanger: 0
     isTargetedEnemy: 0
     availableRange: 
@@ -2683,7 +2679,6 @@ MonoBehaviour:
     effectedStatus: 
     buffBonus: 0
     effectedRound: 0
-    bonusDamage: 0
     isPosChanger: 0
     isTargetedEnemy: 0
     availableRange: 

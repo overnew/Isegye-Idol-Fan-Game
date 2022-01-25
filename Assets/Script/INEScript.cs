@@ -9,6 +9,7 @@ public class INEScript : MonoBehaviour, UnitInterface
     public GameObject unit;
     public Animator animator;
     public GameObject unitButton;
+    public GameObject damageText;
 
     public GameObject UIcanvas;
     public GameObject targetBar;
@@ -74,6 +75,7 @@ public class INEScript : MonoBehaviour, UnitInterface
         hp = unitData.GetMaxHp();
         SetUnitUIPosition();
         SetTargetBar(false);
+        damageText.SetActive(false);
     }
 
     void Update()
@@ -94,6 +96,7 @@ public class INEScript : MonoBehaviour, UnitInterface
         Vector3 hpBarPos = new Vector3(transform.position.x, transform.position.y + height, 0);
         targetBar.transform.position = turnBar.transform.position = changeBar.transform.position = hpBar.transform.position = hpBarPos;
         unitButton.transform.position = Camera.main.WorldToScreenPoint(new Vector3(transform.position.x, transform.position.y + buttonHeight, 0));
+        damageText.transform.position = Camera.main.WorldToScreenPoint(new Vector3(transform.position.x, transform.position.y + buttonHeight, 0));
     }
     private void ScaleSet()
     {
@@ -180,7 +183,7 @@ public class INEScript : MonoBehaviour, UnitInterface
 
     public void GetDamage()
     {
-        float skillDamage = battleController.GetTotalDamage() -unitData.GetDefense();
+        float skillDamage = battleController.GetTotalDamage() - unitData.GetDefense();
         
         //회피 기동
         if (skillDamage > 0 && (UnityEngine.Random.Range(0, 100f) > unitData.GetAvoidability()))
@@ -191,6 +194,11 @@ public class INEScript : MonoBehaviour, UnitInterface
 
         if(hp <= 0)
             battleController.DestoryUnit(gameObject);
+    }
+    public void DisplayDamage(float skillDamage)
+    {
+        damageText.SetActive(true);
+        damageText.GetComponent<Text>().text = skillDamage.ToString();
     }
 
     public void BuffSkillExcute(SkillData buffSkill, int roundNum)

@@ -273,38 +273,41 @@ public class BattleController : MonoBehaviour
 
     private void SkillAnimationStart(GameObject[] targetedUnits)
     {
-        Vector3 squadPosition = new Vector3(-3,-1,0);
-        Vector3 enmeyPosition = new Vector3(3, -1, 0);
+        Vector3 squadPosition = new Vector3(-4,-1,0);
+        Vector3 enmeyPosition = new Vector3(4, -1, 0);
         List<GameObject> squadUnits = new List<GameObject>();
-        List<GameObject> enmeyUnits = new List<GameObject>();
+        List<GameObject> enemyUnits = new List<GameObject>();
         endedAnimationCount = 0;
 
         if (turnUnitData.GetIsEnemy())
-            enmeyUnits.Add(turnUnit);
+            enemyUnits.Add(turnUnit);
         else
             squadUnits.Add(turnUnit);
 
         if(targetedUnits != null )
         {
             if (targetedUnits[0].GetComponent<UnitInterface>().GetUnitData().GetIsEnemy())
-                enmeyUnits.AddRange(targetedUnits);
+                enemyUnits.AddRange(targetedUnits);
             else
                 squadUnits.AddRange(targetedUnits);
         }
 
-        SkillAnimationTrigger(squadUnits, squadPosition, Quaternion.Euler(0,180f,0)); ;
-        SkillAnimationTrigger( enmeyUnits, enmeyPosition, Quaternion.identity);
+        postVolume.enabled = true;
+        SkillAnimationTrigger(squadUnits, squadPosition); 
+        SkillAnimationTrigger( enemyUnits, enmeyPosition);
 
         //애니메이션 끝난지 여부
-        StartCoroutine(WaitAllAnimationEnd());
+        StartCoroutine(WaitAllAnimationEnd(squadUnits.Count + enemyUnits.Count));
     }
 
-    private IEnumerator WaitAllAnimationEnd()
+    private IEnumerator WaitAllAnimationEnd(int waitAnimeNum)
     {
-        while (endedAnimationCount <2)
+        while (endedAnimationCount < waitAnimeNum)
         {
             yield return new WaitForSeconds(0.1f);
         }
+
+        postVolume.enabled = false;
 
         blurCamera.GetComponent<BlurCamera>().CameraAction(false, turnUnitData.GetIsEnemy());
         while (blurCamera.transform.position.x !=0)
@@ -315,25 +318,14 @@ public class BattleController : MonoBehaviour
         isTurnEnd = true;
     }
 
-    private void SkillAnimationTrigger(List<GameObject> animationUnits, Vector3 instantPosition, Quaternion quaternion)
+    private void SkillAnimationTrigger(List<GameObject> animationUnits, Vector3 instantPosition)
     {
         if(animationUnits.Count ==0)
-        {
-            endedAnimationCount++;
             return;
-        }
 
         for (int i = 0; i < animationUnits.Count; ++i)
-        {
-            GameObject instantUnit = Instantiate(animationUnits[i], instantPosition + Vector3.right * (i * 2), quaternion, GameObject.Find("Canvas").transform);
-            ChangeLayersRecursively(instantUnit.transform, "UI");
-            instantUnit.transform.localScale =
-                new Vector3(instantUnit.transform.localScale.x * 2, instantUnit.transform.localScale.y * 2, 0);
-            instantUnit.GetComponent<UnitInterface>().GetAnimator().SetBool("damaged", true);
-            animationUnits[i] = instantUnit;
-        }
-
-        StartCoroutine(WaitAnimationEnd(animationUnits));
+            StartCoroutine(SkillAnimationCoroutine(animationUnits[i], instantPosition.x + (i*2), animationUnits[i].transform.position.x));
+        
     }
     private static void ChangeLayersRecursively(Transform trans, string name)
     {
@@ -344,15 +336,52 @@ public class BattleController : MonoBehaviour
         }
     }
 
-    private IEnumerator WaitAnimationEnd(List<GameObject> instantUnits)
+    private IEnumerator SkillAnimationCoroutine(GameObject animeUnit, float aniXpos, float originXpos)
     {
-        postVolume.enabled = true;
-        while (instantUnits[0].GetComponent<UnitInterface>().GetAnimator().GetCurrentAnimatorStateInfo(0).normalizedTime <1.0f)
-            yield return null;
+        string originLayer = LayerMask.LayerToName(animeUnit.layer);
+        ChangeLayersRecursively(animeUnit.transform, "UI");
 
-        for (int i = 0; i < instantUnits.Count; ++i)
-            Destroy(instantUnits[i]);
-        postVolume.enabled = false;
+        float div = 10;
+        float moveSpeed = (aniXpos - originXpos)/div;
+        Vector3 originScale = animeUnit.transform.localScale; 
+
+        Vector3 movePosition = new Vector3( moveSpeed,0,0);
+        Vector3 transScale = new Vector3((originScale.x) / div, (originScale.y) / div, 0);
+        int cnt = 0;
+        while (++cnt <div)
+        {
+            animeUnit.transform.position += movePosition;
+            animeUnit.transform.localScale += transScale;
+            yield return new WaitForSeconds(0.02f);
+        }
+        animeUnit.transform.position = new Vector3(aniXpos, animeUnit.transform.position.y, 0);
+
+        Animator animator = animeUnit.GetComponent<UnitInterface>().GetAnimator();
+        animator.SetBool("damaged", true);
+        yield return new WaitForSeconds(1.5f);
+
+        while (animator.GetCurrentAnimatorStateInfo(0).normalizedTime < 1.0f)
+            yield return null;
+        animator.SetBool("damaged", false);
+
+
+        ChangeLayersRecursively(animeUnit.transform, originLayer);
+
+        div = 20;
+        moveSpeed = (originXpos - aniXpos) / div;
+        movePosition = new Vector3(moveSpeed,0,0);
+        transScale = new Vector3(-(originScale.x) / div, -(originScale.y) / div, 0);
+
+        cnt = 0;
+        while (++cnt < div)
+        {
+            animeUnit.transform.position += movePosition;
+            animeUnit.transform.localScale += transScale;
+            yield return new WaitForSeconds(0.02f);
+        }
+        animeUnit.transform.position = new Vector3(originXpos, animeUnit.transform.position.y, 0);
+        animeUnit.transform.localScale = originScale;
+
         endedAnimationCount++;
     }
 
