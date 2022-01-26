@@ -20,6 +20,8 @@ public class INEScript : MonoBehaviour, UnitInterface
 
     public GameObject hpBar;
     public Image hpBarImage;
+    public Image buffIcon;
+    public Image debuffIcon;
 
     private BattleController battleController;
 
@@ -35,6 +37,9 @@ public class INEScript : MonoBehaviour, UnitInterface
     private float buttonHeight = 1.3f;
     private float damageHeight = 2f;
     private float damageXpos = -0.4f;
+    private int buffCount = 0;
+    private int debuffCount = 0;
+
 
     /*
     [ContextMenu("To Json Data")]
@@ -53,6 +58,8 @@ public class INEScript : MonoBehaviour, UnitInterface
         this.animator = GetComponent<Animator>();
         turnBar.SetActive(false);
         changeBar.SetActive(false);
+        debuffIcon.enabled = false;
+        buffIcon.enabled = false;
 
         hpBarImage.fillAmount = 1;
         ScaleSet();
@@ -64,6 +71,8 @@ public class INEScript : MonoBehaviour, UnitInterface
 
         buffEndRound = new List<KeyValuePair<int, List<SkillData>>>();
 
+        buffCount = 0;
+        debuffCount = 0;
     }
     void LoadUnitDataFromJson()
     {
@@ -100,6 +109,7 @@ public class INEScript : MonoBehaviour, UnitInterface
             damageXpos *= -1;
         Vector3 hpBarPos = new Vector3(transform.position.x, transform.position.y + height, 0);
         targetBar.transform.position = turnBar.transform.position = changeBar.transform.position = hpBar.transform.position = hpBarPos;
+        debuffIcon.transform.position = buffIcon.transform.position =  new Vector3(transform.position.x + damageXpos, transform.position.y + height + 0.5f, 0);
         unitButton.transform.position = Camera.main.WorldToScreenPoint(new Vector3(transform.position.x, transform.position.y + buttonHeight, 0));
         damageText.transform.position = new Vector3(transform.position.x + damageXpos, transform.position.y + damageHeight, 0);
     }
@@ -109,7 +119,7 @@ public class INEScript : MonoBehaviour, UnitInterface
             hpBar.transform.localEulerAngles = damageText.transform.localEulerAngles = new Vector3(0, 180f, 0);
 
         hpBar.transform.localScale = targetBar.transform.localScale = changeBar.transform.localScale = damageText.transform.localScale
-            = turnBar.transform.localScale = new Vector3(0.025f, 0.025f,0f);
+            = turnBar.transform.localScale = debuffIcon.transform.localScale = buffIcon.transform.localScale = new Vector3(0.025f, 0.025f,0f);
         unitButton.transform.localScale = new Vector3(0.5f, 0.5f, 0f);
     }
 
@@ -218,12 +228,24 @@ public class INEScript : MonoBehaviour, UnitInterface
 
     public void BuffSkillExcute(SkillData buffSkill, int roundNum)
     {
+        if (buffSkill.GetBuffBonus() < 0)
+        {
+            debuffIcon.enabled = true;
+            ++debuffCount;
+        }
+        else
+        {
+            buffIcon.enabled = true;
+            ++buffCount;
+        }
+
         StoreRoundEndBuff(buffSkill, roundNum);
         unitData.ApplyBuffEffect(buffSkill, false);
     }
     private void StoreRoundEndBuff(SkillData buffSkill, int roundNum)
     {
-        int storedIndex = buffEndRound.FindIndex((data) => (data.Key.Equals(roundNum)));
+        int storedIndex = buffEndRound.FindIndex((KeyValuePair<int, List<SkillData>> data) => (data.Key.Equals(buffSkill.GetEffectedRound() + roundNum)));
+
         if ( storedIndex != -1)
         {
             buffEndRound[storedIndex].Value.Add(buffSkill);
@@ -243,12 +265,22 @@ public class INEScript : MonoBehaviour, UnitInterface
         {
             List<SkillData> buffList = buffEndRound[storedIndex].Value;
             
-            for(int i=0; i <buffList.Count ;++i )
+            for(int i=0; i <buffList.Count ;++i)
+            {
                 unitData.ApplyBuffEffect(buffList[i], true);
+                if (buffList[i].GetBuffBonus() < 0)
+                    debuffCount--;
+                else
+                    buffCount--;
+            }
 
             buffEndRound.RemoveAt(storedIndex);
         }
 
+        if (debuffCount == 0)
+            debuffIcon.enabled = false;
+        if (buffCount == 0)
+            buffIcon.enabled = false;
     }
     public void SetTurnBar(bool Setting)
     {

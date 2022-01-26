@@ -255,6 +255,7 @@ public class BattleController : MonoBehaviour
         if (selectedSkill.GetIsSplashSkill())
         {
             targeredUnits = GetTargetedEnemy(selectedSkill.GetAttackRange(), selectedSkill.GetIsTargetedEnemy());
+
             SkillAnimationStart(targeredUnits);
             for (int i = 0; i < targeredUnits.Length; ++i)
             {

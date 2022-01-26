@@ -1,5 +1,5 @@
 {
-    "name" : "attack",
+    "name" : "debuff",
     "level" : 1,
     "damage" : 0,
     "upgradeDamage" : 1,
@@ -7,7 +7,7 @@
 
     "isBuff" : true,
     "effectedStatus" : "bonusPower",
-    "buffBonus" : -3,
+    "buffBonus" : 1,
     "effectedRound" : 1,
 
     "isPosChanger": false,
