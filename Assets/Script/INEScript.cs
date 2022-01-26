@@ -208,7 +208,7 @@ public class INEScript : MonoBehaviour, UnitInterface
     public void DisplayCondition(string condition)
     {//<color=#FE4554>o</color>/ //4BE198
         damageText.SetActive(true);
-        damageText.GetComponent<Text>().text = "<color=#FE4554>" + condition + "</color>";
+        damageText.GetComponent<Text>().text = "<color=#C00000>" + condition + "</color>";
     }
 
     public void UndisplayCondition()

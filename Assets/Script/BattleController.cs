@@ -93,8 +93,10 @@ public class BattleController : MonoBehaviour
 
             PlayTurn();
             yield return new WaitUntil(() => isTurnEnd);
+
+            OffAllSkillOutLine();
             DestoryReservedUnits();
-            yield return new WaitForSeconds(2.0f);  //잠시 대기
+            yield return new WaitForSeconds(1.5f);  //잠시 대기
         }
     }
 
@@ -480,6 +482,15 @@ public class BattleController : MonoBehaviour
             enemyList[i].GetComponent<UnitInterface>().SetTargetBar(false);
             enemyList[i].GetComponent<UnitInterface>().SetChangeBar(false);
         }
+    }
+
+    public void OffAllSkillOutLine()
+    {
+        for (int i=0; i<skillButtons.Length -1 ;++i )
+        {
+            skillButtons[i].GetComponent<SkillButton>().SetOutline(false);
+        }
+        skillButtons[skillButtons.Length - 1].GetComponent<PositionChanger>().SetOutline(false);
     }
 
     public GameObject[] GetTargetedEnemy(int[] attackRange, bool isTargetedMyEnemy)

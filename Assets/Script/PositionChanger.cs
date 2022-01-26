@@ -10,12 +10,18 @@ public class PositionChanger : MonoBehaviour, IPointerEnterHandler, IPointerExit
     public SkillData skillData;
 
     //스킬 설명란
+    private Outline outline;
     public GameObject descFrame;
     public Text desc;
     private const string descInfo = "유닛의 위치를 바꿉니다.";
-
+    void Awake()
+    {
+        outline = GetComponent<Outline>();
+    }
     void Start()
     {
+        outline.enabled = false;
+
         desc.text = descInfo;
         descFrame.SetActive(false);
 
@@ -24,6 +30,9 @@ public class PositionChanger : MonoBehaviour, IPointerEnterHandler, IPointerExit
 
     public void OnClickPositionChanger()
     {
+        battleController.OffAllSkillOutLine();
+        outline.enabled = true;
+
         battleController.OffAllUnitsBar();
         battleController.SetPosChanger(true);
 
@@ -45,5 +54,9 @@ public class PositionChanger : MonoBehaviour, IPointerEnterHandler, IPointerExit
     public void OnPointerExit(PointerEventData eventData)
     {
         descFrame.SetActive(false);
+    }
+    public void SetOutline(bool setting)
+    {
+        outline.enabled = setting;
     }
 }
