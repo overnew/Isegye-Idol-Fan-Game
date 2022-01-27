@@ -79,7 +79,7 @@ public class INEScript : MonoBehaviour, UnitInterface
         string path = Path.Combine(Application.dataPath, unitDataPath, unintDataName);
         string jsonData = File.ReadAllText(path);
         unitData = JsonUtility.FromJson<UnitData>(jsonData);
-        skillsData = unitData.LoadSkillData();
+        skillsData = unitData.LoadSkillData(unitData);
     }
 
     void Start()

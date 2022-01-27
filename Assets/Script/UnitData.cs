@@ -8,7 +8,7 @@ using System.Reflection;
 public class UnitData
 {
     [SerializeField] private string unitName;
-    [SerializeField] private bool isEnemyUnit; 
+    [SerializeField] private bool isEnemyUnit;
     [SerializeField] private float maxHp;
     [SerializeField] private float stepSpeed;
     [SerializeField] private int[] attackPowerRange;
@@ -20,12 +20,44 @@ public class UnitData
 
     [SerializeField] private string[] skillNames;
     [SerializeField] private string unitIconName;
+    private OriginStatus originStatus;
 
     private const string skillDataPath = "DataBase/Skills";
     private const string statusDescriptionSetting = "{0}\n체력: {1}\n스텝 속도: {2}\n데미지: {3} - {4}\n방어력: {5}\n명중률: {6}%\n회피율: {7}%\n치명타 확률: {8}%";
+    private const string colorStatusSetting = "<color={0}>{1}</color>";
+    private const string BUFF_COLOR = "#4BE198";
+    private const string DEBUFF_COLOR = "#FE4554";
+    
 
-    public List<SkillData> LoadSkillData()
+    private struct OriginStatus
     {
+        float stepSpeed;
+        float bonusPower;
+        float defense;
+        float accuracy;
+        float critical;
+        float avoidability;
+
+        public OriginStatus(UnitData unitData)
+        {
+            this.stepSpeed = unitData.stepSpeed;
+            this.bonusPower = unitData.bonusPower;
+            this.defense = unitData.defense;
+            this.accuracy = unitData.accuracy;
+            this.critical = unitData.critical;
+            this.avoidability = unitData.avoidability;
+        }
+
+        public float GetStatusValueByName(string statusName)
+        {
+            var bindingFlags = BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Static;
+            return (float)this.GetType().GetField(statusName, bindingFlags).GetValue(this);
+        }
+    }
+
+    public List<SkillData> LoadSkillData(UnitData unitData)
+    {
+        originStatus = new OriginStatus(unitData);
         List<SkillData> skillsData = new List<SkillData>();
         for (int i = 0; i <skillNames.Length; ++i)
         {
@@ -66,6 +98,27 @@ public class UnitData
     public float GetCritical() { return critical; }
     public float GetAvoidability() { return avoidability; }
 
-    public string GetUnitStatus() { return string.Format(statusDescriptionSetting,unitName, maxHp,stepSpeed,attackPowerRange[0], attackPowerRange[1],
-        defense, accuracy, avoidability, critical); }
+    private string ApplyColorToStatus(string statusName)
+    {
+        var bindingFlags = BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Static;
+        float statusValue = (float)this.GetType().GetField(statusName, bindingFlags).GetValue(this);
+        float oringValue = originStatus.GetStatusValueByName(statusName);
+
+        if (statusValue < oringValue)
+            return string.Format(colorStatusSetting, DEBUFF_COLOR, statusValue);
+        else if (statusValue == oringValue)
+            return statusValue.ToString();
+        else 
+            return string.Format(colorStatusSetting, BUFF_COLOR, statusValue);
+    }
+
+    public string GetUnitStatus() { return string.Format(statusDescriptionSetting,unitName, maxHp,
+        ApplyColorToStatus("stepSpeed"),
+        attackPowerRange[0], attackPowerRange[1],
+        ApplyColorToStatus("defense"),
+        ApplyColorToStatus("accuracy"),
+        ApplyColorToStatus("avoidability"),
+        ApplyColorToStatus("critical")); 
+    }
+
 }
