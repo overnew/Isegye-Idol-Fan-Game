@@ -338,6 +338,14 @@ public class BattleController : MonoBehaviour
 
     }
 
+    public void BlockAllButton()
+    {
+        for (int i=0; i<skillButtons.Length ; ++i )
+        {
+            skillButtons[i].interactable = false;
+        }
+    }
+
     private void SkillAnimationTrigger(List<GameObject> animationUnits, Vector3 instantPosition)
     {
         if(animationUnits.Count ==0)
