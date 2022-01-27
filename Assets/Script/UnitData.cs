@@ -8,6 +8,7 @@ using System.Reflection;
 public class UnitData
 {
     [SerializeField] private string unitName;
+    [SerializeField] private string unitType;
     [SerializeField] private bool isEnemyUnit;
     [SerializeField] private float maxHp;
     [SerializeField] private float stepSpeed;
@@ -23,7 +24,7 @@ public class UnitData
     private OriginStatus originStatus;
 
     private const string skillDataPath = "DataBase/Skills";
-    private const string statusDescriptionSetting = "{0}\n체력: {1}\n스텝 속도: {2}\n데미지: {3} - {4}\n방어력: {5}\n명중률: {6}%\n회피율: {7}%\n치명타 확률: {8}%";
+    private const string statusDescriptionSetting = "HP: {0}\n스텝 속도: {1}\n데미지: {2} - {3}\n방어력: {4}\n명중률: {5}%\n회피율: {6}%\n치명타 확률: {7}%";
     private const string colorStatusSetting = "<color={0}>{1}</color>";
     private const string BUFF_COLOR = "#4BE198";
     private const string DEBUFF_COLOR = "#FE4554";
@@ -112,7 +113,21 @@ public class UnitData
             return string.Format(colorStatusSetting, BUFF_COLOR, statusValue);
     }
 
-    public string GetUnitStatus() { return string.Format(statusDescriptionSetting,unitName, maxHp,
+    public string GetUnitInfo()
+    {
+        StringBuilder unitInfo = new StringBuilder(unitName);
+        unitInfo.Append("\n<color=");
+
+        if (isEnemyUnit)
+            unitInfo.Append(DEBUFF_COLOR);
+        else
+            unitInfo.Append(BUFF_COLOR);
+
+        unitInfo.Append("><size=28>" +  unitType + "</size></color>");
+        return unitInfo.ToString();
+    }
+
+    public string GetUnitStatus() { return string.Format(statusDescriptionSetting,maxHp,
         ApplyColorToStatus("stepSpeed"),
         attackPowerRange[0], attackPowerRange[1],
         ApplyColorToStatus("defense"),

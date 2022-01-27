@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using System.IO;
+using UnityEngine.EventSystems;
 
 public class INEScript : MonoBehaviour, UnitInterface
 {
@@ -103,6 +104,16 @@ public class INEScript : MonoBehaviour, UnitInterface
             this.animator.SetBool("walking", false);
         }
     }
+    private void OnMouseEnter()
+    {
+        battleController.LoadEnemyStatus(this.unitData, true);
+    }
+
+    private void OnMouseExit()
+    {
+        battleController.LoadEnemyStatus(this.unitData , false);
+    }
+
     public void SetUnitUIPosition()
     {
         if (!unitData.GetIsEnemy())

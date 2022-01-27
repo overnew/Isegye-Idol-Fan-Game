@@ -25,6 +25,10 @@ public class BattleController : MonoBehaviour
     private int turnUnitPosition;
 
     private Text unitStatusText;
+    private Text unitInfoText;
+    private Text enemyStatusText;
+    private Text enemyInfoText;
+
     private GameObject skillPanel;
     private List<SkillData> skills;
     private SkillData selectedSkill;
@@ -52,6 +56,9 @@ public class BattleController : MonoBehaviour
     {
         blurCamera = GameObject.Find("BlurCamera");
         unitStatusText = GameObject.Find("unitStatus").GetComponent<Text>();
+        unitInfoText = GameObject.Find("unitInfo").GetComponent<Text>();
+        enemyStatusText = GameObject.Find("enemyStatus").GetComponent<Text>();
+        enemyInfoText = GameObject.Find("enemyInfo").GetComponent<Text>();
 
         skillPanel = GameObject.Find("skillPanel");
         skillButtons = skillPanel.GetComponentsInChildren<Button>();
@@ -118,6 +125,7 @@ public class BattleController : MonoBehaviour
 
         if (turnUnitData.GetIsEnemy())
         {
+            LoadEnemyStatus(turnUnitData, true);
             for (int i=0; i<skillButtons.Length ; ++i)  //적 턴에는 버튼 클릭 금지
                 skillButtons[i].interactable = false;
             
@@ -126,6 +134,7 @@ public class BattleController : MonoBehaviour
 
         }else
         {
+            LoadEnemyStatus(turnUnitData, false);
             skillButtons[POS_CHANGER_IDX].interactable = true;
             turnUnitPosition = squadList.IndexOf(turnUnit);
             LoadTurnUnitStatus();
@@ -153,6 +162,7 @@ public class BattleController : MonoBehaviour
     private void LoadTurnUnitStatus()
     {
         turnUnitIcon.sprite = turnUnit.GetComponent<UnitInterface>().GetUnitIcon();
+        unitInfoText.text = turnUnitData.GetUnitInfo();
         unitStatusText.text = turnUnitData.GetUnitStatus();
 
         skills = turnUnit.GetComponent<UnitInterface>().GetUnitSkills();
@@ -163,6 +173,19 @@ public class BattleController : MonoBehaviour
             skillButtons[i].GetComponent<Image>().sprite = Resources.Load<Sprite>(path + skills[i].GetIconName());
             skillButtons[i].GetComponent<SkillButton>().SetSkillToButton(skills[i]);
         }
+    }
+
+    public void LoadEnemyStatus(UnitData enemyData, bool isEnter)
+    {
+        if (isEnter)
+        {
+            enemyInfoText.text = enemyData.GetUnitInfo();
+            enemyStatusText.text = enemyData.GetUnitStatus();
+            return;
+        }
+
+        enemyInfoText.text = "";
+        enemyStatusText.text = "";
     }
 
     public void SwitchPositionWithTurnUnit(GameObject selectedUnit)

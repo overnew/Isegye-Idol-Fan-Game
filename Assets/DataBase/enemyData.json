@@ -1,8 +1,9 @@
 {
-    "unitName": "pigon",
+    "unitName": "릴파",
+    "unitType": "메인 댄서",
     "isEnemyUnit": true,
     "maxHp": 3.0,
-    "stepSpeed": 10,
+    "stepSpeed": 2,
     "attackPowerRange": [1,5],
     "bonusPower" : 0,
 

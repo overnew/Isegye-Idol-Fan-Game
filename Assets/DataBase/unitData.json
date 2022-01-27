@@ -1,5 +1,6 @@
 {
-    "unitName": "ine_normal",
+    "unitName": "아이네",
+    "unitType": "메인 보컬",
     "isEnemyUnit": false,
     "maxHp": 15.0,
     "stepSpeed": 5,
