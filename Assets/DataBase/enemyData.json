@@ -2,7 +2,7 @@
     "unitName": "릴파",
     "unitType": "메인 댄서",
     "isEnemyUnit": true,
-    "maxHp": 3.0,
+    "maxHp": 30.0,
     "stepSpeed": 2,
     "attackPowerRange": [1,5],
     "bonusPower" : 0,

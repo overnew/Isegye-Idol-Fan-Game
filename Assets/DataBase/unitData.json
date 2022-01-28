@@ -2,7 +2,7 @@
     "unitName": "아이네",
     "unitType": "메인 보컬",
     "isEnemyUnit": false,
-    "maxHp": 15.0,
+    "maxHp": 50.0,
     "stepSpeed": 5,
     "attackPowerRange": [4,8],
     "bonusPower" : 0,

@@ -125,7 +125,7 @@ public class BattleController : MonoBehaviour
 
         if (turnUnitData.GetIsEnemy())
         {
-            LoadEnemyStatus(turnUnitData, true);
+            LoadEnemyStatus(turnUnit, true);
             for (int i=0; i<skillButtons.Length ; ++i)  //적 턴에는 버튼 클릭 금지
                 skillButtons[i].interactable = false;
             
@@ -134,7 +134,7 @@ public class BattleController : MonoBehaviour
 
         }else
         {
-            LoadEnemyStatus(turnUnitData, false);
+            LoadEnemyStatus(turnUnit, false);
             skillButtons[POS_CHANGER_IDX].interactable = true;
             turnUnitPosition = squadList.IndexOf(turnUnit);
             LoadTurnUnitStatus();
@@ -163,7 +163,7 @@ public class BattleController : MonoBehaviour
     {
         turnUnitIcon.sprite = turnUnit.GetComponent<UnitInterface>().GetUnitIcon();
         unitInfoText.text = turnUnitData.GetUnitInfo();
-        unitStatusText.text = turnUnitData.GetUnitStatus();
+        unitStatusText.text = turnUnitData.GetUnitStatus(turnUnit);
 
         skills = turnUnit.GetComponent<UnitInterface>().GetUnitSkills();
         const string path = "SkillsIcon/";
@@ -175,12 +175,13 @@ public class BattleController : MonoBehaviour
         }
     }
 
-    public void LoadEnemyStatus(UnitData enemyData, bool isEnter)
+    public void LoadEnemyStatus(GameObject enemyUnit, bool isEnter)
     {
         if (isEnter)
         {
+            UnitData enemyData = enemyUnit.GetComponent<UnitInterface>().GetUnitData();
             enemyInfoText.text = enemyData.GetUnitInfo();
-            enemyStatusText.text = enemyData.GetUnitStatus();
+            enemyStatusText.text = enemyData.GetUnitStatus(enemyUnit);
             return;
         }
 

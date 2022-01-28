@@ -34,10 +34,12 @@ public class INEScript : MonoBehaviour, UnitInterface
     List<KeyValuePair<int, List<SkillData>>> buffEndRound;
 
     private float hp;
-    private float height = -0.4f;
+    private float height = -0.5f;
     private float buttonHeight = 1.3f;
     private float damageHeight = 2f;
     private float damageXpos = -0.4f;
+    private float buffHeight = -0.15f;
+    private float buffXpos = 0.4f;
     private int buffCount = 0;
     private int debuffCount = 0;
 
@@ -81,11 +83,12 @@ public class INEScript : MonoBehaviour, UnitInterface
         string jsonData = File.ReadAllText(path);
         unitData = JsonUtility.FromJson<UnitData>(jsonData);
         skillsData = unitData.LoadSkillData(unitData);
+
+        hp = unitData.GetMaxHp();
     }
 
     void Start()
     {
-        hp = unitData.GetMaxHp();
         SetUnitUIPosition();
         SetTargetBar(false);
         damageText.SetActive(false);
@@ -104,15 +107,9 @@ public class INEScript : MonoBehaviour, UnitInterface
             this.animator.SetBool("walking", false);
         }
     }
-    private void OnMouseEnter()
-    {
-        battleController.LoadEnemyStatus(this.unitData, true);
-    }
+    private void OnMouseEnter(){battleController.LoadEnemyStatus(gameObject, true);}
 
-    private void OnMouseExit()
-    {
-        battleController.LoadEnemyStatus(this.unitData , false);
-    }
+    private void OnMouseExit(){ battleController.LoadEnemyStatus(gameObject, false);}
 
     public void SetUnitUIPosition()
     {
@@ -120,8 +117,10 @@ public class INEScript : MonoBehaviour, UnitInterface
             damageXpos *= -1;
         Vector3 hpBarPos = new Vector3(transform.position.x, transform.position.y + height, 0);
         targetBar.transform.position = turnBar.transform.position = changeBar.transform.position = hpBar.transform.position = hpBarPos;
-        debuffIcon.transform.position = new Vector3(transform.position.x + damageXpos - 0.2f, transform.position.y + height + 0.5f, 0);
-        buffIcon.transform.position = new Vector3(transform.position.x + damageXpos, transform.position.y + height + 0.5f, 0);
+
+        debuffIcon.transform.position = new Vector3(transform.position.x + buffXpos, transform.position.y + buffHeight, 0);
+        buffIcon.transform.position = new Vector3(transform.position.x - buffXpos, transform.position.y + buffHeight, 0);
+
         unitButton.transform.position = Camera.main.WorldToScreenPoint(new Vector3(transform.position.x, transform.position.y + buttonHeight, 0));
         damageText.transform.position = new Vector3(transform.position.x + damageXpos, transform.position.y + damageHeight, 0);
     }

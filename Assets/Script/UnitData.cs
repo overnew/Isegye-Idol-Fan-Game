@@ -24,7 +24,7 @@ public class UnitData
     private OriginStatus originStatus;
 
     private const string skillDataPath = "DataBase/Skills";
-    private const string statusDescriptionSetting = "HP: {0}\n스텝 속도: {1}\n데미지: {2} - {3}\n방어력: {4}\n명중률: {5}%\n회피율: {6}%\n치명타 확률: {7}%";
+    private const string statusDescriptionSetting = "{0}\n스텝 속도: {1}\n데미지: {2} - {3}\n방어력: {4}\n명중률: {5}%\n회피율: {6}%\n치명타 확률: {7}%";
     private const string colorStatusSetting = "<color={0}>{1}</color>";
     private const string BUFF_COLOR = "#4BE198";
     private const string DEBUFF_COLOR = "#FE4554";
@@ -112,6 +112,14 @@ public class UnitData
         else 
             return string.Format(colorStatusSetting, BUFF_COLOR, statusValue);
     }
+    
+    private string GetCurrnetHpWithMaxHp(float currentHp)
+    {
+        StringBuilder unitHp = new StringBuilder("<color=#FE4554>체력: ");
+        unitHp.Append(currentHp + " / " +maxHp);
+        unitHp.Append("</color>");
+        return unitHp.ToString();
+    }
 
     public string GetUnitInfo()
     {
@@ -127,7 +135,8 @@ public class UnitData
         return unitInfo.ToString();
     }
 
-    public string GetUnitStatus() { return string.Format(statusDescriptionSetting,maxHp,
+    public string GetUnitStatus(GameObject unit) { return string.Format(statusDescriptionSetting,
+        GetCurrnetHpWithMaxHp(unit.GetComponent<UnitInterface>().GetHp()),
         ApplyColorToStatus("stepSpeed"),
         attackPowerRange[0], attackPowerRange[1],
         ApplyColorToStatus("defense"),

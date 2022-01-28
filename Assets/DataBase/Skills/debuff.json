@@ -7,7 +7,7 @@
 
     "isBuff" : true,
     "effectedStatus" : "defense",
-    "buffBonus" : -1,
+    "buffBonus" : 1,
     "effectedRound" : 1,
 
     "isPosChanger": false,
