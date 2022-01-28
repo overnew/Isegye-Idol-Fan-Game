@@ -1,7 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 using System.Text;
+using UnityEngine;
 
 [System.Serializable]
 public class SkillData 
@@ -15,7 +13,7 @@ public class SkillData
 
     [SerializeField] private bool isBuff;
     [SerializeField] private string effectedStatus = "";
-    [SerializeField] private float buffBonus;
+    [SerializeField] private float effectValue;
     [SerializeField] private int effectedRound;
 
     [SerializeField] private bool isPosChanger;
@@ -28,12 +26,6 @@ public class SkillData
 
     [SerializeField] private string skillIconName = "";
     [SerializeField] private string skillDescription = "";
-
-    public void Upgrade()
-    {
-        damage += upgradeDamage;
-        ++level;
-    }
 
     private string RangeVisualToString()
     {
@@ -71,7 +63,7 @@ public class SkillData
     public bool GetIsTargetedEnemy() { return isTargetedEnemy; }
 
     public bool GetIsBuff() { return isBuff; }
-    public float GetBuffBonus() { return buffBonus; }
+    public float GetEffectValue() { return effectValue; }
     public int GetEffectedRound() { return effectedRound; }
     public string GetBuffEffectedStatus() { return effectedStatus; }
 

@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -264,10 +263,10 @@ public class BattleController : MonoBehaviour
     private void EndedBuffCheck()
     {
         for (int i=0; i<squadList.Count ; ++i)
-            squadList[i].GetComponent<UnitInterface>().EndBuffEffect(roundCounter);
+            squadList[i].GetComponent<UnitInterface>().CheckEndBuffEffect(roundCounter);
 
         for (int i = 0; i < enemyList.Count; ++i)
-            enemyList[i].GetComponent<UnitInterface>().EndBuffEffect(roundCounter);
+            enemyList[i].GetComponent<UnitInterface>().CheckEndBuffEffect(roundCounter);
 
     }
 
@@ -446,7 +445,7 @@ public class BattleController : MonoBehaviour
         turnUnit.GetComponent<UnitInterface>().SetTurnBar(false);
     }
 
-    private void DestoryReservedUnits()
+    public void DestoryReservedUnits()
     {
         if (destoryList.Count == 0)
             return;

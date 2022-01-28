@@ -7,7 +7,7 @@
 
     "isBuff" : false,
     "effectedStatus" : "stepSpeed",
-    "buffBonus" : 3,
+    "effectValue" : 1,
     "effectedRound" : 0,
 
     "isPosChanger": false,

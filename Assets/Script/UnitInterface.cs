@@ -7,7 +7,7 @@ public interface UnitInterface
 {
     public void AIBattleExecute();
     public void BuffSkillExcute(SkillData buffSkill, int roundNum);
-    public void EndBuffEffect(int roundNum);
+    public void CheckEndBuffEffect(int roundNum);
 
     public void DisplayCondition(string condition);
     public void UndisplayCondition();

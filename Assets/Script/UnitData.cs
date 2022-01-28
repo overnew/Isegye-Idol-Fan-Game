@@ -1,8 +1,8 @@
 using System.Collections.Generic;
-using UnityEngine;
 using System.IO;
-using System.Text;
 using System.Reflection;
+using System.Text;
+using UnityEngine;
 
 [System.Serializable]
 public class UnitData
@@ -78,7 +78,7 @@ public class UnitData
         var bindingFlags = BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Static;
         string effectedStatus = skillData.GetBuffEffectedStatus();
         float statusValue = (float)this.GetType().GetField(effectedStatus, bindingFlags).GetValue(this);
-        float buffValue = skillData.GetBuffBonus();
+        float buffValue = skillData.GetEffectValue();
 
         if (isBuffCancle)
             buffValue *= -1;

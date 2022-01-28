@@ -1,9 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 using UnityEngine.UI;
-using System.IO;
-using UnityEngine.EventSystems;
 
 public class INEScript : MonoBehaviour, UnitInterface
 {
@@ -32,6 +31,10 @@ public class INEScript : MonoBehaviour, UnitInterface
 
     private List<SkillData> skillsData;
     List<KeyValuePair<int, List<SkillData>>> buffEndRound;
+
+    private bool isPosioning = false;
+    private float posionDamage = 0;
+    private int posionEndRound = 0;
 
     private float hp;
     private float height = -0.5f;
@@ -63,6 +66,7 @@ public class INEScript : MonoBehaviour, UnitInterface
         changeBar.SetActive(false);
         debuffIcon.enabled = false;
         buffIcon.enabled = false;
+        isPosioning = false;
 
         hpBarImage.fillAmount = 1;
         ScaleSet();
@@ -240,7 +244,14 @@ public class INEScript : MonoBehaviour, UnitInterface
 
     public void BuffSkillExcute(SkillData buffSkill, int roundNum)
     {
-        if (buffSkill.GetBuffBonus() < 0)
+        if (buffSkill.GetBuffEffectedStatus().Equals("posion"))
+        {
+            isPosioning = true;
+            posionDamage = buffSkill.GetEffectValue();
+            posionEndRound = roundNum + buffSkill.GetEffectedRound();
+            return;
+        }
+        else if (buffSkill.GetEffectValue() < 0)
         {
             debuffIcon.enabled = true;
             ++debuffCount;
@@ -254,6 +265,25 @@ public class INEScript : MonoBehaviour, UnitInterface
         StoreRoundEndBuff(buffSkill, roundNum);
         unitData.ApplyBuffEffect(buffSkill, false);
     }
+    private void GetPosionDamage()
+    {
+        StartCoroutine(PosionDamageCoroutine());
+        hp -= posionDamage;
+        hpBarImage.fillAmount = hp / unitData.GetMaxHp();
+
+        if (hp <= 0)
+            battleController.ReserveUnitToDestory(gameObject);
+            
+    }
+
+    private IEnumerator PosionDamageCoroutine()
+    {
+        DisplayCondition("Áßµ¶  "+posionDamage.ToString());
+        yield return new WaitForSeconds(2f);
+        damageText.SetActive(false);
+        battleController.DestoryReservedUnits();
+    }
+
     private void StoreRoundEndBuff(SkillData buffSkill, int roundNum)
     {
         int storedIndex = buffEndRound.FindIndex((KeyValuePair<int, List<SkillData>> data) => (data.Key.Equals(buffSkill.GetEffectedRound() + roundNum)));
@@ -270,8 +300,18 @@ public class INEScript : MonoBehaviour, UnitInterface
         }
     }
 
-    public void EndBuffEffect(int roundNum)
+    public void CheckEndBuffEffect(int roundNum)
     {
+        if (isPosioning)
+        {
+            GetPosionDamage();
+            if (posionEndRound == roundNum)
+            {
+                isPosioning = false;
+                posionEndRound = 0;
+            }
+        }
+
         int storedIndex = buffEndRound.FindIndex((data) => (data.Key.Equals(roundNum)));
         if (storedIndex != -1)
         {
@@ -280,7 +320,7 @@ public class INEScript : MonoBehaviour, UnitInterface
             for(int i=0; i <buffList.Count ;++i)
             {
                 unitData.ApplyBuffEffect(buffList[i], true);
-                if (buffList[i].GetBuffBonus() < 0)
+                if (buffList[i].GetEffectValue() < 0)
                     debuffCount--;
                 else
                     buffCount--;
