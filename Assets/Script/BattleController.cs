@@ -304,8 +304,6 @@ public class BattleController : MonoBehaviour
 
     private void SkillAnimationStart(GameObject[] targetedUnits)
     {
-        Vector3 squadPosition = new Vector3(-4,-1,0);
-        Vector3 enmeyPosition = new Vector3(4, -1, 0);
         List<GameObject> squadUnits = new List<GameObject>();
         List<GameObject> enemyUnits = new List<GameObject>();
         endedAnimationCount = 0;
@@ -324,8 +322,8 @@ public class BattleController : MonoBehaviour
         }
 
         postVolume.enabled = true;
-        SkillAnimationTrigger(squadUnits, squadPosition); 
-        SkillAnimationTrigger( enemyUnits, enmeyPosition);
+        SkillAnimationTrigger(squadUnits, false); 
+        SkillAnimationTrigger( enemyUnits, true);
 
         //애니메이션 끝난지 여부
         StartCoroutine(WaitAllAnimationEnd(squadUnits.Count + enemyUnits.Count));
@@ -369,13 +367,22 @@ public class BattleController : MonoBehaviour
         }
     }
 
-    private void SkillAnimationTrigger(List<GameObject> animationUnits, Vector3 instantPosition)
+    private void SkillAnimationTrigger(List<GameObject> animationUnits, bool isEnemy)
     {
         if(animationUnits.Count ==0)
             return;
 
+        Vector3 instantPosition = new Vector3(-4, -1, 0);
+        float positionGap = -2f;
+
+        if (isEnemy)    //적 유닛은 포자션을 다르게
+        {
+            instantPosition = new Vector3(4, -1, 0);
+            positionGap *= -1;
+        }
+
         for (int i = 0; i < animationUnits.Count; ++i)
-            StartCoroutine(SkillAnimationCoroutine(animationUnits[i], instantPosition.x + (i*2), animationUnits[i].transform.position.x));
+            StartCoroutine(SkillAnimationCoroutine(animationUnits[i], instantPosition.x + (i* positionGap), animationUnits[i].transform.position.x));
         
     }
     private static void ChangeLayersRecursively(Transform trans, string name)
