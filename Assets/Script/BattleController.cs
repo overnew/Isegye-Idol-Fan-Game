@@ -94,8 +94,7 @@ public class BattleController : MonoBehaviour
         {
             if (turnList.Count == 0)
             {
-                ++roundCounter;
-                roundText.text = roundCounter.ToString();
+                ChangeRound();
                 EndedBuffCheck();
                 turnList = SetUnitsTurnOrder();
             }
@@ -106,6 +105,26 @@ public class BattleController : MonoBehaviour
             OffAllSkillOutLine();
             DestoryReservedUnits();
             yield return new WaitForSeconds(1.5f);  //잠시 대기
+        }
+    }
+
+    private void ChangeRound()
+    {
+        ++roundCounter;
+        roundText.text = roundCounter.ToString();
+        StartCoroutine(RoundChangeEffectCoroutine());
+    }
+
+    private IEnumerator RoundChangeEffectCoroutine()
+    {
+        int originSize = roundText.fontSize;
+        int largeSize = 25 + originSize;
+
+        roundText.fontSize = largeSize;
+        while (roundText.fontSize > originSize)
+        {
+            roundText.fontSize = roundText.fontSize -1;
+            yield return new WaitForSeconds(0.02f);
         }
     }
 
