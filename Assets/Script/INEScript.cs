@@ -182,6 +182,7 @@ public class INEScript : MonoBehaviour, UnitInterface
 
     public void OnClickUnit()
     {
+        battleController.OffAllUnitsBar();
         battleController.BlockAllButton();
         if (battleController.GetPosChanger())
         {

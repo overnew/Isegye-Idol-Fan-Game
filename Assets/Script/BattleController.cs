@@ -33,6 +33,7 @@ public class BattleController : MonoBehaviour
     private SkillData selectedSkill;
     private Button[] skillButtons;
 
+    private Text roundText;
     private int roundCounter = 0;
     private bool isTurnEnd = false;
 
@@ -58,13 +59,15 @@ public class BattleController : MonoBehaviour
         unitInfoText = GameObject.Find("unitInfo").GetComponent<Text>();
         enemyStatusText = GameObject.Find("enemyStatus").GetComponent<Text>();
         enemyInfoText = GameObject.Find("enemyInfo").GetComponent<Text>();
+        roundText = GameObject.Find("roundNumber").GetComponent<Text>();
+        roundText.text = roundCounter.ToString();
 
         skillPanel = GameObject.Find("skillPanel");
         skillButtons = skillPanel.GetComponentsInChildren<Button>();
 
+        postVolume.enabled = false;
         roundCounter = 0;
         BattleStart();
-        postVolume.enabled = false;
     }
 
     void Update() { }
@@ -89,10 +92,10 @@ public class BattleController : MonoBehaviour
     {
         while (true)
         {
-            
             if (turnList.Count == 0)
             {
                 ++roundCounter;
+                roundText.text = roundCounter.ToString();
                 EndedBuffCheck();
                 turnList = SetUnitsTurnOrder();
             }
@@ -313,7 +316,7 @@ public class BattleController : MonoBehaviour
         else
             squadUnits.Add(turnUnit);
 
-        if(targetedUnits != null )
+        if(selectedSkill.GetIsTargetedEnemy() && targetedUnits != null)
         {
             if (targetedUnits[0].GetComponent<UnitInterface>().GetUnitData().GetIsEnemy())
                 enemyUnits.AddRange(targetedUnits);

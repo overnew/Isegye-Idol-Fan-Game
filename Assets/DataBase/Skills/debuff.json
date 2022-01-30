@@ -12,7 +12,7 @@
 
     "isPosChanger": false,
 
-    "isTargetedEnemy" : true,
+    "isTargetedEnemy" : false,
     "availableRange": [0,2],
     "attackRange": [0,2],
     "isSplash": true,
