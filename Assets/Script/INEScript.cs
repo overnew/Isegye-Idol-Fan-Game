@@ -7,11 +7,13 @@ using UnityEngine.UI;
 public class INEScript : MonoBehaviour, UnitInterface
 {
     const string AVOID_SUCCESS = "회피";
+    const string RED_HEXA_DECIMAL = "#C00000";  //<color=#FE4554>o</color>/ //4BE198
+    const string GREEN_HEXA_DECIMAL = "#4BE198";
 
     public GameObject unit;
     public Animator animator;
     public GameObject unitButton;
-    public GameObject damageText;
+    public GameObject conditionText;
 
     public GameObject UIcanvas;
     public GameObject targetBar;
@@ -45,7 +47,6 @@ public class INEScript : MonoBehaviour, UnitInterface
     private float buffXpos = 0.4f;
     private int buffCount = 0;
     private int debuffCount = 0;
-
 
     /*
     [ContextMenu("To Json Data")]
@@ -95,7 +96,7 @@ public class INEScript : MonoBehaviour, UnitInterface
     {
         SetUnitUIPosition();
         SetTargetBar(false);
-        damageText.SetActive(false);
+        conditionText.SetActive(false);
     }
 
     void Update()
@@ -126,14 +127,14 @@ public class INEScript : MonoBehaviour, UnitInterface
         buffIcon.transform.position = new Vector3(transform.position.x - buffXpos, transform.position.y + buffHeight, 0);
 
         unitButton.transform.position = Camera.main.WorldToScreenPoint(new Vector3(transform.position.x, transform.position.y + buttonHeight, 0));
-        damageText.transform.position = new Vector3(transform.position.x + damageXpos, transform.position.y + damageHeight, 0);
+        conditionText.transform.position = new Vector3(transform.position.x + damageXpos, transform.position.y + damageHeight, 0);
     }
     private void ScaleSet()
     {
         if (!unitData.GetIsEnemy())
-            hpBar.transform.localEulerAngles = damageText.transform.localEulerAngles = new Vector3(0, 180f, 0);
+            hpBar.transform.localEulerAngles = conditionText.transform.localEulerAngles = new Vector3(0, 180f, 0);
 
-        hpBar.transform.localScale = targetBar.transform.localScale = changeBar.transform.localScale = damageText.transform.localScale
+        hpBar.transform.localScale = targetBar.transform.localScale = changeBar.transform.localScale = conditionText.transform.localScale
             = turnBar.transform.localScale = debuffIcon.transform.localScale = buffIcon.transform.localScale = new Vector3(0.025f, 0.025f,0f);
         unitButton.transform.localScale = new Vector3(0.5f, 0.5f, 0f);
     }
@@ -219,11 +220,11 @@ public class INEScript : MonoBehaviour, UnitInterface
         //회피 기동
         if(UnityEngine.Random.Range(0, 100f) <= unitData.GetAvoidability())
         {
-            DisplayCondition(AVOID_SUCCESS);
+            DisplayCondition(AVOID_SUCCESS, RED_HEXA_DECIMAL);
         }
         else if (skillDamage >= 0)
         {
-            DisplayCondition(skillDamage.ToString());
+            DisplayCondition(skillDamage.ToString(), RED_HEXA_DECIMAL);
             hp -= skillDamage;
             hpBarImage.fillAmount = hp / unitData.GetMaxHp();
         }
@@ -231,20 +232,32 @@ public class INEScript : MonoBehaviour, UnitInterface
         if(hp <= 0)
             battleController.ReserveUnitToDestory(gameObject);
     }
-    public void DisplayCondition(string condition)
-    {//<color=#FE4554>o</color>/ //4BE198
-        damageText.SetActive(true);
-        damageText.GetComponent<Text>().text = "<color=#C00000>" + condition + "</color>";
+    public void DisplayCondition(string condition, string textColor)
+    {
+        conditionText.SetActive(true);
+        conditionText.GetComponent<Text>().text = "<color="+ textColor + ">" + condition + "</color>";
     }
 
     public void UndisplayCondition()
     {
-        damageText.SetActive(false);
+        conditionText.SetActive(false);
     }
 
     public void BuffSkillExcute(SkillData buffSkill, int roundNum)
     {
-        if (buffSkill.GetBuffEffectedStatus().Equals("posion"))
+        if (buffSkill.GetBuffEffectedStatus().Equals("hp"))
+        {
+            float healValue = buffSkill.GetEffectValue();
+            hp += healValue;
+            if (hp > unitData.GetMaxHp())
+                hp = unitData.GetMaxHp();
+
+            StartCoroutine(TextDisplayCoroutine("+ " + healValue,GREEN_HEXA_DECIMAL));
+
+            hpBarImage.fillAmount = hp / unitData.GetMaxHp();
+            return;
+        }
+        else if (buffSkill.GetBuffEffectedStatus().Equals("posion"))
         {
             isPosioning = true;
             posionDamage = buffSkill.GetEffectValue();
@@ -267,20 +280,19 @@ public class INEScript : MonoBehaviour, UnitInterface
     }
     private void GetPosionDamage()
     {
-        StartCoroutine(PosionDamageCoroutine());
+        StartCoroutine(TextDisplayCoroutine("중독  " + posionDamage.ToString(), RED_HEXA_DECIMAL));
         hp -= posionDamage;
         hpBarImage.fillAmount = hp / unitData.GetMaxHp();
 
         if (hp <= 0)
             battleController.ReserveUnitToDestory(gameObject);
-            
     }
 
-    private IEnumerator PosionDamageCoroutine()
+    private IEnumerator TextDisplayCoroutine(string text, string textColor)
     {
-        DisplayCondition("중독  "+posionDamage.ToString());
+        DisplayCondition(text, textColor);
         yield return new WaitForSeconds(2f);
-        damageText.SetActive(false);
+        conditionText.SetActive(false);
         battleController.DestoryReservedUnits();
     }
 

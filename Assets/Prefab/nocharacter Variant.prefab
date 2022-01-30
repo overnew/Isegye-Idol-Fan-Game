@@ -883,7 +883,7 @@ GameObject:
   - component: {fileID: 4292971841778334464}
   - component: {fileID: 875829030791766039}
   m_Layer: 5
-  m_Name: damageText
+  m_Name: conditionText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1641,6 +1641,32 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: -881861449391059725, guid: c445d60f4537e1a498fa858ff2273ea5, type: 3}
   m_PrefabInstance: {fileID: 898239032203729178}
   m_PrefabAsset: {fileID: 0}
+--- !u!61 &422168359113061938
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9202490159701661161}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 5}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0, y: 0}
+    oldSize: {x: 0, y: 0}
+    newSize: {x: 0, y: 0}
+    adaptiveTilingThreshold: 0
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  serializedVersion: 2
+  m_Size: {x: 6, y: 10}
+  m_EdgeRadius: 0
 --- !u!95 &718767595643375160
 Animator:
   serializedVersion: 3
@@ -1675,7 +1701,7 @@ MonoBehaviour:
   unit: {fileID: 9202490159701661161}
   animator: {fileID: 718767595643375160}
   unitButton: {fileID: 1244384176857623503}
-  damageText: {fileID: 8904169522359593274}
+  conditionText: {fileID: 8904169522359593274}
   UIcanvas: {fileID: 2377518767093062346}
   targetBar: {fileID: 4343599502296083039}
   turnBar: {fileID: 8346468622262892774}
@@ -1699,29 +1725,3 @@ MonoBehaviour:
     avoidability: 0
     skillNames: []
     unitIconName: 
---- !u!61 &422168359113061938
-BoxCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9202490159701661161}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 5}
-  m_SpriteTilingProperty:
-    border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0, y: 0}
-    oldSize: {x: 0, y: 0}
-    newSize: {x: 0, y: 0}
-    adaptiveTilingThreshold: 0
-    drawMode: 0
-    adaptiveTiling: 0
-  m_AutoTiling: 0
-  serializedVersion: 2
-  m_Size: {x: 6, y: 10}
-  m_EdgeRadius: 0

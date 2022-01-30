@@ -9,7 +9,7 @@ public interface UnitInterface
     public void BuffSkillExcute(SkillData buffSkill, int roundNum);
     public void CheckEndBuffEffect(int roundNum);
 
-    public void DisplayCondition(string condition);
+    public void DisplayCondition(string text, string textColor);
     public void UndisplayCondition();
     public float GetStepSpeed();
     public float GetHp();

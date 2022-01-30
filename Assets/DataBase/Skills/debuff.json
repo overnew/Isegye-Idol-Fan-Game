@@ -6,8 +6,8 @@
     "cost" : 1,
 
     "isBuff" : true,
-    "effectedStatus" : "posion",
-    "effectValue" : 100,
+    "effectedStatus" : "hp",
+    "effectValue" : 5,
     "effectedRound" : 1,
 
     "isPosChanger": false,
