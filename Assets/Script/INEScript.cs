@@ -24,6 +24,7 @@ public class INEScript : MonoBehaviour, UnitInterface
     public Image hpBarImage;
     public Image buffIcon;
     public Image debuffIcon;
+    public Image deathMark;
 
     private BattleController battleController;
 
@@ -67,6 +68,7 @@ public class INEScript : MonoBehaviour, UnitInterface
         changeBar.SetActive(false);
         debuffIcon.enabled = false;
         buffIcon.enabled = false;
+        deathMark.enabled = false;
         isPosioning = false;
 
         hpBarImage.fillAmount = 1;
@@ -122,6 +124,7 @@ public class INEScript : MonoBehaviour, UnitInterface
             damageXpos *= -1;
         Vector3 hpBarPos = new Vector3(transform.position.x, transform.position.y + height, 0);
         targetBar.transform.position = turnBar.transform.position = changeBar.transform.position = hpBar.transform.position = hpBarPos;
+        deathMark.transform.position = new Vector3(transform.position.x, transform.position.y + 1f, 0);
 
         debuffIcon.transform.position = new Vector3(transform.position.x + buffXpos, transform.position.y + buffHeight, 0);
         buffIcon.transform.position = new Vector3(transform.position.x - buffXpos, transform.position.y + buffHeight, 0);
@@ -135,7 +138,7 @@ public class INEScript : MonoBehaviour, UnitInterface
             hpBar.transform.localEulerAngles = conditionText.transform.localEulerAngles = new Vector3(0, 180f, 0);
 
         hpBar.transform.localScale = targetBar.transform.localScale = changeBar.transform.localScale = conditionText.transform.localScale
-            = turnBar.transform.localScale = debuffIcon.transform.localScale = buffIcon.transform.localScale = new Vector3(0.025f, 0.025f,0f);
+            = turnBar.transform.localScale = debuffIcon.transform.localScale = buffIcon.transform.localScale = deathMark.transform.localScale = new Vector3(0.025f, 0.025f,0f);
         unitButton.transform.localScale = new Vector3(0.5f, 0.5f, 0f);
     }
 
@@ -230,8 +233,7 @@ public class INEScript : MonoBehaviour, UnitInterface
             hpBarImage.fillAmount = hp / unitData.GetMaxHp();
         }
 
-        if(hp <= 0)
-            battleController.ReserveUnitToDestory(gameObject);
+        CheckHp();
     }
     public void DisplayCondition(string condition, string textColor)
     {
@@ -285,8 +287,17 @@ public class INEScript : MonoBehaviour, UnitInterface
         hp -= posionDamage;
         hpBarImage.fillAmount = hp / unitData.GetMaxHp();
 
+        CheckHp();
+    }
+
+    private void CheckHp()
+    {
         if (hp <= 0)
+        {
+            deathMark.enabled = true;
             battleController.ReserveUnitToDestory(gameObject);
+        }
+
     }
 
     private IEnumerator TextDisplayCoroutine(string text, string textColor)
