@@ -214,14 +214,16 @@ public class INEScript : MonoBehaviour, UnitInterface
 
     public void OnClickUnit()
     {
-        battleController.OffAllUnitsBar();
         battleController.BlockAllButton();
+
         if (battleController.GetPosChanger())
         {
             battleController.SwitchPositionWithTurnUnit(gameObject);
             ChangeExecuted();
             return;
         }
+
+        battleController.OffAllUnitsBar();
 
         if (battleController.GetSelectedSkillData().GetIsPosChanger())
         {
