@@ -5,10 +5,10 @@
     "upgradeDamage" : 2,
     "cost" : 1,
 
-    "isBuff" : false,
-    "effectedStatus" : "defense",
-    "effectValue" : 1,
-    "effectedRound" : 0,
+    "isBuff" : true,
+    "effectedStatus" : "posion",
+    "effectValue" : 3,
+    "effectedRound" : 1,
 
     "isPosChanger": false,
 
@@ -18,5 +18,5 @@
     "isSplash": true,
     
     "skillIconName": "skillIcon",
-    "skillDescription": "gugu punch"
+    "skillDescription": "buff effct"
 }

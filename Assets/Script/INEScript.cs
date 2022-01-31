@@ -24,6 +24,7 @@ public class INEScript : MonoBehaviour, UnitInterface
     public Image hpBarImage;
     public Image buffIcon;
     public Image debuffIcon;
+    public Image posionIcon;
     public Image deathMark;
 
     private BattleController battleController;
@@ -45,7 +46,7 @@ public class INEScript : MonoBehaviour, UnitInterface
     private float damageHeight = 2f;
     private float damageXpos = -0.4f;
     private float buffHeight = -0.15f;
-    private float buffXpos = 0.4f;
+    private float buffXpos = 0.3f;
     private int buffCount = 0;
     private int debuffCount = 0;
 
@@ -68,6 +69,7 @@ public class INEScript : MonoBehaviour, UnitInterface
         changeBar.SetActive(false);
         debuffIcon.enabled = false;
         buffIcon.enabled = false;
+        posionIcon.enabled = false;
         deathMark.enabled = false;
         isPosioning = false;
 
@@ -126,6 +128,7 @@ public class INEScript : MonoBehaviour, UnitInterface
         targetBar.transform.position = turnBar.transform.position = changeBar.transform.position = hpBar.transform.position = hpBarPos;
         deathMark.transform.position = new Vector3(transform.position.x, transform.position.y + 1f, 0);
 
+        posionIcon.transform.position = new Vector3(transform.position.x + buffXpos + 0.2f, transform.position.y + buffHeight, 0);
         debuffIcon.transform.position = new Vector3(transform.position.x + buffXpos, transform.position.y + buffHeight, 0);
         buffIcon.transform.position = new Vector3(transform.position.x - buffXpos, transform.position.y + buffHeight, 0);
 
@@ -138,7 +141,8 @@ public class INEScript : MonoBehaviour, UnitInterface
             hpBar.transform.localEulerAngles = conditionText.transform.localEulerAngles = new Vector3(0, 180f, 0);
 
         hpBar.transform.localScale = targetBar.transform.localScale = changeBar.transform.localScale = conditionText.transform.localScale
-            = turnBar.transform.localScale = debuffIcon.transform.localScale = buffIcon.transform.localScale = deathMark.transform.localScale = new Vector3(0.025f, 0.025f,0f);
+            = turnBar.transform.localScale = debuffIcon.transform.localScale = buffIcon.transform.localScale  = posionIcon.transform.localScale
+            = deathMark.transform.localScale = new Vector3(0.025f, 0.025f,0f);
         unitButton.transform.localScale = new Vector3(0.5f, 0.5f, 0f);
     }
 
@@ -293,6 +297,7 @@ public class INEScript : MonoBehaviour, UnitInterface
         }
         else if (buffSkill.GetBuffEffectedStatus().Equals("posion"))
         {
+            posionIcon.enabled = true;
             isPosioning = true;
             posionDamage = buffSkill.GetEffectValue();
             posionEndRound = roundNum + buffSkill.GetEffectedRound();
@@ -362,6 +367,7 @@ public class INEScript : MonoBehaviour, UnitInterface
             GetPosionDamage();
             if (posionEndRound == roundNum)
             {
+                posionIcon.enabled = false;
                 isPosioning = false;
                 posionEndRound = 0;
             }

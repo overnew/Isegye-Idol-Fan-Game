@@ -6,13 +6,13 @@
     "cost" : 1,
 
     "isBuff" : true,
-    "effectedStatus" : "hp",
-    "effectValue" : 5,
+    "effectedStatus" : "defense",
+    "effectValue" : -1,
     "effectedRound" : 1,
 
     "isPosChanger": false,
 
-    "isTargetedEnemy" : false,
+    "isTargetedEnemy" : true,
     "availableRange": [0,2],
     "attackRange": [0,2],
     "isSplash": true,
