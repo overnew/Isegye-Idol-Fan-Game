@@ -152,12 +152,41 @@ public class INEScript : MonoBehaviour, UnitInterface
     {
         targetBar.SetActive(setting);
         unitButton.SetActive(setting);
+        StartCoroutine(BarMotionCoroutine(targetBar));
     }
 
     public void SetChangeBar(bool setting)
     {
         changeBar.SetActive(setting);
         unitButton.SetActive(setting);
+        StartCoroutine(BarMotionCoroutine(changeBar));
+    }
+
+    private IEnumerator BarMotionCoroutine(GameObject bar)
+    {
+        Vector3 originScale = bar.transform.localScale;
+        float originXScale = bar.transform.localScale.x;
+        float addedXScale = originXScale / 5f, longestXScale = originXScale + addedXScale;
+        float div = 20, addspeed = addedXScale / div;
+
+        Vector3 addScale = new Vector3(addspeed, addspeed, 0);
+
+        while (bar.activeSelf == true)
+        {
+            while (bar.transform.localScale.x <= longestXScale)
+            {
+                bar.transform.localScale += addScale;
+                yield return new WaitForSeconds(0.04f);
+            }
+
+            while (bar.transform.localScale.x >= originXScale)
+            {
+                bar.transform.localScale -= addScale;
+                yield return new WaitForSeconds(0.04f);
+            }
+        }
+
+        bar.transform.localScale = originScale;
     }
 
     public void AIBattleExecute()
@@ -361,6 +390,7 @@ public class INEScript : MonoBehaviour, UnitInterface
     public void SetTurnBar(bool Setting)
     {
         turnBar.SetActive(Setting);
+        StartCoroutine(BarMotionCoroutine(turnBar));
     }
 
     public List<SkillData> GetUnitSkills() { return skillsData;}
