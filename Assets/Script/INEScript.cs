@@ -36,6 +36,10 @@ public class INEScript : MonoBehaviour, UnitInterface
     private List<SkillData> skillsData;
     List<KeyValuePair<int, List<SkillData>>> buffEndRound;
 
+    private bool isTaunted = false;
+    private GameObject tauntUnit;
+    private int tauntEndRound = 0;
+
     private bool isPosioning = false;
     private float posionDamage = 0;
     private int posionEndRound = 0;
@@ -295,6 +299,13 @@ public class INEScript : MonoBehaviour, UnitInterface
             hpBarImage.fillAmount = hp / unitData.GetMaxHp();
             return;
         }
+        else if (buffSkill.GetBuffEffectedStatus().Equals("taunt"))
+        {
+            isTaunted = true;
+            tauntUnit = battleController.GetTurnUnit();
+            tauntEndRound = roundNum + buffSkill.GetEffectedRound();
+            return;
+        }
         else if (buffSkill.GetBuffEffectedStatus().Equals("posion"))
         {
             posionIcon.enabled = true;
@@ -360,17 +371,23 @@ public class INEScript : MonoBehaviour, UnitInterface
         }
     }
 
-    public void CheckEndBuffEffect(int roundNum)
+    public void CheckEndedEffect(int roundNum)
     {
         if (isPosioning)
         {
             GetPosionDamage();
-            if (posionEndRound == roundNum)
+            if (posionEndRound <= roundNum)
             {
                 posionIcon.enabled = false;
                 isPosioning = false;
                 posionEndRound = 0;
             }
+        }
+
+        if (isTaunted && tauntEndRound <= roundNum)
+        {
+            isTaunted = false;
+            tauntEndRound = 0;
         }
 
         int storedIndex = buffEndRound.FindIndex((data) => (data.Key.Equals(roundNum)));
@@ -408,4 +425,7 @@ public class INEScript : MonoBehaviour, UnitInterface
 
     public float GetStepSpeed(){ return unitData.GetStepSpeed(); }
     public float GetHp(){return this.hp;}
+
+    public GameObject GetTauntUnit() { return this.tauntUnit; }
+    public bool GetIsTaunt() { return this.isTaunted; }
 }

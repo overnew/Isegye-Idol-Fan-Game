@@ -15,6 +15,8 @@ public class BattleController : MonoBehaviour
     public GameObject[] enemys;
     private List<GameObject> squadList = new List<GameObject>();
     private List<GameObject> enemyList = new List<GameObject>();
+    private List<KeyValuePair<int, GameObject>> squadTauntList = new List<KeyValuePair<int, GameObject>>();
+    private List<KeyValuePair<int, GameObject>> enemyTauntList = new List<KeyValuePair<int, GameObject>>();
 
     private const int FRONT_IDX = 0;
 
@@ -285,10 +287,10 @@ public class BattleController : MonoBehaviour
     private void EndedBuffCheck()
     {
         for (int i=0; i<squadList.Count ; ++i)
-            squadList[i].GetComponent<UnitInterface>().CheckEndBuffEffect(roundCounter);
+            squadList[i].GetComponent<UnitInterface>().CheckEndedEffect(roundCounter);
 
         for (int i = 0; i < enemyList.Count; ++i)
-            enemyList[i].GetComponent<UnitInterface>().CheckEndBuffEffect(roundCounter);
+            enemyList[i].GetComponent<UnitInterface>().CheckEndedEffect(roundCounter);
 
     }
 
@@ -556,9 +558,9 @@ public class BattleController : MonoBehaviour
 
     public GameObject[] GetTargetedEnemy(int[] attackRange, bool isTargetedMyEnemy)
     {
-        int count = attackRange[RANGE_END_IDX] - attackRange[RANGE_START_IDX] + 1;
+        //int count = attackRange[RANGE_END_IDX] - attackRange[RANGE_START_IDX] + 1;
         bool isTargetSquad;
-
+        
         if (!turnUnitData.GetIsEnemy())
         {
             isTargetSquad = true;
@@ -573,25 +575,29 @@ public class BattleController : MonoBehaviour
         }
 
         if (!isTargetSquad) // 적 대상 스킬인 경우
-        {
-            if (attackRange[RANGE_START_IDX] > enemyList.Count)
-                return null;
+            GetUnitsByListRange(attackRange, enemyList, isTargetedMyEnemy);
 
-            if (attackRange[RANGE_END_IDX] >= enemyList.Count)
-                count = enemyList.Count - attackRange[RANGE_START_IDX];
-
-            return enemyList.GetRange(attackRange[RANGE_START_IDX], count).ToArray();
-        }
-
-        if (attackRange[RANGE_START_IDX] > squadList.Count)
-            return null;
-
-        if (attackRange[RANGE_END_IDX] >= squadList.Count)
-            count = squadList.Count - attackRange[RANGE_START_IDX];
-
-        return squadList.GetRange(attackRange[RANGE_START_IDX], count).ToArray();
+        return GetUnitsByListRange(attackRange, squadList, isTargetedMyEnemy);
     }
 
+    private GameObject[] GetUnitsByListRange(int[] attackRange, List<GameObject> targetList, bool isTargetedMyEnemy)
+    {
+        if (attackRange[RANGE_START_IDX] > targetList.Count)
+            return null;
+
+        if (turnUnit.GetComponent<UnitInterface>().GetIsTaunt() && isTargetedMyEnemy && !selectedSkill.GetIsSplashSkill())
+        {   // 도발에 걸린 경우 상대 선택이 가능한 스킬은 도발 상대만 반환
+            int tauntIdx = targetList.IndexOf(turnUnit.GetComponent<UnitInterface>().GetTauntUnit());
+            if (attackRange[RANGE_START_IDX] <= tauntIdx && tauntIdx <= attackRange[RANGE_END_IDX])
+                return new GameObject[] { targetList[tauntIdx] };
+        }
+
+        int count = 0;
+        if (attackRange[RANGE_END_IDX] >= targetList.Count)
+            count = targetList.Count - attackRange[RANGE_START_IDX];
+
+        return targetList.GetRange(attackRange[RANGE_START_IDX], count).ToArray();
+    }
     public GameObject[] GetOurSquad()
     {
         if (!turnUnitData.GetIsEnemy())

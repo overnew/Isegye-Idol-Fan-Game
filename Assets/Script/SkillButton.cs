@@ -11,7 +11,7 @@ public class SkillButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
 
     private BattleController battleController;
     //public GameObject turnUnit;
-    public SkillData skillData;
+    private SkillData skillData;
 
     //스킬 설명란
     private Outline outline;
@@ -32,9 +32,17 @@ public class SkillButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
     public void OnClickSelect()
     {
         battleController.OffAllSkillOutLine();
-        outline.enabled = true;
-        battleController.SetSelectedSkillData(skillData);
         battleController.OffAllUnitsBar();
+        outline.enabled = true;
+
+        if (skillData.GetBuffEffectedStatus().Equals("provocation"))
+        {
+
+            return;
+        }
+
+        battleController.SetSelectedSkillData(skillData);
+        if(battleController)
         SetEnemyTargetBar(battleController.GetTargetedEnemy(skillData.GetAttackRange(), skillData.GetIsTargetedEnemy()), true);
     }
 

@@ -6,8 +6,8 @@
     "cost" : 1,
 
     "isBuff" : true,
-    "effectedStatus" : "defense",
-    "effectValue" : -1,
+    "effectedStatus" : "taunt",
+    "effectValue" : 0,
     "effectedRound" : 1,
 
     "isPosChanger": false,

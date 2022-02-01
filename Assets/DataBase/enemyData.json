@@ -3,7 +3,7 @@
     "unitType": "메인 댄서",
     "isEnemyUnit": true,
     "maxHp": 30.0,
-    "stepSpeed": 0,
+    "stepSpeed": 10,
     "attackPowerRange": [1,5],
     "bonusPower" : 0,
 
@@ -12,6 +12,6 @@
     "critical": 10,
     "avoidability": 0,
     
-    "skillNames": ["skillData", "gugu", "debuff", "posChange"],
+    "skillNames": ["debuff", "debuff", "debuff", "debuff"],
     "unitIconName": "ine_head"
 }

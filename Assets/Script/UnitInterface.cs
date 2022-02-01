@@ -7,7 +7,8 @@ public interface UnitInterface
 {
     public void AIBattleExecute();
     public void BuffSkillExcute(SkillData buffSkill, int roundNum);
-    public void CheckEndBuffEffect(int roundNum);
+    public void CheckEndedEffect(int roundNum);
+
 
     public void DisplayCondition(string text, string textColor);
     public void UndisplayCondition();
@@ -20,6 +21,9 @@ public interface UnitInterface
     public Animator GetAnimator();
 
     public List<SkillData> GetUnitSkills();
+
+    public GameObject GetTauntUnit();
+    public bool GetIsTaunt();
     public void SetTargetBar(bool setting);
     public void SetChangeBar(bool setting);
     public void SetTurnBar(bool Setting);
