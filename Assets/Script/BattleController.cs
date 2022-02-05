@@ -8,32 +8,21 @@ public class BattleController : MonoBehaviour
 {
     private const int RANGE_START_IDX = 0;
     private const int RANGE_END_IDX = 1;
-    private const int POS_CHANGER_IDX = 4;
-    private const int STEP_BONUS_MAX = 8; 
+    private const int STEP_BONUS_MAX = 8;
+    private const int FRONT_IDX = 0;
 
     public GameObject[] units;
     public GameObject[] enemys;
     private List<GameObject> squadList = new List<GameObject>();
     private List<GameObject> enemyList = new List<GameObject>();
-    private List<KeyValuePair<int, GameObject>> squadTauntList = new List<KeyValuePair<int, GameObject>>();
-    private List<KeyValuePair<int, GameObject>> enemyTauntList = new List<KeyValuePair<int, GameObject>>();
-
-    private const int FRONT_IDX = 0;
+    
 
     public Image turnUnitIcon;
     private GameObject turnUnit;
     private UnitData turnUnitData;
     private int turnUnitPosition;
 
-    private Text unitStatusText;
-    private Text unitInfoText;
-    private Text enemyStatusText;
-    private Text enemyInfoText;
-
-    private GameObject skillPanel;
-    private List<SkillData> skills;
     private SkillData selectedSkill;
-    private Button[] skillButtons;
 
     private Text roundText;
     private int roundCounter = 0;
@@ -47,25 +36,21 @@ public class BattleController : MonoBehaviour
     private GameObject blurCamera;
     public PostProcessVolume postVolume;
     private int endedAnimationCount = 0;
-    
+
+    private PanelController panelController;
 
     void Awake()
     {
-        BattleInit();
+        InstantBattleUnits();
+        panelController = new PanelController();
+        panelController.Init();
     }
 
     void Start()
     {
         blurCamera = GameObject.Find("BlurCamera");
-        unitStatusText = GameObject.Find("unitStatus").GetComponent<Text>();
-        unitInfoText = GameObject.Find("unitInfo").GetComponent<Text>();
-        enemyStatusText = GameObject.Find("enemyStatus").GetComponent<Text>();
-        enemyInfoText = GameObject.Find("enemyInfo").GetComponent<Text>();
         roundText = GameObject.Find("roundNumber").GetComponent<Text>();
         roundText.text = roundCounter.ToString();
-
-        skillPanel = GameObject.Find("skillPanel");
-        skillButtons = skillPanel.GetComponentsInChildren<Button>();
 
         postVolume.enabled = false;
         roundCounter = 0;
@@ -74,8 +59,8 @@ public class BattleController : MonoBehaviour
 
     void Update() { }
 
-    private void BattleInit()
-    {   
+    private void InstantBattleUnits()
+    {
         Vector3 instantPosition = new Vector3(transform.position.x, transform.position.y -1, 0);
 
         for (int i=0; i< units.Length; ++i)
@@ -104,7 +89,7 @@ public class BattleController : MonoBehaviour
             PlayTurn();
             yield return new WaitUntil(() => isTurnEnd);
 
-            OffAllSkillOutLine();
+            panelController.OffAllSkillOutLine();
             DestoryReservedUnits();
             yield return new WaitForSeconds(1.5f);  //잠시 대기
         }
@@ -148,19 +133,18 @@ public class BattleController : MonoBehaviour
 
         if (turnUnitData.GetIsEnemy())
         {
-            LoadEnemyStatus(turnUnit, true);
-            for (int i=0; i<skillButtons.Length ; ++i)  //적 턴에는 버튼 클릭 금지
-                skillButtons[i].interactable = false;
+            panelController.LoadEnemyStatus(turnUnit, true);
+            panelController.BlockAllButton();
             
             turnUnitPosition = enemyList.IndexOf(turnUnit);
             turnUnit.GetComponent<UnitInterface>().AIBattleExecute();
 
         }else
         {
-            LoadEnemyStatus(turnUnit, false);
-            skillButtons[POS_CHANGER_IDX].interactable = true;
+            panelController.LoadEnemyStatus(turnUnit, false);
+            panelController.ActivePosChangerButton();
             turnUnitPosition = squadList.IndexOf(turnUnit);
-            LoadTurnUnitStatus();
+            panelController.LoadTurnUnitStatus(turnUnit,turnUnitData);
         }
     }
 
@@ -180,36 +164,6 @@ public class BattleController : MonoBehaviour
             => (int)(pairB.Key -pairA.Key));  //내림차순 정렬
 
         return turnOrderList;
-    }
-
-    private void LoadTurnUnitStatus()
-    {
-        turnUnitIcon.sprite = turnUnit.GetComponent<UnitInterface>().GetUnitIcon();
-        unitInfoText.text = turnUnitData.GetUnitInfo();
-        unitStatusText.text = turnUnitData.GetUnitStatus(turnUnit);
-
-        skills = turnUnit.GetComponent<UnitInterface>().GetUnitSkills();
-        const string path = "SkillsIcon/";
-
-        for (int i=0; i< POS_CHANGER_IDX; ++i )    // execept posChangerButton in last
-        {
-            skillButtons[i].GetComponent<Image>().sprite = Resources.Load<Sprite>(path + skills[i].GetIconName());
-            skillButtons[i].GetComponent<SkillButton>().SetSkillToButton(skills[i]);
-        }
-    }
-
-    public void LoadEnemyStatus(GameObject enemyUnit, bool isEnter)
-    {
-        if (isEnter)
-        {
-            UnitData enemyData = enemyUnit.GetComponent<UnitInterface>().GetUnitData();
-            enemyInfoText.text = enemyData.GetUnitInfo();
-            enemyStatusText.text = enemyData.GetUnitStatus(enemyUnit);
-            return;
-        }
-
-        enemyInfoText.text = "";
-        enemyStatusText.text = "";
     }
 
     public void SwitchPositionWithTurnUnit(GameObject selectedUnit)
@@ -383,14 +337,6 @@ public class BattleController : MonoBehaviour
 
     }
 
-    public void BlockAllButton()
-    {
-        for (int i=0; i<skillButtons.Length ; ++i )
-        {
-            skillButtons[i].interactable = false;
-        }
-    }
-
     private void SkillAnimationTrigger(List<GameObject> animationUnits, bool isEnemy)
     {
         if(animationUnits.Count ==0)
@@ -547,18 +493,8 @@ public class BattleController : MonoBehaviour
         }
     }
 
-    public void OffAllSkillOutLine()
-    {
-        for (int i=0; i<skillButtons.Length -1 ;++i )
-        {
-            skillButtons[i].GetComponent<SkillButton>().SetOutline(false);
-        }
-        skillButtons[skillButtons.Length - 1].GetComponent<PositionChanger>().SetOutline(false);
-    }
-
     public GameObject[] GetTargetedEnemy(int[] attackRange, bool isTargetedMyEnemy)
     {
-        //int count = attackRange[RANGE_END_IDX] - attackRange[RANGE_START_IDX] + 1;
         bool isTargetSquad;
         
         if (!turnUnitData.GetIsEnemy())
@@ -575,14 +511,14 @@ public class BattleController : MonoBehaviour
         }
 
         if (!isTargetSquad) // 적 대상 스킬인 경우
-            GetUnitsByListRange(attackRange, enemyList, isTargetedMyEnemy);
+            return GetUnitsByListRange(attackRange, enemyList, isTargetedMyEnemy);
 
         return GetUnitsByListRange(attackRange, squadList, isTargetedMyEnemy);
     }
 
     private GameObject[] GetUnitsByListRange(int[] attackRange, List<GameObject> targetList, bool isTargetedMyEnemy)
     {
-        if (attackRange[RANGE_START_IDX] > targetList.Count)
+        if (attackRange[RANGE_START_IDX] >= targetList.Count)
             return null;
 
         if (turnUnit.GetComponent<UnitInterface>().GetIsTaunt() && isTargetedMyEnemy && !selectedSkill.GetIsSplashSkill())
@@ -592,10 +528,10 @@ public class BattleController : MonoBehaviour
                 return new GameObject[] { targetList[tauntIdx] };
         }
 
-        int count = 0;
+        int count = attackRange[RANGE_END_IDX] - attackRange[RANGE_START_IDX] +1;
         if (attackRange[RANGE_END_IDX] >= targetList.Count)
             count = targetList.Count - attackRange[RANGE_START_IDX];
-
+        
         return targetList.GetRange(attackRange[RANGE_START_IDX], count).ToArray();
     }
     public GameObject[] GetOurSquad()
@@ -615,12 +551,12 @@ public class BattleController : MonoBehaviour
         System.Random random = new System.Random();
         int[] attackPowerRange = turnUnitData.GetAttackPower();
 
-        if (UnityEngine.Random.Range(0, 100f) > turnUnitData.GetAccuracy())
+        if (Random.Range(0, 100f) > turnUnitData.GetAccuracy())
             return 0f;  //명중이 안되는 경우
 
         float totalDamage = random.Next(attackPowerRange[0], attackPowerRange[1] + 1) + (int)turnUnitData.GetBonusPower() + selectedSkill.GetSkillDamage();
 
-        if (UnityEngine.Random.Range(0, 100f) <= turnUnitData.GetCritical())
+        if (Random.Range(0, 100f) <= turnUnitData.GetCritical())
             totalDamage *= 2f;
 
         return totalDamage;
@@ -628,4 +564,6 @@ public class BattleController : MonoBehaviour
     public void SetPosChanger(bool setting){this.posChangerActive = setting;}
 
     public bool GetPosChanger(){return this.posChangerActive;}
+
+    internal PanelController GetPanelController() { return this.panelController; }
 }

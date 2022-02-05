@@ -7,6 +7,7 @@ using UnityEngine.EventSystems;
 public class PositionChanger : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
     private BattleController battleController;
+    private PanelController panelController;
     public SkillData skillData;
 
     //스킬 설명란
@@ -26,11 +27,12 @@ public class PositionChanger : MonoBehaviour, IPointerEnterHandler, IPointerExit
         descFrame.SetActive(false);
 
         battleController = GameObject.Find("BattleController").GetComponent<BattleController>();
+        panelController = battleController.GetPanelController();
     }
 
     public void OnClickPositionChanger()
     {
-        battleController.OffAllSkillOutLine();
+        panelController.OffAllSkillOutLine();
         outline.enabled = true;
 
         battleController.OffAllUnitsBar();

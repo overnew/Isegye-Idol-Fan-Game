@@ -3,7 +3,7 @@
     "unitType": "메인 댄서",
     "isEnemyUnit": true,
     "maxHp": 30.0,
-    "stepSpeed": 10,
+    "stepSpeed": 1,
     "attackPowerRange": [1,5],
     "bonusPower" : 0,
 

@@ -10,7 +10,7 @@ public class SkillButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
     private const int AVA_RANGE_END_IDX = 1;
 
     private BattleController battleController;
-    //public GameObject turnUnit;
+    private PanelController panelController;
     private SkillData skillData;
 
     //스킬 설명란
@@ -20,29 +20,26 @@ public class SkillButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
 
     void Awake()
     {
-        outline = GetComponent<Outline>();
+        outline = GetComponent<Outline>(); 
+        battleController = GameObject.Find("BattleController").GetComponent<BattleController>();
     }
 
     void Start()
     {
         outline.enabled = false;
         descFrame.SetActive(false);
+        panelController = battleController.GetPanelController();
+
     }
 
     public void OnClickSelect()
     {
-        battleController.OffAllSkillOutLine();
+        panelController.OffAllSkillOutLine();
         battleController.OffAllUnitsBar();
         outline.enabled = true;
 
-        if (skillData.GetBuffEffectedStatus().Equals("provocation"))
-        {
-
-            return;
-        }
-
         battleController.SetSelectedSkillData(skillData);
-        if(battleController)
+        //if(battleController)
         SetEnemyTargetBar(battleController.GetTargetedEnemy(skillData.GetAttackRange(), skillData.GetIsTargetedEnemy()), true);
     }
 
@@ -66,7 +63,6 @@ public class SkillButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
 
     public void SetSkillToButton(SkillData data)
     {
-        battleController = GameObject.Find("BattleController").GetComponent<BattleController>();
         skillData = data;
         desc.text = skillData.GetSkillDescription();
         gameObject.GetComponent<Button>().interactable = true;

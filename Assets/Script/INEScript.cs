@@ -25,6 +25,8 @@ public class INEScript : MonoBehaviour, UnitInterface
     public Image buffIcon;
     public Image debuffIcon;
     public Image posionIcon;
+    public Image angryIcon;
+    public Image tauntIcon;
     public Image deathMark;
 
     private BattleController battleController;
@@ -54,6 +56,8 @@ public class INEScript : MonoBehaviour, UnitInterface
     private int buffCount = 0;
     private int debuffCount = 0;
 
+    private PanelController panelController;
+
     /*
     [ContextMenu("To Json Data")]
     void SaveUnitDataToJson()
@@ -74,6 +78,8 @@ public class INEScript : MonoBehaviour, UnitInterface
         debuffIcon.enabled = false;
         buffIcon.enabled = false;
         posionIcon.enabled = false;
+        angryIcon.enabled = false;
+        tauntIcon.enabled = false;
         deathMark.enabled = false;
         isPosioning = false;
 
@@ -105,6 +111,7 @@ public class INEScript : MonoBehaviour, UnitInterface
         SetUnitUIPosition();
         SetTargetBar(false);
         conditionText.SetActive(false);
+        panelController = battleController.GetPanelController();
     }
 
     void Update()
@@ -120,9 +127,9 @@ public class INEScript : MonoBehaviour, UnitInterface
             this.animator.SetBool("walking", false);
         }
     }
-    private void OnMouseEnter(){battleController.LoadEnemyStatus(gameObject, true);}
+    private void OnMouseEnter(){panelController.LoadEnemyStatus(gameObject, true);}
 
-    private void OnMouseExit(){ battleController.LoadEnemyStatus(gameObject, false);}
+    private void OnMouseExit(){panelController.LoadEnemyStatus(gameObject, false);}
 
     public void SetUnitUIPosition()
     {
@@ -222,7 +229,7 @@ public class INEScript : MonoBehaviour, UnitInterface
 
     public void OnClickUnit()
     {
-        battleController.BlockAllButton();
+        panelController.BlockAllButton();
 
         if (battleController.GetPosChanger())
         {
