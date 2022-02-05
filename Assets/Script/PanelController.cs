@@ -17,7 +17,7 @@ public class PanelController
     private List<SkillData> skills;
     private Button[] skillButtons;
 
-    public void Init()
+    internal void Initialize()
     {
         turnUnitIcon = GameObject.Find("unitIcon").GetComponent<Image>();
         unitStatusText = GameObject.Find("unitStatus").GetComponent<Text>();
@@ -29,7 +29,7 @@ public class PanelController
         skillButtons = skillPanel.GetComponentsInChildren<Button>();
     }
 
-    public void LoadTurnUnitStatus(GameObject turnUnit,UnitData turnUnitData)
+    internal void LoadTurnUnitStatus(GameObject turnUnit,UnitData turnUnitData)
     {
         turnUnitIcon.sprite = turnUnit.GetComponent<UnitInterface>().GetUnitIcon();
         unitInfoText.text = turnUnitData.GetUnitInfo();
@@ -45,7 +45,7 @@ public class PanelController
         }
     }
 
-    public void LoadEnemyStatus(GameObject enemyUnit, bool isEnter)
+    internal void LoadEnemyStatus(GameObject enemyUnit, bool isEnter)
     {
         if (isEnter)
         {
@@ -58,14 +58,14 @@ public class PanelController
         enemyInfoText.text = "";
         enemyStatusText.text = "";
     }
-    public void BlockAllButton()
+    internal void BlockAllButton()
     {
         for (int i = 0; i < skillButtons.Length; ++i)
         {
             skillButtons[i].interactable = false;
         }
     }
-    public void OffAllSkillOutLine()
+    internal void OffAllSkillOutLine()
     {
         for (int i = 0; i < skillButtons.Length - 1; ++i)
         {

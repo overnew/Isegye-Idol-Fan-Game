@@ -16,16 +16,12 @@ public class BattleController : MonoBehaviour
     private List<GameObject> squadList = new List<GameObject>();
     private List<GameObject> enemyList = new List<GameObject>();
     
-
-    public Image turnUnitIcon;
     private GameObject turnUnit;
     private UnitData turnUnitData;
     private int turnUnitPosition;
 
     private SkillData selectedSkill;
 
-    private Text roundText;
-    private int roundCounter = 0;
     private bool isTurnEnd = false;
 
     private bool posChangerActive = false;
@@ -38,22 +34,21 @@ public class BattleController : MonoBehaviour
     private int endedAnimationCount = 0;
 
     private PanelController panelController;
+    private RoundController roundController;
 
     void Awake()
     {
         InstantBattleUnits();
         panelController = new PanelController();
-        panelController.Init();
+        panelController.Initialize();
+        roundController = gameObject.GetComponent<RoundController>();
     }
 
     void Start()
     {
         blurCamera = GameObject.Find("BlurCamera");
-        roundText = GameObject.Find("roundNumber").GetComponent<Text>();
-        roundText.text = roundCounter.ToString();
 
         postVolume.enabled = false;
-        roundCounter = 0;
         BattleStart();
     }
 
@@ -81,7 +76,7 @@ public class BattleController : MonoBehaviour
         {
             if (turnList.Count == 0)
             {
-                ChangeRound();
+                roundController.ChangeRound();
                 EndedBuffCheck();
                 turnList = SetUnitsTurnOrder();
             }
@@ -92,26 +87,6 @@ public class BattleController : MonoBehaviour
             panelController.OffAllSkillOutLine();
             DestoryReservedUnits();
             yield return new WaitForSeconds(1.5f);  //잠시 대기
-        }
-    }
-
-    private void ChangeRound()
-    {
-        ++roundCounter;
-        roundText.text = roundCounter.ToString();
-        StartCoroutine(RoundChangeEffectCoroutine());
-    }
-
-    private IEnumerator RoundChangeEffectCoroutine()
-    {
-        int originSize = roundText.fontSize;
-        int largeSize = 25 + originSize;
-
-        roundText.fontSize = largeSize;
-        while (roundText.fontSize > originSize)
-        {
-            roundText.fontSize = roundText.fontSize -1;
-            yield return new WaitForSeconds(0.02f);
         }
     }
 
@@ -241,10 +216,10 @@ public class BattleController : MonoBehaviour
     private void EndedBuffCheck()
     {
         for (int i=0; i<squadList.Count ; ++i)
-            squadList[i].GetComponent<UnitInterface>().CheckEndedEffect(roundCounter);
+            squadList[i].GetComponent<UnitInterface>().CheckEndedEffect(roundController.GetRoundCounter());
 
         for (int i = 0; i < enemyList.Count; ++i)
-            enemyList[i].GetComponent<UnitInterface>().CheckEndedEffect(roundCounter);
+            enemyList[i].GetComponent<UnitInterface>().CheckEndedEffect(roundController.GetRoundCounter());
 
     }
 
@@ -261,7 +236,7 @@ public class BattleController : MonoBehaviour
             for (int i = 0; i < targeredUnits.Length; ++i)
             {
                 if (selectedSkill.GetIsBuff())
-                    targeredUnits[i].GetComponent<UnitInterface>().BuffSkillExcute(selectedSkill, roundCounter);
+                    targeredUnits[i].GetComponent<UnitInterface>().BuffSkillExcute(selectedSkill, roundController.GetRoundCounter());
 
                 if(selectedSkill.GetSkillDamage() != 0)
                     targeredUnits[i].GetComponent<UnitInterface>().GetDamage();
@@ -274,7 +249,7 @@ public class BattleController : MonoBehaviour
         SkillAnimationStart(targeredUnits);
 
         if (selectedSkill.GetIsBuff())
-            selectedUnit.GetComponent<UnitInterface>().BuffSkillExcute(selectedSkill, roundCounter);
+            selectedUnit.GetComponent<UnitInterface>().BuffSkillExcute(selectedSkill, roundController.GetRoundCounter());
 
         if (selectedSkill.GetSkillDamage() != 0)
             selectedUnit.GetComponent<UnitInterface>().GetDamage();
