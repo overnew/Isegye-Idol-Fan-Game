@@ -279,8 +279,8 @@ public class BattleController : MonoBehaviour
         }
 
         postVolume.enabled = true;
-        SkillAnimationTrigger(squadUnits, false); 
-        SkillAnimationTrigger( enemyUnits, true);
+        SkillAnimationTrigger(squadUnits, false, "attack"); 
+        SkillAnimationTrigger( enemyUnits, true, "damaged");
 
         //애니메이션 끝난지 여부
         StartCoroutine(WaitAllAnimationEnd(squadUnits.Count + enemyUnits.Count));
@@ -316,7 +316,7 @@ public class BattleController : MonoBehaviour
 
     }
 
-    private void SkillAnimationTrigger(List<GameObject> animationUnits, bool isEnemy)
+    private void SkillAnimationTrigger(List<GameObject> animationUnits, bool isEnemy, string triggerName)
     {
         if(animationUnits.Count ==0)
             return;
@@ -331,9 +331,9 @@ public class BattleController : MonoBehaviour
         }
 
         for (int i = 0; i < animationUnits.Count; ++i)
-            StartCoroutine(SkillAnimationCoroutine(animationUnits[i], instantPosition.x + (i* positionGap), animationUnits[i].transform.position.x));
-        
+            StartCoroutine(SkillAnimationCoroutine(animationUnits[i], instantPosition.x + (i* positionGap), animationUnits[i].transform.position.x, triggerName));
     }
+
     private static void ChangeLayersRecursively(Transform trans, string name)
     {
         trans.gameObject.layer = LayerMask.NameToLayer(name);
@@ -343,7 +343,7 @@ public class BattleController : MonoBehaviour
         }
     }
 
-    private IEnumerator SkillAnimationCoroutine(GameObject animeUnit, float aniXpos, float originXpos)
+    private IEnumerator SkillAnimationCoroutine(GameObject animeUnit, float aniXpos, float originXpos, string triggerName)
     {
         string originLayer = LayerMask.LayerToName(animeUnit.layer);
         ChangeLayersRecursively(animeUnit.transform, "UI");
@@ -364,13 +364,11 @@ public class BattleController : MonoBehaviour
         animeUnit.transform.position = new Vector3(aniXpos, animeUnit.transform.position.y, 0);
 
         Animator animator = animeUnit.GetComponent<UnitInterface>().GetAnimator();
-        animator.SetBool("damaged", true);
-        yield return new WaitForSeconds(1.5f);
+        animator.SetBool(triggerName, true);
 
-        while (animator.GetCurrentAnimatorStateInfo(0).normalizedTime < 1.0f)
-            yield return null;
-        animator.SetBool("damaged", false);
-
+        yield return new WaitForSeconds(1.2f);  //잠시 대기 후 트리거 변경
+        //while (animator.GetCurrentAnimatorStateInfo(0).normalizedTime < 1.0f) yield return null;
+        animator.SetBool(triggerName, false);
 
         ChangeLayersRecursively(animeUnit.transform, originLayer);
 
