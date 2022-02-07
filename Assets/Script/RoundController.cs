@@ -8,7 +8,7 @@ public class RoundController :MonoBehaviour
     private int roundCounter = 0;
     private Text roundText;
 
-    void Start()
+    void Awake()
     {
         roundText = GameObject.Find("roundNumber").GetComponent<Text>();
 
@@ -16,7 +16,7 @@ public class RoundController :MonoBehaviour
         roundText.text = roundCounter.ToString();
     }
 
-    internal void ChangeRound()
+    public void ChangeRound()
     {
         ++roundCounter;
         roundText.text = roundCounter.ToString();

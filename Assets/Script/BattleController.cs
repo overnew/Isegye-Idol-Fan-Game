@@ -129,11 +129,11 @@ public class BattleController : MonoBehaviour
 
         for (int i=0; i<squadList.Count ; ++i)
             turnOrderList.Add(new KeyValuePair<float, GameObject>
-                (UnityEngine.Random.Range(0,STEP_BONUS_MAX) + squadList[i].GetComponent<UnitInterface>().GetStepSpeed(),squadList[i]));
+                (Random.Range(0,STEP_BONUS_MAX) + squadList[i].GetComponent<UnitInterface>().GetStepSpeed(),squadList[i]));
 
         for (int i = 0; i < enemyList.Count; ++i)
             turnOrderList.Add(new KeyValuePair<float, GameObject>
-                (UnityEngine.Random.Range(0, STEP_BONUS_MAX) + enemyList[i].GetComponent<UnitInterface>().GetStepSpeed(),enemyList[i]));
+                (Random.Range(0, STEP_BONUS_MAX) + enemyList[i].GetComponent<UnitInterface>().GetStepSpeed(),enemyList[i]));
 
         turnOrderList.Sort((KeyValuePair<float, GameObject> pairA, KeyValuePair<float, GameObject> pairB)
             => (int)(pairB.Key -pairA.Key));  //내림차순 정렬
@@ -228,6 +228,10 @@ public class BattleController : MonoBehaviour
         GameObject[] targeredUnits = null;
 
         blurCamera.GetComponent<BlurCamera>().CameraAction(true, turnUnitData.GetIsEnemy());
+
+        if (selectedSkill.GetBuffEffectedStatus().Equals("taunt"))
+            turnUnit.GetComponent<UnitInterface>().SetTauntIcon(true);
+
         if (selectedSkill.GetIsSplashSkill())
         {
             targeredUnits = GetTargetedEnemy(selectedSkill.GetAttackRange(), selectedSkill.GetIsTargetedEnemy());

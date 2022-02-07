@@ -9,6 +9,8 @@ public class INEScript : MonoBehaviour, UnitInterface
     const string AVOID_SUCCESS = "회피";
     const string RED_HEXA_DECIMAL = "#C00000";  //<color=#FE4554>o</color>/ //4BE198
     const string GREEN_HEXA_DECIMAL = "#4BE198";
+    const string TAUNT = "taunt";
+    const string ANGRY = "angry";
 
     public GameObject unit;
     public Animator animator;
@@ -52,7 +54,7 @@ public class INEScript : MonoBehaviour, UnitInterface
     private float damageHeight = 2f;
     private float damageXpos = -0.4f;
     private float buffHeight = -0.15f;
-    private float buffXpos = 0.3f;
+    private float buffXpos = 0.2f;
     private int buffCount = 0;
     private int debuffCount = 0;
 
@@ -138,6 +140,9 @@ public class INEScript : MonoBehaviour, UnitInterface
         Vector3 hpBarPos = new Vector3(transform.position.x, transform.position.y + height, 0);
         targetBar.transform.position = turnBar.transform.position = changeBar.transform.position = hpBar.transform.position = hpBarPos;
         deathMark.transform.position = new Vector3(transform.position.x, transform.position.y + 1f, 0);
+        
+        angryIcon.transform.position = new Vector3(transform.position.x + buffXpos + 0.4f, transform.position.y + buffHeight, 0);
+        tauntIcon.transform.position = new Vector3(transform.position.x - buffXpos - 0.2f, transform.position.y + buffHeight, 0);
 
         posionIcon.transform.position = new Vector3(transform.position.x + buffXpos + 0.2f, transform.position.y + buffHeight, 0);
         debuffIcon.transform.position = new Vector3(transform.position.x + buffXpos, transform.position.y + buffHeight, 0);
@@ -153,6 +158,7 @@ public class INEScript : MonoBehaviour, UnitInterface
 
         hpBar.transform.localScale = targetBar.transform.localScale = changeBar.transform.localScale = conditionText.transform.localScale
             = turnBar.transform.localScale = debuffIcon.transform.localScale = buffIcon.transform.localScale  = posionIcon.transform.localScale
+            = angryIcon.transform.localScale = tauntIcon.transform.localScale
             = deathMark.transform.localScale = new Vector3(0.025f, 0.025f,0f);
         unitButton.transform.localScale = new Vector3(0.5f, 0.5f, 0f);
     }
@@ -268,7 +274,7 @@ public class INEScript : MonoBehaviour, UnitInterface
         float skillDamage = battleController.GetTotalDamage() - unitData.GetDefense();
         
         //회피 기동
-        if(UnityEngine.Random.Range(0, 100f) <= unitData.GetAvoidability())
+        if(Random.Range(0, 100f) <= unitData.GetAvoidability())
         {
             DisplayCondition(AVOID_SUCCESS, RED_HEXA_DECIMAL);
         }
@@ -306,9 +312,10 @@ public class INEScript : MonoBehaviour, UnitInterface
             hpBarImage.fillAmount = hp / unitData.GetMaxHp();
             return;
         }
-        else if (buffSkill.GetBuffEffectedStatus().Equals("taunt"))
+        else if (buffSkill.GetBuffEffectedStatus().Equals(TAUNT))
         {
             isTaunted = true;
+            angryIcon.enabled = true;
             tauntUnit = battleController.GetTurnUnit();
             tauntEndRound = roundNum + buffSkill.GetEffectedRound();
             return;
@@ -394,6 +401,8 @@ public class INEScript : MonoBehaviour, UnitInterface
         if (isTaunted && tauntEndRound <= roundNum)
         {
             isTaunted = false;
+            angryIcon.enabled = false;
+            tauntUnit.GetComponent<UnitInterface>().SetTauntIcon(false);
             tauntEndRound = 0;
         }
 
@@ -404,6 +413,12 @@ public class INEScript : MonoBehaviour, UnitInterface
             
             for(int i=0; i <buffList.Count ;++i)
             {
+                if (buffList[i].GetBuffEffectedStatus().Equals(TAUNT))
+                {
+                    tauntIcon.enabled = false;
+                    continue;
+                }
+
                 unitData.ApplyBuffEffect(buffList[i], true);
                 if (buffList[i].GetEffectValue() < 0)
                     debuffCount--;
@@ -419,6 +434,12 @@ public class INEScript : MonoBehaviour, UnitInterface
         if (buffCount == 0)
             buffIcon.enabled = false;
     }
+
+    public void SetTauntIcon(bool setting)
+    {
+        tauntIcon.enabled = setting;
+    }
+
     public void SetTurnBar(bool Setting)
     {
         turnBar.SetActive(Setting);

@@ -23,6 +23,7 @@ public interface UnitInterface
     public List<SkillData> GetUnitSkills();
 
     public GameObject GetTauntUnit();
+    public void SetTauntIcon(bool setting);
     public bool GetIsTaunt();
     public void SetTargetBar(bool setting);
     public void SetChangeBar(bool setting);
