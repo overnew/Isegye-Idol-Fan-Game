@@ -258,17 +258,24 @@ public class BattleController : MonoBehaviour
         if (selectedSkill.GetSkillDamage() != 0)
             selectedUnit.GetComponent<UnitInterface>().GetDamage();
     }
-
     private void SkillAnimationStart(GameObject[] targetedUnits)
     {
         List<GameObject> squadUnits = new List<GameObject>();
         List<GameObject> enemyUnits = new List<GameObject>();
+        string squadTrigger = "attack";
+        string enemyTrigger = "damaged";
+
         endedAnimationCount = 0;
 
         if (turnUnitData.GetIsEnemy())
+        {
             enemyUnits.Add(turnUnit);
+            Utils.Swap<string>(ref squadTrigger, ref enemyTrigger);
+        }
         else
+        {
             squadUnits.Add(turnUnit);
+        }
 
         if(selectedSkill.GetIsTargetedEnemy() && targetedUnits != null)
         {
@@ -279,8 +286,8 @@ public class BattleController : MonoBehaviour
         }
 
         postVolume.enabled = true;
-        SkillAnimationTrigger(squadUnits, false, "attack"); 
-        SkillAnimationTrigger( enemyUnits, true, "damaged");
+        SkillAnimationTrigger(squadUnits, false, squadTrigger); 
+        SkillAnimationTrigger( enemyUnits, true, enemyTrigger);
 
         //애니메이션 끝난지 여부
         StartCoroutine(WaitAllAnimationEnd(squadUnits.Count + enemyUnits.Count));
@@ -334,19 +341,10 @@ public class BattleController : MonoBehaviour
             StartCoroutine(SkillAnimationCoroutine(animationUnits[i], instantPosition.x + (i* positionGap), animationUnits[i].transform.position.x, triggerName));
     }
 
-    private static void ChangeLayersRecursively(Transform trans, string name)
-    {
-        trans.gameObject.layer = LayerMask.NameToLayer(name);
-        foreach (Transform child in trans)
-        {
-            ChangeLayersRecursively(child, name);
-        }
-    }
-
     private IEnumerator SkillAnimationCoroutine(GameObject animeUnit, float aniXpos, float originXpos, string triggerName)
     {
         string originLayer = LayerMask.LayerToName(animeUnit.layer);
-        ChangeLayersRecursively(animeUnit.transform, "UI");
+        Utils.ChangeLayersRecursively(animeUnit.transform, "UI");
 
         float div = 10;
         float moveSpeed = (aniXpos - originXpos)/div;
@@ -370,7 +368,7 @@ public class BattleController : MonoBehaviour
         //while (animator.GetCurrentAnimatorStateInfo(0).normalizedTime < 1.0f) yield return null;
         animator.SetBool(triggerName, false);
 
-        ChangeLayersRecursively(animeUnit.transform, originLayer);
+        Utils.ChangeLayersRecursively(animeUnit.transform, originLayer);
 
         div = 20;
         moveSpeed = (originXpos - aniXpos) / div;
