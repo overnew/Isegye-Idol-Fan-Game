@@ -59,6 +59,8 @@ public class INEScript : MonoBehaviour, UnitInterface
     private int debuffCount = 0;
 
     private PanelController panelController;
+    private SoundManager soundManager;
+    public AudioClip attackClip;
 
     /*
     [ContextMenu("To Json Data")]
@@ -89,6 +91,7 @@ public class INEScript : MonoBehaviour, UnitInterface
         ScaleSet();
 
         battleController = GameObject.Find("BattleController").GetComponent<BattleController>();
+        soundManager = GameObject.Find("Sound").GetComponent<SoundManager>();
         Canvas unitCanvas = UIcanvas.GetComponent<Canvas>();
         Camera cam = GameObject.Find("Main Camera").GetComponent<Camera>();
         unitCanvas.worldCamera = cam;
@@ -235,6 +238,7 @@ public class INEScript : MonoBehaviour, UnitInterface
 
     public void OnClickUnit()
     {
+        soundManager.Play(attackClip);
         panelController.BlockAllButton();
 
         if (battleController.GetPosChanger())
