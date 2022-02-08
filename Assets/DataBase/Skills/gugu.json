@@ -1,11 +1,11 @@
 {
-    "name" : "gugu",
+    "name" : "가지치기",
     "level" : 1,
-    "damage" : 22,
+    "damage" : 12,
     "upgradeDamage" : 2,
     "cost" : 1,
 
-    "isBuff" : true,
+    "isBuff" : false,
     "effectedStatus" : "posion",
     "effectValue" : 3,
     "effectedRound" : 1,
@@ -18,5 +18,5 @@
     "isSplash": true,
     
     "skillIconName": "skillIcon",
-    "skillDescription": "buff effct"
+    "skillDescription": "단일 적을 공격한다."
 }

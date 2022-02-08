@@ -13,8 +13,8 @@ TagManager:
   - UI
   - BlurEffect
   - 
-  - 
-  - 
+  - Line
+  - BackGround
   - 
   - 
   - 
@@ -41,6 +41,9 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
-  - name: backGround
+  - name: line
     uniqueID: 1095680205
+    locked: 0
+  - name: backGround
+    uniqueID: 2234545813
     locked: 0

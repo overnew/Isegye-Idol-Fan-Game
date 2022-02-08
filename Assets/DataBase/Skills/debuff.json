@@ -1,5 +1,5 @@
 {
-    "name" : "debuff",
+    "name" : "슉슉슉",
     "level" : 1,
     "damage" : 0,
     "upgradeDamage" : 1,
@@ -18,5 +18,5 @@
     "isSplash": true,
     
     "skillIconName": "skillIcon",
-    "skillDescription": "buff Enemy"
+    "skillDescription": "킹받는 행동으로 적에게 도발을 건다."
 }

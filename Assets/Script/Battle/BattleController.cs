@@ -328,12 +328,12 @@ public class BattleController : MonoBehaviour
         if(animationUnits.Count ==0)
             return;
 
-        Vector3 instantPosition = new Vector3(-4, -1, 0);
+        Vector3 instantPosition = new Vector3(-2, -1, 0);
         float positionGap = -2f;
 
         if (isEnemy)    //적 유닛은 포자션을 다르게
         {
-            instantPosition = new Vector3(4, -1, 0);
+            instantPosition = new Vector3(2, -1, 0);
             positionGap *= -1;
         }
 

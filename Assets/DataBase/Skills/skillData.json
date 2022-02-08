@@ -1,5 +1,5 @@
 {
-    "name" : "attack",
+    "name" : "야랄",
     "level" : 1,
     "damage" : 10,
     "upgradeDamage" : 1,
@@ -18,5 +18,5 @@
     "isSplash": false,
     
     "skillIconName": "skillIcon",
-    "skillDescription": "just test"
+    "skillDescription": "범위의 적에게 당혹감을 선사한다."
 }
