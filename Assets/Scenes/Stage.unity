@@ -1057,7 +1057,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   pointImages:
   - {fileID: 21300000, guid: 4e4d871d58a93034fbfe1a68610bb7d8, type: 3}
+  - {fileID: 21300000, guid: 7e9825bedb862f64aac97f9e498e0be9, type: 3}
   - {fileID: 21300000, guid: c2d3470b2a023524f93fcc2ed2438ed6, type: 3}
+  - {fileID: 21300000, guid: fca8f95713a37cc4bb8540b0806ce927, type: 3}
+  - {fileID: 21300000, guid: d93fd43d13b34214b81c3b2973b7740a, type: 3}
 --- !u!212 &1611065809
 SpriteRenderer:
   m_ObjectHideFlags: 0

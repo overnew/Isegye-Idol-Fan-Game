@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class LineManager : MonoBehaviour
 {
-    const int StageNameLength = 2;
+    const int StageNameLength = 5;
     public Sprite[] pointImages;
     private SpriteRenderer[] points;
 
@@ -25,16 +25,21 @@ public class LineManager : MonoBehaviour
 
         for (int i=2; i<points.Length-1 ; ++i)
         {
-            int stageIdx = Random.Range(0, StageNameLength);
+            int stageIdx = Random.Range(0, StageNameLength-1);
             stageList.Add((StageName)stageIdx);
             points[i].sprite = pointImages[stageIdx];
         }
 
+        points[points.Length -1].sprite = pointImages[(int)StageName.treasure];
+        stageList.Add(StageName.treasure);
     }
 }
 
 public enum StageName
 {
     start, 
-    cafe
+    battle,
+    cafe,
+    question,
+    treasure
 }
