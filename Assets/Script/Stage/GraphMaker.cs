@@ -4,9 +4,10 @@ using System.IO;
 using System;
 using UnityEngine;
 
-public class GraphMaker : MonoBehaviour
+public class GraphMaker
 {
-    const string graphDataPath = "DataBase/StageGraph";
+    const string graphDataBasePath = "DataBase";
+    const string graphGraphPath = "StageGraph";
     private EdgeData edgeData;
     private List<Node> graph = new List<Node>();
 
@@ -19,7 +20,7 @@ public class GraphMaker : MonoBehaviour
 
     private void LoadGraphDataFromJson(string graphType)
     {
-        string path = Path.Combine(Application.dataPath, graphDataPath, graphType);
+        string path = Path.Combine(Application.dataPath, graphDataBasePath, graphGraphPath, graphType);
         string jsonData = File.ReadAllText(path);
         edgeData = JsonUtility.FromJson<EdgeData>(jsonData);
     }
@@ -27,25 +28,36 @@ public class GraphMaker : MonoBehaviour
     {
         for (int idx=0; idx <edgeData.edges.Length ; ++idx)
         {
-            graph.Add(new Node(idx, edgeData.edges[idx]));
+            graph.Add(new Node(edgeData.edges[idx]));
         }
     }
 }
 
 public class Node
 {
+    const int NODE_NUM_IDX = 0;
+    const int ADJACENT_IDX = 1;
     private int nodeNumber;
     private List<int> nextNodes = new List<int>();
 
-    public Node(int _nodeNumber, string adjacentEdges)
+    public Node(string adjacentEdges)
     {
-        this.nodeNumber = _nodeNumber;
+        string[] splitted = adjacentEdges.Split(':');
+        this.nodeNumber = Int32.Parse(splitted[NODE_NUM_IDX]);
+
+        if (adjacentEdges.Equals(""))
+            return;
+
+        adjacentEdges = adjacentEdges.Split(':')[ADJACENT_IDX];    //노드의 번호는 불필요
 
         List<string> tempList = new List<string>();
-        tempList.AddRange(adjacentEdges.Split('.'));
+        tempList.AddRange(adjacentEdges.Split(','));
 
-        for (int i=0; i<tempList.Count ; ++i)
+        for (int i=0; i<tempList.Count -1 ; ++i)    //마지막 노드는 리프노드임
+        {
             nextNodes.Add(Int32.Parse(tempList[i]));
+        }
     }
 
+    public List<int> GetNextNodes() { return this.nextNodes; }
 }

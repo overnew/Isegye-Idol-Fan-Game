@@ -4,28 +4,66 @@ using UnityEngine;
 
 public class LineManager : MonoBehaviour
 {
+    const int START_POINT_IDX = 0;
     const int StageNameLength = 5;
     private int cafeCount = 0, randomCount = 0;
 
+    public string lineType;
     public Sprite[] pointImages;
-    private SpriteRenderer[] points;
 
-    private List<StageName> stageList; 
+    private List<SpriteRenderer> pointSprites = new List<SpriteRenderer>();
+    private List<StagePoint> stagePoints;
+
+    private List<StageName> stageList;
+    private List<Node> graph;
 
     void Start()
     {
         stageList = new List<StageName>();
         MakeLinePoints();
+        graph = new GraphMaker().GetLineGraph(lineType);
+
+        SetNodeToPoints();
+        stagePoints[START_POINT_IDX].SetCanVisitable();
+        stagePoints[START_POINT_IDX].SetNextNodeEnabled();
+    }
+    private void SetNodeToPoints()
+    {
+        StagePoint[] stagePointInChildren = gameObject.GetComponentsInChildren<StagePoint>();
+
+        stagePoints = new List<StagePoint>();
+        for (int i= START_POINT_IDX; i< stagePointInChildren.Length ; ++i)
+        {
+            stagePoints.Add(stagePointInChildren[i]);
+        }
+
+        for (int i = START_POINT_IDX; i < stagePointInChildren.Length; ++i)
+        {
+            List<StagePoint> nextStagePoints = new List<StagePoint>();
+            List<int> nextNodeIdxs = graph[i].GetNextNodes();
+
+            foreach (int nextIdx in nextNodeIdxs)
+            {
+                nextStagePoints.Add(stagePoints[nextIdx]);
+            }
+
+            stagePoints[i].SetNextPoints(nextStagePoints);
+        }
     }
 
     private void MakeLinePoints()
     {
-        points = gameObject.GetComponentsInChildren<SpriteRenderer>();
+        SpriteRenderer[] spritesInChildren = gameObject.GetComponentsInChildren<SpriteRenderer>();
 
-        points[1].sprite = pointImages[(int)StageName.start];
+        for (int i= 1; i< spritesInChildren.Length ; ++i)
+        {
+            pointSprites.Add(spritesInChildren[i]);
+        }
+
+        pointSprites[START_POINT_IDX].sprite = pointImages[(int)StageName.start];
         stageList.Add(StageName.start);
 
-        for (int i=2; i<points.Length-1 ; ++i)
+        for (int i=1; i< pointSprites.Count-1 ; ++i)
         {
             int stageIdx;
 
@@ -35,7 +73,7 @@ public class LineManager : MonoBehaviour
             } while (!CheckUnderMaxPoints(stageIdx));
             
             stageList.Add((StageName)stageIdx);
-            points[i].sprite = pointImages[stageIdx];
+            pointSprites[i].sprite = pointImages[stageIdx];
 
             if (stageIdx == (int)StageName.cafe)
                 ++cafeCount;
@@ -43,7 +81,7 @@ public class LineManager : MonoBehaviour
                 ++randomCount;
         }
 
-        points[points.Length -1].sprite = pointImages[(int)StageName.treasure];
+        pointSprites[pointSprites.Count - 1].sprite = pointImages[(int)StageName.treasure];
         stageList.Add(StageName.treasure);
     }
     private bool CheckUnderMaxPoints(int stageIdx)

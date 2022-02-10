@@ -1,10 +1,18 @@
-﻿using System.Collections;
+﻿using System.Collections.Generic;
+using System.Collections;
 using UnityEngine;
 
 public class StagePoint : MonoBehaviour
 {
     Coroutine interactCoroutine = null;
     private Vector3 originScale;
+    private Node pointNode;
+    private List<StagePoint> nextStagePoints;
+
+    private void Start()
+    {
+        gameObject.GetComponent<BoxCollider2D>().enabled = false;
+    }
 
     private void OnMouseEnter() 
     {
@@ -52,4 +60,18 @@ public class StagePoint : MonoBehaviour
         }
 
     }
+    public void SetCanVisitable() 
+    { 
+        gameObject.GetComponent<BoxCollider2D>().enabled = true;
+        
+    }
+
+    public void SetNextNodeEnabled()
+    {
+        foreach (StagePoint nextPoint in  nextStagePoints)
+        {
+            nextPoint.SetCanVisitable();
+        }
+    }
+    public void SetNextPoints(List<StagePoint> stagePoints) { this.nextStagePoints = stagePoints; }
 }
