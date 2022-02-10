@@ -56,6 +56,7 @@ public class LineManager : MonoBehaviour
 
         return true;
     }
+
 }
 
 enum StageName
