@@ -1,8 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 using UnityEngine.Rendering.PostProcessing;
 using UnityEngine.UI;
+
 
 public class BattleController : MonoBehaviour
 {
@@ -35,6 +37,18 @@ public class BattleController : MonoBehaviour
 
     private PanelController panelController;
     private RoundController roundController;
+
+    const string DATA_BASE_PATH = "DataBase";
+    const string SAVE_DATA_PATH = "SaveData";
+    const string SQUAD_DATA_NAME = "SquadData.json";
+
+    void LoadSquadSaveDataFromJson()
+    {
+        SquadData temp;
+        string path = Path.Combine(Application.dataPath, DATA_BASE_PATH, SAVE_DATA_PATH, SQUAD_DATA_NAME);
+        string jsonData = File.ReadAllText(path);
+        temp = JsonUtility.FromJson<SquadData>(jsonData);
+    }
 
     void Awake()
     {

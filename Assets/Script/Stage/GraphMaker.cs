@@ -48,14 +48,13 @@ public class Node
         if (adjacentEdges.Equals(""))
             return;
 
-        adjacentEdges = adjacentEdges.Split(':')[ADJACENT_IDX];    //노드의 번호는 불필요
-
         List<string> tempList = new List<string>();
-        tempList.AddRange(adjacentEdges.Split(','));
+        tempList.AddRange(splitted[ADJACENT_IDX].Split(','));
 
-        for (int i=0; i<tempList.Count -1 ; ++i)    //마지막 노드는 리프노드임
+        for (int i=0; i<tempList.Count; ++i)    
         {
-            nextNodes.Add(Int32.Parse(tempList[i]));
+            if(!tempList[i].Equals("")) //빈 노드 확인
+                nextNodes.Add(Int32.Parse(tempList[i]));
         }
     }
 

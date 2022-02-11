@@ -28,7 +28,6 @@ public class UnitData
     private const string colorStatusSetting = "<color={0}>{1}</color>";
     private const string BUFF_COLOR = "#4BE198";
     private const string DEBUFF_COLOR = "#FE4554";
-    
 
     private struct OriginStatus
     {

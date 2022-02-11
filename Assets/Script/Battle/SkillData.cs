@@ -4,7 +4,7 @@ using UnityEngine;
 [System.Serializable]
 public class SkillData 
 {
-    private const string skillDescriptionSetting = "{0}\n{1}\n데미지: {2}\n\n{3}";
+    private const string SKILL_DESC_SETTING = "{0}\n{1}\n데미지: {2}\n\n{3}";
     [SerializeField] private string name;
     [SerializeField] private int level;
     [SerializeField] private float damage;
@@ -22,7 +22,6 @@ public class SkillData
     [SerializeField] private int[] availableRange;
     [SerializeField] private int[] attackRange;
     [SerializeField] private bool isSplash;
-
 
     [SerializeField] private string skillIconName;
     [SerializeField] private string skillDescription;
@@ -52,7 +51,7 @@ public class SkillData
         return rangeText.ToString();
     }
 
-    private string SetSkillDescription(){ return string.Format(skillDescriptionSetting,RangeVisualToString() ,name, damage, skillDescription);}
+    private string SetSkillDescription(){ return string.Format(SKILL_DESC_SETTING,RangeVisualToString() ,name, damage, skillDescription);}
 
     public string GetIconName(){return skillIconName;}
     public float GetSkillDamage() { return damage;}

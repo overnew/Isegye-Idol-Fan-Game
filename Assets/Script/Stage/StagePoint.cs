@@ -63,7 +63,8 @@ public class StagePoint : MonoBehaviour
     public void SetCanVisitable() 
     { 
         gameObject.GetComponent<BoxCollider2D>().enabled = true;
-        
+        originScale = gameObject.transform.localScale;
+        interactCoroutine = StartCoroutine(InteractCoroutine());
     }
 
     public void SetNextNodeEnabled()
