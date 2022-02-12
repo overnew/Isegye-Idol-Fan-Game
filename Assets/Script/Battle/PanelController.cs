@@ -30,9 +30,9 @@ public class PanelController
 
         skillPanel = GameObject.Find("skillPanel");
         skillButtons = skillPanel.GetComponentsInChildren<Button>();
-
+        /*
         itemPanel = GameObject.Find("itemPanel");
-        itemButtons = itemPanel.GetComponentsInChildren<Button>();
+        itemButtons = itemPanel.GetComponentsInChildren<Button>();*/
     }
 
     internal void LoadTurnUnitStatus(GameObject turnUnit,UnitData turnUnitData)
@@ -50,12 +50,12 @@ public class PanelController
             skillButtons[i].GetComponent<Image>().sprite = Resources.Load<Sprite>(skillIconPath + skills[i].GetIconName());
             skillButtons[i].GetComponent<SkillButton>().SetSkillToButton(skills[i]);
         }
-
+        /*
         for (int i = 0; i < itemButtons.Length; ++i)
         {
             itemButtons[i].GetComponent<Image>().sprite = Resources.Load<Sprite>(itemIconPath + skills[i].GetIconName());
 
-        }
+        }*/
     }
 
     internal void LoadEnemyStatus(GameObject enemyUnit, bool isEnter)

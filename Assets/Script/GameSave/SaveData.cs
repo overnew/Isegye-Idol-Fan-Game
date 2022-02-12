@@ -18,6 +18,8 @@ public class SaveData
         string jsonData = File.ReadAllText(path);
 
         squadData = JsonUtility.FromJson<SquadData>(jsonData);
-        squadData.LoadSquadUnit();
+        //squadData.LoadSquadUnit();
     }
+
+    public SquadData GetSquadData() { return this.squadData; }
 }

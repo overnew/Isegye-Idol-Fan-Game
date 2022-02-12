@@ -7,15 +7,26 @@ using UnityEngine;
 [System.Serializable]
 public class SquadData
 {
-    private string[] squadUnitNames;
-    private List<ContinueUnitStatus> unitSaveData = new List<ContinueUnitStatus>();
-   
-    /*
-    public GameObject[] GetSquadUnitPrefabByName()
+    [SerializeField] private string[] squadUnitNames;
+    //private List<ContinueUnitStatus> unitSaveData = new List<ContinueUnitStatus>();
+    
+    public List<GameObject> GetSquadUnitPrefabByName()
     {
+        List<GameObject> squadList = new List<GameObject>();
 
-    }*/
+        for (int i=0; i<squadUnitNames.Length ; ++i)
+        {
+            squadList.Add(GetPrefabByName(squadUnitNames[i]));
+        }
+        return squadList;
+    }
 
+    private GameObject GetPrefabByName(string prefabName)
+    {
+        string prefabPath = Path.Combine("Prefab", prefabName);
+        return Resources.Load<GameObject>(prefabPath);
+    }
+    /*
     public void LoadSquadUnit()
     {
         unitSaveData = new List<ContinueUnitStatus>();
@@ -24,7 +35,7 @@ public class SquadData
         {
             unitSaveData.Add(LoadUnitStatus(squadUnitNames[i]));
         }
-    }
+    }*/
 
     private ContinueUnitStatus LoadUnitStatus(string unitName)
     {

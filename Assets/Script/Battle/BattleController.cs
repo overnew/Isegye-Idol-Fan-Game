@@ -13,7 +13,6 @@ public class BattleController : MonoBehaviour
     private const int STEP_BONUS_MAX = 8;
     private const int FRONT_IDX = 0;
 
-    public GameObject[] units;
     public GameObject[] enemys;
     private List<GameObject> squadList = new List<GameObject>();
     private List<GameObject> enemyList = new List<GameObject>();
@@ -38,21 +37,15 @@ public class BattleController : MonoBehaviour
     private PanelController panelController;
     private RoundController roundController;
 
-    const string DATA_BASE_PATH = "DataBase";
-    const string SAVE_DATA_PATH = "SaveData";
-    const string SQUAD_DATA_NAME = "SquadData.json";
-
-    void LoadSquadSaveDataFromJson()
-    {
-        SquadData temp;
-        string path = Path.Combine(Application.dataPath, DATA_BASE_PATH, SAVE_DATA_PATH, SQUAD_DATA_NAME);
-        string jsonData = File.ReadAllText(path);
-        temp = JsonUtility.FromJson<SquadData>(jsonData);
-    }
+    private SaveData saveData;
+    private SquadData squadData;
 
     void Awake()
     {
+        saveData = new SaveData();
+        squadData = saveData.GetSquadData();
         InstantBattleUnits();
+
         panelController = new PanelController();
         panelController.Initialize();
         roundController = gameObject.GetComponent<RoundController>();
@@ -70,10 +63,12 @@ public class BattleController : MonoBehaviour
 
     private void InstantBattleUnits()
     {
+        List<GameObject> squadPrefabs = squadData.GetSquadUnitPrefabByName();
+
         Vector3 instantPosition = new Vector3(transform.position.x, transform.position.y -1, 0);
 
-        for (int i=0; i< units.Length; ++i)
-            squadList.Add(Instantiate(units[i], instantPosition + (Vector3.left * (i * 2 + 1)), Quaternion.Euler(0, 180.0f, 0)));
+        for (int i=0; i< squadPrefabs.Count; ++i)
+            squadList.Add(Instantiate(squadPrefabs[i], instantPosition + (Vector3.left * (i * 2 + 1)), Quaternion.Euler(0, 180.0f, 0)));
 
         for (int i = 0; i < enemys.Length; ++i)
             enemyList.Add(Instantiate(enemys[i], instantPosition + (Vector3.right * (i * 2 + 1)), Quaternion.identity)) ;

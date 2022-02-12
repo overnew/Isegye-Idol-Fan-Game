@@ -112,7 +112,7 @@ public class INEScript : MonoBehaviour, UnitInterface
 
         hp = unitData.GetMaxHp();
     }
-
+    /*
     private ContinueUnitStatus LoadContinueStatus()
     {
         string continueStatusPath = Path.Combine(dataBasePath, "SaveData");
@@ -120,7 +120,7 @@ public class INEScript : MonoBehaviour, UnitInterface
         string jsonData = File.ReadAllText(path);
         unitData = JsonUtility.FromJson<UnitData>(jsonData);
         skillsData = unitData.LoadSkillData(unitData);
-    }
+    }*/
 
     void Start()
     {
