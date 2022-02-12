@@ -3,12 +3,11 @@ using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 
-
 [System.Serializable]
 public class SquadData
 {
     [SerializeField] private string[] squadUnitNames;
-    //private List<ContinueUnitStatus> unitSaveData = new List<ContinueUnitStatus>();
+    private Dictionary<string, UnitSaveData> unitsSaveData; 
     
     public List<GameObject> GetSquadUnitPrefabByName()
     {
@@ -26,23 +25,28 @@ public class SquadData
         string prefabPath = Path.Combine("Prefab", prefabName);
         return Resources.Load<GameObject>(prefabPath);
     }
-    /*
+    
     public void LoadSquadUnit()
     {
-        unitSaveData = new List<ContinueUnitStatus>();
+        unitsSaveData = new Dictionary<string, UnitSaveData>();
 
         for (int i=0; i<squadUnitNames.Length ;++i )
         {
-            unitSaveData.Add(LoadUnitStatus(squadUnitNames[i]));
+            unitsSaveData.Add(squadUnitNames[i], LoadUnitStatus(squadUnitNames[i]));
         }
-    }*/
+    }
 
-    private ContinueUnitStatus LoadUnitStatus(string unitName)
+    private UnitSaveData LoadUnitStatus(string unitName)
     {
         string saveDataPath = Path.Combine("DataBase", "SaveData", "UnitData");
-        string path = Path.Combine(Application.dataPath, saveDataPath, unitName + ".json");
+        string path = Path.Combine(Application.dataPath, saveDataPath, unitName + "Data.json");
         string jsonData = File.ReadAllText(path);
 
-        return JsonUtility.FromJson<ContinueUnitStatus>(jsonData);
+        return JsonUtility.FromJson<UnitSaveData>(jsonData);
+    }
+
+    public UnitSaveData GetUnitSaveDataByName(string unitName)
+    {
+        return unitsSaveData[unitName];
     }
 }

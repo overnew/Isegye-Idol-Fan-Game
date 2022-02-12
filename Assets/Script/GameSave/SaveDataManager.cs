@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 
-public class SaveData
+public class SaveDataManager
 {
     private SquadData squadData;
-
-    public SaveData()   //객체 생성시 세이브 파일 로드
+    
+    public SaveDataManager()   //객체 생성시 세이브 파일 로드
     {
         LoadSquadData();
     }
@@ -18,7 +18,7 @@ public class SaveData
         string jsonData = File.ReadAllText(path);
 
         squadData = JsonUtility.FromJson<SquadData>(jsonData);
-        //squadData.LoadSquadUnit();
+        squadData.LoadSquadUnit();
     }
 
     public SquadData GetSquadData() { return this.squadData; }

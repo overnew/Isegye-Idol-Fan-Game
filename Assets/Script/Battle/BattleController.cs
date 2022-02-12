@@ -37,12 +37,12 @@ public class BattleController : MonoBehaviour
     private PanelController panelController;
     private RoundController roundController;
 
-    private SaveData saveData;
+    private SaveDataManager saveData;
     private SquadData squadData;
 
     void Awake()
     {
-        saveData = new SaveData();
+        saveData = new SaveDataManager();
         squadData = saveData.GetSquadData();
         InstantBattleUnits();
 

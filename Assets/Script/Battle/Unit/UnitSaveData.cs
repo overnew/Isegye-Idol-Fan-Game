@@ -4,11 +4,11 @@ using System.IO;
 using UnityEngine;
 
 [System.Serializable]
-public class ContinueUnitStatus
+public class UnitSaveData
 {
-    private float hp;
-    private string[] itemNames;
-    private int[] itemNumbers;
+    [SerializeField] private float hp;
+    [SerializeField] private string[] itemNames;
+    [SerializeField] private int[] itemNumbers;
 
     public List<KeyValuePair<Item, int>> LoadItemData()
     {

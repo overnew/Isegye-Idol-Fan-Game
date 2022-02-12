@@ -37,7 +37,7 @@ public class INEScript : MonoBehaviour, UnitInterface
     public string unintDataName = "unitData.json";
     [SerializeField] private UnitData unitData;
 
-    private ContinueUnitStatus continueUnitStatus;
+    private UnitSaveData continueUnitStatus;
 
     private List<SkillData> skillsData;
     List<KeyValuePair<int, List<SkillData>>> buffEndRound;
@@ -112,15 +112,6 @@ public class INEScript : MonoBehaviour, UnitInterface
 
         hp = unitData.GetMaxHp();
     }
-    /*
-    private ContinueUnitStatus LoadContinueStatus()
-    {
-        string continueStatusPath = Path.Combine(dataBasePath, "SaveData");
-        string path = Path.Combine(Application.dataPath, dataBasePath, unintDataName);
-        string jsonData = File.ReadAllText(path);
-        unitData = JsonUtility.FromJson<UnitData>(jsonData);
-        skillsData = unitData.LoadSkillData(unitData);
-    }*/
 
     void Start()
     {
