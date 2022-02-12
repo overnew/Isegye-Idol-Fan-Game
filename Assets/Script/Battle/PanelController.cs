@@ -20,7 +20,6 @@ public class PanelController
     private GameObject itemPanel;
     private Button[] itemButtons;
 
-
     internal void Initialize()
     {
         turnUnitIcon = GameObject.Find("unitIcon").GetComponent<Image>();
@@ -43,17 +42,19 @@ public class PanelController
         unitStatusText.text = turnUnitData.GetUnitStatus(turnUnit);
 
         skills = turnUnit.GetComponent<UnitInterface>().GetUnitSkills();
-        const string path = "SkillsIcon/";
+        const string skillIconPath = "SkillsIcon/";
+        const string itemIconPath = "ItemIcon/";
 
         for (int i = 0; i < POS_CHANGER_IDX; ++i)    // execept posChangerButton in last
         {
-            skillButtons[i].GetComponent<Image>().sprite = Resources.Load<Sprite>(path + skills[i].GetIconName());
+            skillButtons[i].GetComponent<Image>().sprite = Resources.Load<Sprite>(skillIconPath + skills[i].GetIconName());
             skillButtons[i].GetComponent<SkillButton>().SetSkillToButton(skills[i]);
         }
 
         for (int i = 0; i < itemButtons.Length; ++i)
         {
-            
+            itemButtons[i].GetComponent<Image>().sprite = Resources.Load<Sprite>(itemIconPath + skills[i].GetIconName());
+
         }
     }
 
