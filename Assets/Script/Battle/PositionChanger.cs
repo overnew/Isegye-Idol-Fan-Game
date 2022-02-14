@@ -6,7 +6,7 @@ using UnityEngine.EventSystems;
 
 public class PositionChanger : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
-    private BattleController battleController;
+    private BattleManager battleController;
     private PanelController panelController;
     public SkillData skillData;
 
@@ -26,7 +26,7 @@ public class PositionChanger : MonoBehaviour, IPointerEnterHandler, IPointerExit
         desc.text = descInfo;
         descFrame.SetActive(false);
 
-        battleController = GameObject.Find("BattleController").GetComponent<BattleController>();
+        battleController = GameObject.Find("BattleController").GetComponent<BattleManager>();
         panelController = battleController.GetPanelController();
     }
 

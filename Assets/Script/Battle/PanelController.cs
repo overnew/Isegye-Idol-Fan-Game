@@ -17,10 +17,11 @@ public class PanelController
     private List<SkillData> skills;
     private Button[] skillButtons;
 
+    private SquadData squadData;
     private GameObject itemPanel;
     private Button[] itemButtons;
 
-    internal void Initialize()
+    internal void Initialize(SquadData _squadData)
     {
         turnUnitIcon = GameObject.Find("unitIcon").GetComponent<Image>();
         unitStatusText = GameObject.Find("unitStatus").GetComponent<Text>();
@@ -30,9 +31,10 @@ public class PanelController
 
         skillPanel = GameObject.Find("skillPanel");
         skillButtons = skillPanel.GetComponentsInChildren<Button>();
-        /*
+
+        this.squadData = _squadData;
         itemPanel = GameObject.Find("itemPanel");
-        itemButtons = itemPanel.GetComponentsInChildren<Button>();*/
+        itemButtons = itemPanel.GetComponentsInChildren<Button>();
     }
 
     internal void LoadTurnUnitStatus(GameObject turnUnit,UnitData turnUnitData)
@@ -43,19 +45,36 @@ public class PanelController
 
         skills = turnUnit.GetComponent<UnitInterface>().GetUnitSkills();
         const string skillIconPath = "SkillsIcon/";
-        const string itemIconPath = "ItemIcon/";
 
         for (int i = 0; i < POS_CHANGER_IDX; ++i)    // execept posChangerButton in last
         {
             skillButtons[i].GetComponent<Image>().sprite = Resources.Load<Sprite>(skillIconPath + skills[i].GetIconName());
             skillButtons[i].GetComponent<SkillButton>().SetSkillToButton(skills[i]);
         }
-        /*
-        for (int i = 0; i < itemButtons.Length; ++i)
-        {
-            itemButtons[i].GetComponent<Image>().sprite = Resources.Load<Sprite>(itemIconPath + skills[i].GetIconName());
+    }
 
-        }*/
+    private void ItemPanelLoad()
+    {
+        const string itemIconPath = "ItemIcon/";
+        Dictionary<Item, int> itemDictionary = squadData.GetItemDictionary();
+
+        SetAllItemButtonEnable(false);
+
+        int buttonIdx = 0;
+        foreach (KeyValuePair<Item, int> itemPair in itemDictionary)
+        {
+            itemButtons[buttonIdx++].GetComponent<Image>().sprite = Resources.Load<Sprite>(itemIconPath + itemPair.Key.GetIconName());
+
+        }
+
+    }
+
+    private void SetAllItemButtonEnable(bool setting)
+    {
+        for (int i=0; i< itemButtons.Length; ++i)
+        {
+            itemButtons[i].enabled = setting;
+        }
     }
 
     internal void LoadEnemyStatus(GameObject enemyUnit, bool isEnter)

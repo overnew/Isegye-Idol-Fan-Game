@@ -4,13 +4,12 @@ using System.IO;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class INEScript : MonoBehaviour, UnitInterface
+public class UnitControlloer : MonoBehaviour, UnitInterface
 {
     const string AVOID_SUCCESS = "È¸ÇÇ";
     const string RED_HEXA_DECIMAL = "#C00000";  //<color=#FE4554>o</color>/ //4BE198
     const string GREEN_HEXA_DECIMAL = "#4BE198";
     const string TAUNT = "taunt";
-    const string ANGRY = "angry";
 
     public GameObject unit;
     public Animator animator;
@@ -31,13 +30,13 @@ public class INEScript : MonoBehaviour, UnitInterface
     public Image tauntIcon;
     public Image deathMark;
 
-    private BattleController battleController;
+    private BattleManager battleController;
 
     private const string dataBasePath = "DataBase";
     public string unintDataName = "unitData.json";
-    [SerializeField] private UnitData unitData;
+    private UnitData unitData;
 
-    private UnitSaveData continueUnitStatus;
+    private UnitSaveData unitSaveData;
 
     private List<SkillData> skillsData;
     List<KeyValuePair<int, List<SkillData>>> buffEndRound;
@@ -64,35 +63,18 @@ public class INEScript : MonoBehaviour, UnitInterface
     private SoundManager soundManager;
     public AudioClip attackClip;
 
-    /*
-    [ContextMenu("To Json Data")]
-    void SaveUnitDataToJson()
-    {
-        string jsonData = JsonUtility.ToJson(unitData, true);
-        string path = Path.Combine(Application.dataPath, unitDataPath, unintDataName);
-        File.WriteAllText(path, jsonData);
-    }*/
-
-    //[ContextMenu("From Json Data")]
     private void Awake()
     {
         LoadUnitDataFromJson();
 
         this.animator = GetComponent<Animator>();
-        turnBar.SetActive(false);
-        changeBar.SetActive(false);
-        debuffIcon.enabled = false;
-        buffIcon.enabled = false;
-        posionIcon.enabled = false;
-        angryIcon.enabled = false;
-        tauntIcon.enabled = false;
-        deathMark.enabled = false;
+        SetAllIconEnable(false);
         isPosioning = false;
 
         hpBarImage.fillAmount = 1;
         ScaleSet();
 
-        battleController = GameObject.Find("BattleController").GetComponent<BattleController>();
+        battleController = GameObject.Find("BattleController").GetComponent<BattleManager>();
         soundManager = GameObject.Find("Sound").GetComponent<SoundManager>();
         Canvas unitCanvas = UIcanvas.GetComponent<Canvas>();
         Camera cam = GameObject.Find("Main Camera").GetComponent<Camera>();
@@ -102,6 +84,18 @@ public class INEScript : MonoBehaviour, UnitInterface
 
         buffCount = 0;
         debuffCount = 0;
+    }
+
+    private void SetAllIconEnable(bool setting)
+    {
+        turnBar.SetActive(setting);
+        changeBar.SetActive(setting);
+        debuffIcon.enabled = setting;
+        buffIcon.enabled = setting;
+        posionIcon.enabled = setting;
+        angryIcon.enabled = setting;
+        tauntIcon.enabled = setting;
+        deathMark.enabled = setting;
     }
     void LoadUnitDataFromJson()
     {
@@ -213,6 +207,11 @@ public class INEScript : MonoBehaviour, UnitInterface
         }
 
         bar.transform.localScale = originScale;
+    }
+
+    public void SetUnitSaveData(UnitSaveData _unitSaveData)
+    {
+        this.unitSaveData = _unitSaveData;
     }
 
     public void AIBattleExecute()
@@ -463,3 +462,15 @@ public class INEScript : MonoBehaviour, UnitInterface
     public GameObject GetTauntUnit() { return this.tauntUnit; }
     public bool GetIsTaunt() { return this.isTaunted; }
 }
+
+
+/*
+[ContextMenu("To Json Data")]
+void SaveUnitDataToJson()
+{
+    string jsonData = JsonUtility.ToJson(unitData, true);
+    string path = Path.Combine(Application.dataPath, unitDataPath, unintDataName);
+    File.WriteAllText(path, jsonData);
+}*/
+
+//[ContextMenu("From Json Data")]

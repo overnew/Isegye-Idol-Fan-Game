@@ -5,6 +5,8 @@ using UnityEngine.UI;
 
 public interface UnitInterface
 {
+    public void SetUnitSaveData(UnitSaveData unitSaveData);
+
     public void AIBattleExecute();
     public void BuffSkillExcute(SkillData buffSkill, int roundNum);
     public void CheckEndedEffect(int roundNum);

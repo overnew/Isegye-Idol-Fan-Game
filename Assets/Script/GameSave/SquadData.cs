@@ -7,9 +7,45 @@ using UnityEngine;
 public class SquadData
 {
     [SerializeField] private string[] squadUnitNames;
-    private Dictionary<string, UnitSaveData> unitsSaveData; 
-    
-    public List<GameObject> GetSquadUnitPrefabByName()
+    private Dictionary<string, UnitSaveData> unitsSaveData;
+
+    [SerializeField] private string[] itemNames;
+    [SerializeField] private int[] itemNumbers;
+    private Dictionary<Item, int> itemDictionary;
+
+    public void Init()
+    {
+        LoadSquadUnitSaveData();
+        LoadItemList();
+    }
+    public void LoadSquadUnitSaveData()
+    {
+        unitsSaveData = new Dictionary<string, UnitSaveData>();
+
+        for (int i = 0; i < squadUnitNames.Length; ++i)
+        {
+            unitsSaveData.Add(squadUnitNames[i], LoadUnitStatus(squadUnitNames[i]));
+        }
+    }
+    private void LoadItemList()
+    {
+        itemDictionary = new Dictionary<Item, int>();
+
+        for (int i = 0; i < itemNames.Length; ++i)
+        {
+            itemDictionary.Add(LoadItemFromJson(itemNames[i]), itemNumbers[i]);
+        }
+    }
+
+    private Item LoadItemFromJson(string itemName)
+    {
+        string itemDataPath = Path.Combine("DataBase", "Item");
+        string path = Path.Combine(Application.dataPath, itemDataPath, itemName + ".json");
+        string jsonData = File.ReadAllText(path);
+        return JsonUtility.FromJson<Item>(jsonData);
+    }
+
+    public List<GameObject> GetSquadUnitPrefabs()
     {
         List<GameObject> squadList = new List<GameObject>();
 
@@ -26,15 +62,6 @@ public class SquadData
         return Resources.Load<GameObject>(prefabPath);
     }
     
-    public void LoadSquadUnit()
-    {
-        unitsSaveData = new Dictionary<string, UnitSaveData>();
-
-        for (int i=0; i<squadUnitNames.Length ;++i )
-        {
-            unitsSaveData.Add(squadUnitNames[i], LoadUnitStatus(squadUnitNames[i]));
-        }
-    }
 
     private UnitSaveData LoadUnitStatus(string unitName)
     {
@@ -49,4 +76,7 @@ public class SquadData
     {
         return unitsSaveData[unitName];
     }
+    public string[] GetSquadUnitsName() { return this.squadUnitNames; }
+
+    public Dictionary<Item,int> GetItemDictionary() { return this.itemDictionary; }
 }

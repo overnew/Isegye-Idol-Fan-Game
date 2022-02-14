@@ -18,7 +18,7 @@ public class SaveDataManager
         string jsonData = File.ReadAllText(path);
 
         squadData = JsonUtility.FromJson<SquadData>(jsonData);
-        squadData.LoadSquadUnit();
+        squadData.Init();
     }
 
     public SquadData GetSquadData() { return this.squadData; }

@@ -18,5 +18,5 @@ public class Item
 
     private string iconName;
 
-    public string GetItemIconName() { return this.iconName; }
+    public string GetIconName() { return this.iconName; }
 }

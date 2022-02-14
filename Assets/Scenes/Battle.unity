@@ -774,7 +774,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &310135864
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2133,10 +2133,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0497e5adc1e41a14e989a2dd7ed4e860, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  units:
-  - {fileID: 8944514579612543995, guid: 7a5005b5a46b6ac47a3880336802c0b1, type: 3}
-  - {fileID: 8944514579612543995, guid: 7a5005b5a46b6ac47a3880336802c0b1, type: 3}
-  - {fileID: 8944514579612543995, guid: 7a5005b5a46b6ac47a3880336802c0b1, type: 3}
   enemys:
   - {fileID: 3495864770929858900, guid: 1c7020d86aed7954086659d104cf6a4c, type: 3}
   - {fileID: 3495864770929858900, guid: 1c7020d86aed7954086659d104cf6a4c, type: 3}
@@ -3318,7 +3314,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1866305909
 RectTransform:
   m_ObjectHideFlags: 0

@@ -9,7 +9,7 @@ public class SkillButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
     private const int AVA_RANGE_START_IDX = 0;
     private const int AVA_RANGE_END_IDX = 1;
 
-    private BattleController battleController;
+    private BattleManager battleController;
     private PanelController panelController;
     private SkillData skillData;
 
@@ -21,7 +21,7 @@ public class SkillButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
     void Awake()
     {
         outline = GetComponent<Outline>(); 
-        battleController = GameObject.Find("BattleController").GetComponent<BattleController>();
+        battleController = GameObject.Find("BattleController").GetComponent<BattleManager>();
     }
 
     void Start()

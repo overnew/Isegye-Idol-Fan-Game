@@ -7,19 +7,25 @@ using UnityEngine;
 public class UnitSaveData
 {
     [SerializeField] private float hp;
+
+    /*
     [SerializeField] private string[] itemNames;
     [SerializeField] private int[] itemNumbers;
+    private Dictionary<Item, int> itemList;
 
-    public List<KeyValuePair<Item, int>> LoadItemData()
+    public void Init()
     {
-        List<KeyValuePair<Item, int>> itemAndNumbers = new List<KeyValuePair<Item, int>>();
+        LoadUnitItemList();
+    }
+
+    private void LoadUnitItemList()
+    {
+        itemList = new Dictionary<Item, int>();
 
         for (int i=0; i< itemNames.Length ; ++i)
         {
-            itemAndNumbers.Add(new KeyValuePair<Item, int>(LoadItemFromJson(itemNames[i]), itemNumbers[i]));
+            itemList.Add(LoadItemFromJson(itemNames[i]), itemNumbers[i]);
         }
-
-        return itemAndNumbers;
     }
 
     private Item LoadItemFromJson(string itemName)
@@ -29,6 +35,7 @@ public class UnitSaveData
         string jsonData = File.ReadAllText(path);
         return JsonUtility.FromJson<Item>(jsonData);
     }
+    public Dictionary<Item, int> GetItemList() { return this.itemList; }*/
 
     public float GetHp() { return this.hp; }
 }

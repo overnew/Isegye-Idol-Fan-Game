@@ -5,8 +5,7 @@ using UnityEngine;
 using UnityEngine.Rendering.PostProcessing;
 using UnityEngine.UI;
 
-
-public class BattleController : MonoBehaviour
+public class BattleManager : MonoBehaviour
 {
     private const int RANGE_START_IDX = 0;
     private const int RANGE_END_IDX = 1;
@@ -47,7 +46,7 @@ public class BattleController : MonoBehaviour
         InstantBattleUnits();
 
         panelController = new PanelController();
-        panelController.Initialize();
+        panelController.Initialize(squadData);
         roundController = gameObject.GetComponent<RoundController>();
     }
 
@@ -59,16 +58,17 @@ public class BattleController : MonoBehaviour
         BattleStart();
     }
 
-    void Update() { }
-
     private void InstantBattleUnits()
     {
-        List<GameObject> squadPrefabs = squadData.GetSquadUnitPrefabByName();
-
+        List<GameObject> squadPrefabs = squadData.GetSquadUnitPrefabs();
+        string[] squadUnitsName = squadData.GetSquadUnitsName();
         Vector3 instantPosition = new Vector3(transform.position.x, transform.position.y -1, 0);
 
-        for (int i=0; i< squadPrefabs.Count; ++i)
+        for (int i=0; i< squadPrefabs.Count; ++i)   //아군 유닛은 180 방향 전환
+        {
             squadList.Add(Instantiate(squadPrefabs[i], instantPosition + (Vector3.left * (i * 2 + 1)), Quaternion.Euler(0, 180.0f, 0)));
+            squadList[i].GetComponent<UnitInterface>().SetUnitSaveData(squadData.GetUnitSaveDataByName(squadUnitsName[i]));   
+        }
 
         for (int i = 0; i < enemys.Length; ++i)
             enemyList.Add(Instantiate(enemys[i], instantPosition + (Vector3.right * (i * 2 + 1)), Quaternion.identity)) ;
