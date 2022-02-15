@@ -45,8 +45,7 @@ public class BattleManager : MonoBehaviour
         squadData = saveData.GetSquadData();
         InstantBattleUnits();
 
-        panelController = new PanelController();
-        panelController.Initialize(squadData);
+        panelController = new PanelController(squadData);
         roundController = gameObject.GetComponent<RoundController>();
     }
 

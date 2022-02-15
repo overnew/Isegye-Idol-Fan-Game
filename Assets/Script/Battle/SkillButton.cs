@@ -64,7 +64,7 @@ public class SkillButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
     public void SetSkillToButton(SkillData data)
     {
         skillData = data;
-        desc.text = skillData.GetSkillDescription();
+        desc.text = skillData.GetAbilityDesc();
         gameObject.GetComponent<Button>().interactable = true;
 
         if (!CheckUnitIsAvailableRange(battleController.GetTurnUnitPosition()))

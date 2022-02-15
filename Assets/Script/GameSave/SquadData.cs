@@ -9,8 +9,8 @@ public class SquadData
     [SerializeField] private string[] squadUnitNames;
     private Dictionary<string, UnitSaveData> unitsSaveData;
 
-    [SerializeField] private string[] itemNames;
-    [SerializeField] private int[] itemNumbers;
+    [SerializeField] private string[] itemNames = { };
+    [SerializeField] private int[] itemNumbers = { };
     private Dictionary<Item, int> itemDictionary;
 
     public void Init()

@@ -39,7 +39,7 @@ public class UnitControlloer : MonoBehaviour, UnitInterface
     private UnitSaveData unitSaveData;
 
     private List<SkillData> skillsData;
-    List<KeyValuePair<int, List<SkillData>>> buffEndRound;
+    List<KeyValuePair<int, List<AbilityInterface>>> buffEndRound;
 
     private bool isTaunted = false;
     private GameObject tauntUnit;
@@ -80,7 +80,7 @@ public class UnitControlloer : MonoBehaviour, UnitInterface
         Camera cam = GameObject.Find("Main Camera").GetComponent<Camera>();
         unitCanvas.worldCamera = cam;
 
-        buffEndRound = new List<KeyValuePair<int, List<SkillData>>>();
+        buffEndRound = new List<KeyValuePair<int, List<AbilityInterface>>>();
 
         buffCount = 0;
         debuffCount = 0;
@@ -303,7 +303,7 @@ public class UnitControlloer : MonoBehaviour, UnitInterface
         conditionText.SetActive(false);
     }
 
-    public void BuffSkillExcute(SkillData buffSkill, int roundNum)
+    public void BuffSkillExcute(AbilityInterface buffSkill, int roundNum)
     {
         if (buffSkill.GetBuffEffectedStatus().Equals("hp"))
         {
@@ -374,9 +374,9 @@ public class UnitControlloer : MonoBehaviour, UnitInterface
         battleController.DestoryReservedUnits();
     }
 
-    private void StoreRoundEndBuff(SkillData buffSkill, int roundNum)
+    private void StoreRoundEndBuff(AbilityInterface buffSkill, int roundNum)
     {
-        int storedIndex = buffEndRound.FindIndex((KeyValuePair<int, List<SkillData>> data) => (data.Key.Equals(buffSkill.GetEffectedRound() + roundNum)));
+        int storedIndex = buffEndRound.FindIndex((KeyValuePair<int, List<AbilityInterface>> data) => (data.Key.Equals(buffSkill.GetEffectedRound() + roundNum)));
 
         if ( storedIndex != -1)
         {
@@ -384,9 +384,9 @@ public class UnitControlloer : MonoBehaviour, UnitInterface
         }
         else
         {
-            List<SkillData> buffList = new List<SkillData>();
+            List<AbilityInterface> buffList = new List<AbilityInterface>();
             buffList.Add(buffSkill);
-            buffEndRound.Add(new KeyValuePair<int, List<SkillData>>(buffSkill.GetEffectedRound() + roundNum, buffList));
+            buffEndRound.Add(new KeyValuePair<int, List<AbilityInterface>>(buffSkill.GetEffectedRound() + roundNum, buffList));
         }
     }
 
@@ -414,7 +414,7 @@ public class UnitControlloer : MonoBehaviour, UnitInterface
         int storedIndex = buffEndRound.FindIndex((data) => (data.Key.Equals(roundNum)));
         if (storedIndex != -1)
         {
-            List<SkillData> buffList = buffEndRound[storedIndex].Value;
+            List<AbilityInterface> buffList = buffEndRound[storedIndex].Value;
             
             for(int i=0; i <buffList.Count ;++i)
             {

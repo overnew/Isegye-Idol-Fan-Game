@@ -2055,11 +2055,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 9202490159701661161}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7c5280954e92f3942a12ca618a53bae8, type: 3}
+  m_Script: {fileID: 11500000, guid: 5d18547a00c7b224c814b8bf0841c03d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   unit: {fileID: 9202490159701661161}
-  animator: {fileID: 718767595643375160}
+  animator: {fileID: 0}
   unitButton: {fileID: 1244384176857623503}
   conditionText: {fileID: 8904169522359593274}
   UIcanvas: {fileID: 2377518767093062346}
@@ -2075,18 +2075,4 @@ MonoBehaviour:
   tauntIcon: {fileID: 6738024873615265407}
   deathMark: {fileID: 6366513685912154861}
   unintDataName: unitData.json
-  unitData:
-    unitName: 
-    unitType: 
-    isEnemyUnit: 0
-    maxHp: 0
-    stepSpeed: 0
-    attackPowerRange: 
-    bonusPower: 0
-    defense: 0
-    accuracy: 0
-    critical: 0
-    avoidability: 0
-    skillNames: []
-    unitIconName: 
   attackClip: {fileID: 8300000, guid: 6c2f2421adfd65f4b983e7b85244f81b, type: 3}

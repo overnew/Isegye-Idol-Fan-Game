@@ -72,7 +72,7 @@ public class UnitData
         return JsonUtility.FromJson<SkillData>(jsonData);
     }
 
-    public void ApplyBuffEffect(SkillData skillData, bool isBuffCancle)
+    public void ApplyBuffEffect(AbilityInterface skillData, bool isBuffCancle)
     {
         var bindingFlags = BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Static;
         string effectedStatus = skillData.GetBuffEffectedStatus();

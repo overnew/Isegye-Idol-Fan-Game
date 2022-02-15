@@ -2,7 +2,7 @@ using System.Text;
 using UnityEngine;
 
 [System.Serializable]
-public class SkillData 
+public class SkillData : AbilityInterface
 {
     private const string SKILL_DESC_SETTING = "{0}\n{1}\nµ¥¹ÌÁö: {2}\n\n{3}";
     [SerializeField] private string name;
@@ -67,5 +67,5 @@ public class SkillData
     public string GetBuffEffectedStatus() { return effectedStatus; }
 
     public bool GetIsPosChanger() { return isPosChanger; }
-    public string GetSkillDescription() { return SetSkillDescription(); }
+    public string GetAbilityDesc() { return SetSkillDescription(); }
 }

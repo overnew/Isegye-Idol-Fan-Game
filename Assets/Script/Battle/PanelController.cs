@@ -21,6 +21,11 @@ public class PanelController
     private GameObject itemPanel;
     private Button[] itemButtons;
 
+    internal PanelController(SquadData _squadData)
+    {
+        Initialize(_squadData);
+    }
+
     internal void Initialize(SquadData _squadData)
     {
         turnUnitIcon = GameObject.Find("unitIcon").GetComponent<Image>();
@@ -33,8 +38,8 @@ public class PanelController
         skillButtons = skillPanel.GetComponentsInChildren<Button>();
 
         this.squadData = _squadData;
-        itemPanel = GameObject.Find("itemPanel");
-        itemButtons = itemPanel.GetComponentsInChildren<Button>();
+        //itemPanel = GameObject.Find("itemPanel");
+        //itemButtons = itemPanel.GetComponentsInChildren<Button>();
     }
 
     internal void LoadTurnUnitStatus(GameObject turnUnit,UnitData turnUnitData)
