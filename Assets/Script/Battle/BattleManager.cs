@@ -20,7 +20,8 @@ public class BattleManager : MonoBehaviour
     private UnitData turnUnitData;
     private int turnUnitPosition;
 
-    private SkillData selectedSkill;
+    private AbilityInterface selectedAbility;
+    private bool isItemSelected = false;
 
     private bool isTurnEnd = false;
 
@@ -34,7 +35,7 @@ public class BattleManager : MonoBehaviour
     private int endedAnimationCount = 0;
 
     private PanelController panelController;
-    private RoundController roundController;
+    private RoundManager roundManager;
 
     private SaveDataManager saveData;
     private SquadData squadData;
@@ -46,7 +47,7 @@ public class BattleManager : MonoBehaviour
         InstantBattleUnits();
 
         panelController = new PanelController(squadData);
-        roundController = gameObject.GetComponent<RoundController>();
+        roundManager = gameObject.GetComponent<RoundManager>();
     }
 
     void Start()
@@ -83,19 +84,30 @@ public class BattleManager : MonoBehaviour
         while (true)
         {
             if (turnList.Count == 0)
-            {
-                roundController.ChangeRound();
-                EndedBuffCheck();
-                turnList = SetUnitsTurnOrder();
-            }
+                EndRoundOperate();
 
             PlayTurn();
             yield return new WaitUntil(() => isTurnEnd);
 
-            panelController.OffAllSkillOutLine();
-            DestoryReservedUnits();
+            EndTurnOperate();
             yield return new WaitForSeconds(1.5f);  //잠시 대기
         }
+    }
+
+    private void EndRoundOperate()  //라운드 종료시 필요한 작업들
+    {
+        roundManager.ChangeRound();
+        EndedBuffCheck();
+        turnList = SetUnitsTurnOrder(); //새로운 턴 순서 주입
+    }
+
+    private void EndTurnOperate()   //턴 종료시 필요한 작업들
+    {
+        if (isItemSelected) //item 사용시 개수 감소 적용
+            panelController.ApplyItemUse((Item)selectedAbility);
+
+        panelController.OffAllButtonOutLine();
+        DestoryReservedUnits();
     }
 
     private void PlayTurn()
@@ -224,10 +236,10 @@ public class BattleManager : MonoBehaviour
     private void EndedBuffCheck()
     {
         for (int i=0; i<squadList.Count ; ++i)
-            squadList[i].GetComponent<UnitInterface>().CheckEndedEffect(roundController.GetRoundCounter());
+            squadList[i].GetComponent<UnitInterface>().CheckEndedEffect(roundManager.GetRoundCounter());
 
         for (int i = 0; i < enemyList.Count; ++i)
-            enemyList[i].GetComponent<UnitInterface>().CheckEndedEffect(roundController.GetRoundCounter());
+            enemyList[i].GetComponent<UnitInterface>().CheckEndedEffect(roundManager.GetRoundCounter());
 
     }
 
@@ -237,33 +249,33 @@ public class BattleManager : MonoBehaviour
 
         blurCamera.GetComponent<BlurCamera>().CameraAction(true, turnUnitData.GetIsEnemy());
 
-        if (selectedSkill.GetBuffEffectedStatus().Equals("taunt"))
+        if (selectedAbility.GetBuffEffectedStatus().Equals("taunt"))
             turnUnit.GetComponent<UnitInterface>().SetTauntIcon(true);
 
-        if (selectedSkill.GetIsSplashSkill())
+        if (selectedAbility.GetIsSplashSkill())
         {
-            targeredUnits = GetTargetedEnemy(selectedSkill.GetAttackRange(), selectedSkill.GetIsTargetedEnemy());
+            targeredUnits = GetTargetedEnemy(selectedAbility.GetAttackRange(), selectedAbility.GetIsTargetedEnemy());
 
             SkillAnimationStart(targeredUnits);
             for (int i = 0; i < targeredUnits.Length; ++i)
             {
-                if (selectedSkill.GetIsBuff())
-                    targeredUnits[i].GetComponent<UnitInterface>().BuffSkillExcute(selectedSkill, roundController.GetRoundCounter());
+                if (selectedAbility.GetIsBuff())
+                    targeredUnits[i].GetComponent<UnitInterface>().BuffSkillExcute(selectedAbility, roundManager.GetRoundCounter());
 
-                if(selectedSkill.GetSkillDamage() != 0)
+                if(selectedAbility.GetSkillDamage() != 0)
                     targeredUnits[i].GetComponent<UnitInterface>().GetDamage();
             }
             return;
         }
 
-        if(!selectedSkill.GetIsPosChanger())
+        if(!selectedAbility.GetIsPosChanger())
             targeredUnits = new GameObject[] { selectedUnit };
         SkillAnimationStart(targeredUnits);
 
-        if (selectedSkill.GetIsBuff())
-            selectedUnit.GetComponent<UnitInterface>().BuffSkillExcute(selectedSkill, roundController.GetRoundCounter());
+        if (selectedAbility.GetIsBuff())
+            selectedUnit.GetComponent<UnitInterface>().BuffSkillExcute(selectedAbility, roundManager.GetRoundCounter());
 
-        if (selectedSkill.GetSkillDamage() != 0)
+        if (selectedAbility.GetSkillDamage() != 0)
             selectedUnit.GetComponent<UnitInterface>().GetDamage();
     }
     private void SkillAnimationStart(GameObject[] targetedUnits)
@@ -285,7 +297,7 @@ public class BattleManager : MonoBehaviour
             squadUnits.Add(turnUnit);
         }
 
-        if(selectedSkill.GetIsTargetedEnemy() && targetedUnits != null)
+        if(selectedAbility.GetIsTargetedEnemy() && targetedUnits != null)
         {
             if (targetedUnits[0].GetComponent<UnitInterface>().GetUnitData().GetIsEnemy())
                 enemyUnits.AddRange(targetedUnits);
@@ -504,7 +516,7 @@ public class BattleManager : MonoBehaviour
         if (attackRange[RANGE_START_IDX] >= targetList.Count)
             return null;
 
-        if (turnUnit.GetComponent<UnitInterface>().GetIsTaunt() && isTargetedMyEnemy && !selectedSkill.GetIsSplashSkill())
+        if (turnUnit.GetComponent<UnitInterface>().GetIsTaunt() && isTargetedMyEnemy && !selectedAbility.GetIsSplashSkill())
         {   // 도발에 걸린 경우 상대 선택이 가능한 스킬은 도발 상대만 반환
             int tauntIdx = targetList.IndexOf(turnUnit.GetComponent<UnitInterface>().GetTauntUnit());
             if (attackRange[RANGE_START_IDX] <= tauntIdx && tauntIdx <= attackRange[RANGE_END_IDX])
@@ -527,8 +539,14 @@ public class BattleManager : MonoBehaviour
 
     public GameObject GetTurnUnit() { return this.turnUnit; }
     public int GetTurnUnitPosition() { return this.turnUnitPosition; }
-    public void SetSelectedSkillData(SkillData data) { this.selectedSkill = data;}
-    public SkillData GetSelectedSkillData() { return this.selectedSkill; }
+    public void SetSelectedAbilityData(AbilityInterface data, bool setting) 
+    { 
+        this.selectedAbility = data;
+        SetIsItemSelected(setting);
+    }
+    private void SetIsItemSelected(bool setting) { this.isItemSelected = setting; }
+
+    public AbilityInterface GetSelectedAbilityData() { return this.selectedAbility; }
 
     public float GetTotalDamage() {
         System.Random random = new System.Random();
@@ -537,7 +555,7 @@ public class BattleManager : MonoBehaviour
         if (Random.Range(0, 100f) > turnUnitData.GetAccuracy())
             return 0f;  //명중이 안되는 경우
 
-        float totalDamage = random.Next(attackPowerRange[0], attackPowerRange[1] + 1) + (int)turnUnitData.GetBonusPower() + selectedSkill.GetSkillDamage();
+        float totalDamage = random.Next(attackPowerRange[0], attackPowerRange[1] + 1) + (int)turnUnitData.GetBonusPower() + selectedAbility.GetSkillDamage();
 
         if (Random.Range(0, 100f) <= turnUnitData.GetCritical())
             totalDamage *= 2f;
@@ -547,6 +565,5 @@ public class BattleManager : MonoBehaviour
     public void SetPosChanger(bool setting){this.posChangerActive = setting;}
 
     public bool GetPosChanger(){return this.posChangerActive;}
-
     internal PanelController GetPanelController() { return this.panelController; }
 }

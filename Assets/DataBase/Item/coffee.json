@@ -1,0 +1,19 @@
+{
+    "name" : "커피",
+    "damage" : 0,
+
+    "isBuff" : true,
+    "effectedStatus" : "hp",
+    "effectValue" : 10,
+    "effectedRound" : 0,
+
+    "isPosChanger": false,
+
+    "isTargetedEnemy" : false,
+    "availableRange": [0,3],
+    "attackRange": [0,2],
+    "isSplash": true,
+    
+    "iconName": "coffee",
+    "itemDescription": "따뜻한 아메리카노."
+}

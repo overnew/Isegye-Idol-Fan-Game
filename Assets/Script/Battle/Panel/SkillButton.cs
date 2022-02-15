@@ -6,12 +6,12 @@ using UnityEngine.EventSystems;
 
 public class SkillButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 {
-    private const int AVA_RANGE_START_IDX = 0;
-    private const int AVA_RANGE_END_IDX = 1;
+    private const int RANGE_START_IDX = 0;
+    private const int RANGE_END_IDX = 1;
 
     private BattleManager battleController;
     private PanelController panelController;
-    private SkillData skillData;
+    private AbilityInterface skillData;
 
     //스킬 설명란
     private Outline outline;
@@ -34,12 +34,11 @@ public class SkillButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
 
     public void OnClickSelect()
     {
-        panelController.OffAllSkillOutLine();
+        panelController.OffAllButtonOutLine();
         battleController.OffAllUnitsBar();
         outline.enabled = true;
 
-        battleController.SetSelectedSkillData(skillData);
-        //if(battleController)
+        battleController.SetSelectedAbilityData(skillData, false);
         SetEnemyTargetBar(battleController.GetTargetedEnemy(skillData.GetAttackRange(), skillData.GetIsTargetedEnemy()), true);
     }
 
@@ -61,7 +60,7 @@ public class SkillButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
         }
     }
 
-    public void SetSkillToButton(SkillData data)
+    public void SetSkillToButton(AbilityInterface data)
     {
         skillData = data;
         desc.text = skillData.GetAbilityDesc();
@@ -75,7 +74,7 @@ public class SkillButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
     {
         int[] range = skillData.GetAvailableRange();
 
-        if (unitPosition < range[AVA_RANGE_START_IDX] || range[AVA_RANGE_END_IDX] < unitPosition)
+        if (unitPosition < range[RANGE_START_IDX] || range[RANGE_END_IDX] < unitPosition)
             return false;
 
         return true;

@@ -232,7 +232,7 @@ public class UnitControlloer : MonoBehaviour, UnitInterface
     private IEnumerator SlowlyExcuteSkill(int randomSkillIdx, GameObject randomEnemy)
     {
         yield return new WaitForSeconds(1.5f);    //잠시 대기 후 스킬 시전
-        battleController.SetSelectedSkillData(skillsData[randomSkillIdx]);
+        battleController.SetSelectedAbilityData(skillsData[randomSkillIdx], false);
         battleController.SkillExcute(randomEnemy);
         battleController.EndUnitTurn();
     }
@@ -251,7 +251,7 @@ public class UnitControlloer : MonoBehaviour, UnitInterface
 
         battleController.OffAllUnitsBar();
 
-        if (battleController.GetSelectedSkillData().GetIsPosChanger())
+        if (battleController.GetSelectedAbilityData().GetIsPosChanger())
         {
             battleController.PullUnitToFront(gameObject);
             battleController.SkillExcute(gameObject);

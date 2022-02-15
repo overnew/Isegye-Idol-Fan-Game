@@ -32,7 +32,7 @@ public class PositionChanger : MonoBehaviour, IPointerEnterHandler, IPointerExit
 
     public void OnClickPositionChanger()
     {
-        panelController.OffAllSkillOutLine();
+        panelController.OffAllButtonOutLine();
         outline.enabled = true;
 
         battleController.OffAllUnitsBar();

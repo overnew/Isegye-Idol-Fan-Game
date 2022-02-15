@@ -6,14 +6,15 @@ using UnityEngine;
 [System.Serializable]
 public class Item : AbilityInterface
 {
-    private const string ITEM_DESC_SETTING = "";
+    private const int RANGE_START_IDX = 0;
+    private const int RANGE_END_IDX = 1;
+    private const string ITEM_DESC_SETTING = "{0}\n{1}\nµ¥¹ÌÁö: {2}\n\n{3}";
 
     [SerializeField] private string name;
-
     [SerializeField] private float damage;
 
     [SerializeField] private bool isBuff;
-    [SerializeField] private string effectedStatus = "";
+    [SerializeField] private string effectedStatus;
     [SerializeField] private float effectValue;
     [SerializeField] private int effectedRound;
 
@@ -27,13 +28,20 @@ public class Item : AbilityInterface
     [SerializeField] private string iconName;
     [SerializeField] private string itemDescription;
 
+    public bool Equal(object obj)
+    {
+        if (((Item)obj).GetIconName().Equals(this.iconName))
+            return true;
+        return false;
+    }
+
     private string RangeVisualToString()
     {
         StringBuilder rangeText = new StringBuilder();
 
         for (int i = 0; i < 4; ++i)
         {
-            if (attackRange[0] <= i && i <= attackRange[1])
+            if (attackRange[RANGE_START_IDX] <= i && i <= attackRange[RANGE_END_IDX])
                 rangeText.Append("<color=#FE4554>o</color>");
             else
                 rangeText.Append("<color=#919191>o</color>");

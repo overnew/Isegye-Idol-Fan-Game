@@ -38,8 +38,9 @@ public class PanelController
         skillButtons = skillPanel.GetComponentsInChildren<Button>();
 
         this.squadData = _squadData;
-        //itemPanel = GameObject.Find("itemPanel");
-        //itemButtons = itemPanel.GetComponentsInChildren<Button>();
+        itemPanel = GameObject.Find("itemPanel");
+        itemButtons = itemPanel.GetComponentsInChildren<Button>();
+        ItemPanelLoad();
     }
 
     internal void LoadTurnUnitStatus(GameObject turnUnit,UnitData turnUnitData)
@@ -48,6 +49,12 @@ public class PanelController
         unitInfoText.text = turnUnitData.GetUnitInfo();
         unitStatusText.text = turnUnitData.GetUnitStatus(turnUnit);
 
+        SkillPanelLoad(turnUnit);
+        SetItemButtonInteractable();
+    }
+
+    private void SkillPanelLoad(GameObject turnUnit)
+    {
         skills = turnUnit.GetComponent<UnitInterface>().GetUnitSkills();
         const string skillIconPath = "SkillsIcon/";
 
@@ -58,27 +65,50 @@ public class PanelController
         }
     }
 
+    private void SetItemButtonInteractable()
+    {
+        for (int i = 0; i < itemButtons.Length; ++i)
+        {
+            if (itemButtons[i].GetComponent<ItemButton>().GetRemainNum() <= 0)
+                itemButtons[i].interactable = false;
+            else
+                itemButtons[i].interactable = true;
+        }
+    }
+
     private void ItemPanelLoad()
     {
         const string itemIconPath = "ItemIcon/";
         Dictionary<Item, int> itemDictionary = squadData.GetItemDictionary();
 
-        SetAllItemButtonEnable(false);
-
         int buttonIdx = 0;
         foreach (KeyValuePair<Item, int> itemPair in itemDictionary)
         {
-            itemButtons[buttonIdx++].GetComponent<Image>().sprite = Resources.Load<Sprite>(itemIconPath + itemPair.Key.GetIconName());
-
+            itemButtons[buttonIdx].GetComponent<Image>().sprite = Resources.Load<Sprite>(itemIconPath + itemPair.Key.GetIconName());
+            itemButtons[buttonIdx++].GetComponent<ItemButton>().SetItemToButton(itemPair.Key, itemPair.Value);
         }
-
+        
+        for (int i = buttonIdx; i< itemButtons.Length ; ++buttonIdx )
+        {
+            itemButtons[buttonIdx].enabled = false;
+        }
     }
 
-    private void SetAllItemButtonEnable(bool setting)
+    internal void ApplyItemUse(Item item)
     {
-        for (int i=0; i< itemButtons.Length; ++i)
+        squadData.ApplyItemUse(item);
+
+        Dictionary<Item, int> itemDictionary = squadData.GetItemDictionary();
+        int buttonIdx = 0;
+
+        foreach (KeyValuePair<Item, int> itemPair in itemDictionary)
         {
-            itemButtons[i].enabled = setting;
+            if (itemPair.Key.Equals(item))  //사용한 아이템의 개수 줄여주기 적용
+            {
+                itemButtons[buttonIdx].GetComponent<ItemButton>().SetRemainNum(itemPair.Value.ToString());
+                break;
+            }
+            ++buttonIdx;
         }
     }
 
@@ -101,14 +131,24 @@ public class PanelController
         {
             skillButtons[i].interactable = false;
         }
+
+        for (int i = 0; i < itemButtons.Length; ++i)
+        {
+            itemButtons[i].interactable = false;
+        }
     }
-    internal void OffAllSkillOutLine()
+    internal void OffAllButtonOutLine()
     {
         for (int i = 0; i < skillButtons.Length - 1; ++i)
         {
             skillButtons[i].GetComponent<SkillButton>().SetOutline(false);
         }
         skillButtons[skillButtons.Length - 1].GetComponent<PositionChanger>().SetOutline(false);
+
+        for (int i = 0; i < itemButtons.Length; ++i)
+        {
+            itemButtons[i].GetComponent<ItemButton>().SetOutline(false);
+        }
     }
 
     internal void ActivePosChangerButton() { skillButtons[POS_CHANGER_IDX].interactable = true; }

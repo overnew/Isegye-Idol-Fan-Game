@@ -1,3 +1,5 @@
 {
-    "squadUnitNames": ["Ine" ]
+    "squadUnitNames": ["Ine" ],
+    "itemNames": ["coffee"],
+    "itemNumbers" : [2]
 }

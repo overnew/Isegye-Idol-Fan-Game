@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class RoundController :MonoBehaviour
+public class RoundManager :MonoBehaviour
 {
     private int roundCounter = 0;
     private Text roundText;

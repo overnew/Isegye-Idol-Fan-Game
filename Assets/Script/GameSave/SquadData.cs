@@ -9,8 +9,8 @@ public class SquadData
     [SerializeField] private string[] squadUnitNames;
     private Dictionary<string, UnitSaveData> unitsSaveData;
 
-    [SerializeField] private string[] itemNames = { };
-    [SerializeField] private int[] itemNumbers = { };
+    [SerializeField] private string[] itemNames;
+    [SerializeField] private int[] itemNumbers;
     private Dictionary<Item, int> itemDictionary;
 
     public void Init()
@@ -70,6 +70,11 @@ public class SquadData
         string jsonData = File.ReadAllText(path);
 
         return JsonUtility.FromJson<UnitSaveData>(jsonData);
+    }
+
+    public void ApplyItemUse(Item item)
+    {
+        int remainNum = --itemDictionary[item];
     }
 
     public UnitSaveData GetUnitSaveDataByName(string unitName)
