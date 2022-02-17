@@ -50,7 +50,7 @@ public class UnitControlloer : MonoBehaviour, UnitInterface
     private int posionEndRound = 0;
 
     private float hp;
-    private float height = -0.5f;
+    private float barHeight = -2.6f;
     private float buttonHeight = 1.3f;
     private float damageHeight = 2f;
     private float damageXpos = -0.4f;
@@ -136,7 +136,7 @@ public class UnitControlloer : MonoBehaviour, UnitInterface
     {
         if (!unitData.GetIsEnemy())
             damageXpos *= -1;
-        Vector3 hpBarPos = new Vector3(transform.position.x, transform.position.y + height, 0);
+        Vector3 hpBarPos = new Vector3(transform.position.x, transform.position.y - barHeight, 0);
         targetBar.transform.position = turnBar.transform.position = changeBar.transform.position = hpBar.transform.position = hpBarPos;
         deathMark.transform.position = new Vector3(transform.position.x, transform.position.y + 1f, 0);
         

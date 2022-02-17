@@ -62,7 +62,7 @@ public class BattleManager : MonoBehaviour
     {
         List<GameObject> squadPrefabs = squadData.GetSquadUnitPrefabs();
         string[] squadUnitsName = squadData.GetSquadUnitsName();
-        Vector3 instantPosition = new Vector3(transform.position.x, transform.position.y -1, 0);
+        Vector3 instantPosition = new Vector3(transform.position.x, transform.position.y -1.35f, 0);
 
         for (int i=0; i< squadPrefabs.Count; ++i)   //아군 유닛은 180 방향 전환
         {
