@@ -15,5 +15,7 @@
     "isSplash": true,
     
     "iconName": "coffee",
-    "itemDescription": "따뜻한 아메리카노."
+    "itemDescription": "따뜻한 아메리카노.",
+
+    "sellingNumber": 2
 }

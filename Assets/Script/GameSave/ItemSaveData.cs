@@ -8,7 +8,6 @@ public class ItemSaveData
 {
     [SerializeField] string[] names;
     private Dictionary<string, Item> allItemDictionary;
-    private List<Item> allItemList;
 
     internal void Init()
     {
@@ -34,4 +33,10 @@ public class ItemSaveData
     }
 
     internal Dictionary<string, Item> GetAllItemDictionary() { return this.allItemDictionary; }
+    internal List<string> GetAllItemName() 
+    {
+        List<string> temp = new List<string>();
+        temp.AddRange(names);
+        return temp; 
+    }
 }

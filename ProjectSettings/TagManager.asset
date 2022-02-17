@@ -44,6 +44,9 @@ TagManager:
   - name: backGround
     uniqueID: 2234545813
     locked: 0
+  - name: Object
+    uniqueID: 4289695845
+    locked: 0
   - name: line
     uniqueID: 1095680205
     locked: 0

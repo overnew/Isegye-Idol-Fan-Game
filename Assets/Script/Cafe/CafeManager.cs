@@ -5,19 +5,26 @@ using UnityEngine.UI;
 public class CafeManager : MonoBehaviour
 {
     private GameObject cafePanel;
+    private SaveDataManager saveDataManager;
 
-    private void AWake()
+    void Awake()
     {
-        cafePanel = GameObject.Find("CafePanel").GetComponent<GameObject>();
+        saveDataManager = new SaveDataManager();
+        cafePanel = GameObject.Find("CafePanel");
+        cafePanel.GetComponent<CafePanel>().Init(saveDataManager);
     }
 
+    internal SaveDataManager GetSaveDataManager() { return this.saveDataManager; }
+
+    /*
     private void OnMouseDown()
     {
         cafePanel.active = true;
     }
+
     private void OnMouseEnter()
     {
 
-    }
+    }*/
 
 }

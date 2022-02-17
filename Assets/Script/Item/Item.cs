@@ -28,6 +28,9 @@ public class Item : AbilityInterface
     [SerializeField] private string iconName;
     [SerializeField] private string itemDescription;
 
+    [SerializeField] private int sellingNumber;
+    [SerializeField] private int price;
+
     public bool Equal(object obj)
     {
         if (((Item)obj).GetIconName().Equals(this.iconName))
@@ -68,4 +71,7 @@ public class Item : AbilityInterface
     public string GetAbilityDesc() { return SetItemDescription(); }
 
     public string GetIconName() { return this.iconName; }
+
+    public int GetSellingNumber() { return this.sellingNumber; }
+    public int GetPrice() { return this.price; }
 }
