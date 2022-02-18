@@ -8,6 +8,15 @@ public class CafePanel : MonoBehaviour
     private CafeManager cafeManager;
     private SaveDataManager saveDataManager;
     private Button[] itemButtons;
+
+    private CafeItemButton selectedButton;
+    private Item selectedItem;
+    private float saleProbability = 80f;
+
+    public Image itemImage;
+    public Text itemInfo;
+    public Button parchaseButton;
+
     private void Awake()
     {
         //gameObject.active = false;
@@ -28,23 +37,20 @@ public class CafePanel : MonoBehaviour
         List<string> allitemNames = itemSaveData.GetAllItemName();
 
         List<int> selectedItemIdx = new List<int>();
-        for (int i=0; i<itemButtons.Length ; ++i)
+        for (int i=0; i<itemButtons.Length-1 ; ++i)
         {
             selectedItemIdx.Add(GetUnreapedIdxInList(selectedItemIdx));
-            Debug.Log(selectedItemIdx);
         }
 
-        for (int i = 0; i < itemButtons.Length; ++i)
+        for (int idx = 0; idx < itemButtons.Length-1; ++idx)
         {
-            LoadItemToButton(i,allItemDictionary[allitemNames[selectedItemIdx[i]]]);
+            LoadItemToButton(idx,allItemDictionary[allitemNames[selectedItemIdx[idx]]]);
         }
     }
 
     private void LoadItemToButton(int buttomIdx , Item item)
     {
-        const string iconPath = "ItemIcon/";
-        itemButtons[buttomIdx].GetComponent<Image>().sprite = Resources.Load<Sprite>(iconPath + item.GetIconName());
-        itemButtons[buttomIdx].GetComponent<CafeItemButton>().SetItemToButton(item);
+        itemButtons[buttomIdx].GetComponent<CafeItemButton>().SetItemToButton(this, item);
     }
 
     private int GetUnreapedIdxInList(List<int> selectedItemIdx) //리스트 내의 중복된 index는 제외함
@@ -52,9 +58,36 @@ public class CafePanel : MonoBehaviour
         int nextIdx;
         do
         {
-            nextIdx = Random.Range(0, itemButtons.Length);
+            nextIdx = Random.Range(0, itemButtons.Length-1);
         } while (selectedItemIdx.Contains(nextIdx));
 
         return nextIdx;
     }
+
+    public void ParchaseButtonClick()
+    {
+        selectedButton.ParchaseExcute();
+
+        if(selectedButton.GetRemainNumber() <= 0)
+            parchaseButton.enabled = false;
+    }
+
+    internal void SetSelectdItem(Item item, CafeItemButton cafeItemButton) 
+    { 
+        this.selectedItem = item;
+        this.selectedButton = cafeItemButton;
+        SetSelectedPanel();
+
+        if (selectedButton.GetRemainNumber() <=0)
+            parchaseButton.enabled = false;
+    }
+    private void SetSelectedPanel()
+    {
+        const string iconPath = "ItemIcon/";
+        itemImage.sprite = Resources.Load<Sprite>(iconPath + selectedItem.GetIconName());
+        itemInfo.text = selectedItem.GetAbilityDesc();
+    }
+
+
+    internal float GetSaleProbability() { return this.saleProbability; }
 }

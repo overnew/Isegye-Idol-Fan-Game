@@ -74,4 +74,5 @@ public class Item : AbilityInterface
 
     public int GetSellingNumber() { return this.sellingNumber; }
     public int GetPrice() { return this.price; }
+    public string GetName() { return this.name; }
 }
