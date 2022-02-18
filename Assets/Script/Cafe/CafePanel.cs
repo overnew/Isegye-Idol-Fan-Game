@@ -5,6 +5,10 @@ using UnityEngine.UI;
 
 public class CafePanel : MonoBehaviour
 {
+    const string PRICE = "가격 : ";
+    const string MONEY_UNIT = "G";
+    const string BALANCE_MARK = "잔돈: ";
+
     private CafeManager cafeManager;
     private SaveDataManager saveDataManager;
     private Button[] itemButtons;
@@ -12,10 +16,14 @@ public class CafePanel : MonoBehaviour
     private CafeItemButton selectedButton;
     private Item selectedItem;
     private float saleProbability = 80f;
+    private int playerBalance;
 
+    public GameObject itemPanel;
     public Image itemImage;
     public Text itemInfo;
     public Button parchaseButton;
+    public Text itemPrice;
+    public Text balance;
 
     private void Awake()
     {
@@ -25,8 +33,11 @@ public class CafePanel : MonoBehaviour
     internal void Init(SaveDataManager _saveDataManager)
     {
         this.saveDataManager = _saveDataManager;
-        itemButtons = gameObject.GetComponentsInChildren<Button>();
+        itemButtons = itemPanel.GetComponentsInChildren<Button>();
         cafeManager = GameObject.Find("CafeManager").GetComponent<CafeManager>();
+        playerBalance = saveDataManager.GetBalance();
+        balance.text = BALANCE_MARK + playerBalance.ToString() + MONEY_UNIT;
+
         LoadPanelItemRandomly();
     }
 
@@ -37,12 +48,12 @@ public class CafePanel : MonoBehaviour
         List<string> allitemNames = itemSaveData.GetAllItemName();
 
         List<int> selectedItemIdx = new List<int>();
-        for (int i=0; i<itemButtons.Length-1 ; ++i)
+        for (int i=0; i<itemButtons.Length ; ++i)
         {
             selectedItemIdx.Add(GetUnreapedIdxInList(selectedItemIdx));
         }
 
-        for (int idx = 0; idx < itemButtons.Length-1; ++idx)
+        for (int idx = 0; idx < itemButtons.Length; ++idx)
         {
             LoadItemToButton(idx,allItemDictionary[allitemNames[selectedItemIdx[idx]]]);
         }
@@ -58,7 +69,7 @@ public class CafePanel : MonoBehaviour
         int nextIdx;
         do
         {
-            nextIdx = Random.Range(0, itemButtons.Length-1);
+            nextIdx = Random.Range(0, itemButtons.Length);
         } while (selectedItemIdx.Contains(nextIdx));
 
         return nextIdx;
@@ -67,9 +78,10 @@ public class CafePanel : MonoBehaviour
     public void ParchaseButtonClick()
     {
         selectedButton.ParchaseExcute();
+        playerBalance -= selectedButton.GetPrice(); //할인가 적용
+        balance.text = BALANCE_MARK + playerBalance.ToString() + MONEY_UNIT;
 
-        if(selectedButton.GetRemainNumber() <= 0)
-            parchaseButton.enabled = false;
+        parchaseButton.interactable = CheckPossibleToDeal();
     }
 
     internal void SetSelectdItem(Item item, CafeItemButton cafeItemButton) 
@@ -78,16 +90,23 @@ public class CafePanel : MonoBehaviour
         this.selectedButton = cafeItemButton;
         SetSelectedPanel();
 
-        if (selectedButton.GetRemainNumber() <=0)
-            parchaseButton.enabled = false;
+        parchaseButton.interactable = CheckPossibleToDeal();
     }
+    private bool CheckPossibleToDeal()
+    {
+        if (selectedButton.GetRemainNumber() <= 0 || playerBalance < selectedButton.GetPrice())
+            return false;
+        return true;
+    }
+
     private void SetSelectedPanel()
     {
         const string iconPath = "ItemIcon/";
         itemImage.sprite = Resources.Load<Sprite>(iconPath + selectedItem.GetIconName());
         itemInfo.text = selectedItem.GetAbilityDesc();
-    }
 
+        itemPrice.text = PRICE+ selectedButton.GetPrice().ToString() + MONEY_UNIT;
+    }
 
     internal float GetSaleProbability() { return this.saleProbability; }
 }

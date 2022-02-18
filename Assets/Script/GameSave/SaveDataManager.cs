@@ -5,11 +5,14 @@ using UnityEngine;
 
 public class SaveDataManager
 {
+    const int START_BALANCE = 900;
     private SquadData squadData;
+    private int balance;
     private ItemSaveData itemSaveData;
     
     public SaveDataManager()   //객체 생성시 세이브 파일 로드
     {
+        balance = START_BALANCE;
         LoadSquadData();
         LoadItemSaveData();
     }
@@ -35,4 +38,6 @@ public class SaveDataManager
 
     public SquadData GetSquadData() { return this.squadData; }
     public ItemSaveData GetItemSaveData() { return itemSaveData; }
+
+    internal int GetBalance() { return this.balance; }
 }

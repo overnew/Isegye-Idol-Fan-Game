@@ -70,4 +70,5 @@ public class CafeItemButton : MonoBehaviour
     }
 
     internal int GetRemainNumber() { return this.remainNum; }
+    internal int GetPrice() { return this.itemPrice; }
 }
