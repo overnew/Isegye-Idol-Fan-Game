@@ -18,7 +18,7 @@ public class SquadData
         LoadSquadUnitSaveData();
         LoadItemList();
     }
-    public void LoadSquadUnitSaveData()
+    private void LoadSquadUnitSaveData()
     {
         unitsSaveData = new Dictionary<string, UnitSaveData>();
 

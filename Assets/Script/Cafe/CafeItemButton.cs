@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public class CafeItemButton : MonoBehaviour
+public class CafeItemButton : MonoBehaviour, ButtonInterface
 {
     const string MONEY_UNIT = "G";
     private CafePanel cafePanel;
@@ -10,6 +10,8 @@ public class CafeItemButton : MonoBehaviour
     private int itemPrice;
     private int remainNum;
     private float saleProbability;
+
+    private bool isShoppingButton = true;
 
     private Outline outline;
     public Text nameText;
@@ -60,7 +62,7 @@ public class CafeItemButton : MonoBehaviour
         outline.enabled = true;
     }
 
-    internal void ParchaseExcute()
+    public void DealExecute()
     {
         --remainNum;
         remainText.text = remainNum.ToString();
@@ -69,6 +71,10 @@ public class CafeItemButton : MonoBehaviour
             gameObject.GetComponent<Button>().interactable = false;
     }
 
-    internal int GetRemainNumber() { return this.remainNum; }
-    internal int GetPrice() { return this.itemPrice; }
+    public int GetRemainNumber() { return this.remainNum; }
+    public int GetPrice() { return this.itemPrice; }
+
+    public bool GetIsShoppingButton() { return this.isShoppingButton; }
+
+    public void SetOutline(bool setting) { outline.enabled = setting; }
 }

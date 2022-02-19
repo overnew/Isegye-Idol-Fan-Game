@@ -13,7 +13,7 @@ public class CafePanel : MonoBehaviour
     private SaveDataManager saveDataManager;
     private Button[] itemButtons;
 
-    private CafeItemButton selectedButton;
+    private ButtonInterface selectedButton = null;
     private Item selectedItem;
     private float saleProbability = 80f;
     private int playerBalance;
@@ -21,7 +21,7 @@ public class CafePanel : MonoBehaviour
     public GameObject itemPanel;
     public Image itemImage;
     public Text itemInfo;
-    public Button parchaseButton;
+    public Button dealButton;
     public Text itemPrice;
     public Text balance;
 
@@ -75,25 +75,41 @@ public class CafePanel : MonoBehaviour
         return nextIdx;
     }
 
-    public void ParchaseButtonClick()
+    public void OnClickDealButton()
     {
-        selectedButton.ParchaseExcute();
-        playerBalance -= selectedButton.GetPrice(); //할인가 적용
-        balance.text = BALANCE_MARK + playerBalance.ToString() + MONEY_UNIT;
-
-        parchaseButton.interactable = CheckPossibleToDeal();
+        DealExecute();
     }
 
-    internal void SetSelectdItem(Item item, CafeItemButton cafeItemButton) 
-    { 
+    private void DealExecute()
+    {
+        selectedButton.DealExecute();
+
+        int dealCost = selectedButton.GetPrice();  
+        if (selectedButton.GetIsShoppingButton()) //구매시 잔액 차감
+            dealCost *= -1;
+
+        playerBalance += dealCost;
+        balance.text = BALANCE_MARK + playerBalance.ToString() + MONEY_UNIT;
+
+        dealButton.interactable = CheckPossibleToDeal();
+    }
+
+    internal void SetSelectdItem(Item item, ButtonInterface itemButton) 
+    {
+        if (selectedButton != null)
+            selectedButton.SetOutline(false);
+
         this.selectedItem = item;
-        this.selectedButton = cafeItemButton;
+        this.selectedButton = itemButton;
         SetSelectedPanel();
 
-        parchaseButton.interactable = CheckPossibleToDeal();
+        dealButton.interactable = CheckPossibleToDeal();
     }
     private bool CheckPossibleToDeal()
     {
+        if (!selectedButton.GetIsShoppingButton() && selectedButton.GetRemainNumber() <= 0)
+            return false;
+
         if (selectedButton.GetRemainNumber() <= 0 || playerBalance < selectedButton.GetPrice())
             return false;
         return true;
@@ -104,6 +120,12 @@ public class CafePanel : MonoBehaviour
         const string iconPath = "ItemIcon/";
         itemImage.sprite = Resources.Load<Sprite>(iconPath + selectedItem.GetIconName());
         itemInfo.text = selectedItem.GetAbilityDesc();
+
+        string buttonType = "판매";
+        if(selectedButton.GetIsShoppingButton())
+            buttonType = "구매";
+
+        dealButton.GetComponentInChildren<Text>().text = buttonType;
 
         itemPrice.text = PRICE+ selectedButton.GetPrice().ToString() + MONEY_UNIT;
     }

@@ -5,6 +5,7 @@ using UnityEngine.UI;
 public class CafeManager : MonoBehaviour
 {
     private GameObject cafePanel;
+    private GameObject squadItemPanel;
     private SaveDataManager saveDataManager;
 
     void Awake()
@@ -12,6 +13,9 @@ public class CafeManager : MonoBehaviour
         saveDataManager = new SaveDataManager();
         cafePanel = GameObject.Find("CafePanel");
         cafePanel.GetComponent<CafePanel>().Init(saveDataManager);
+
+        squadItemPanel = GameObject.Find("SquadItemPanel");
+        squadItemPanel.GetComponent<SquadItemPanel>().Init(saveDataManager, cafePanel.GetComponent<CafePanel>());
     }
 
     internal SaveDataManager GetSaveDataManager() { return this.saveDataManager; }
