@@ -16,6 +16,8 @@ public class CafeManager : MonoBehaviour
 
         squadItemPanel = GameObject.Find("SquadItemPanel");
         squadItemPanel.GetComponent<SquadItemPanel>().Init(saveDataManager, cafePanel.GetComponent<CafePanel>());
+
+        cafePanel.GetComponent<CafePanel>().SetSquadItemPanel(squadItemPanel.GetComponent<SquadItemPanel>());
     }
 
     internal SaveDataManager GetSaveDataManager() { return this.saveDataManager; }
@@ -30,5 +32,8 @@ public class CafeManager : MonoBehaviour
     {
 
     }*/
-
+    internal SquadItemPanel GetSquadItemPanel()
+    {
+        return squadItemPanel.GetComponent<SquadItemPanel>();
+    }
 }

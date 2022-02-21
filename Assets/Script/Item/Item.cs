@@ -28,6 +28,7 @@ public class Item : AbilityInterface
     [SerializeField] private string iconName;
     [SerializeField] private string itemDescription;
 
+    [SerializeField] private int maxPossessionNumber;
     [SerializeField] private int sellingNumber;
     [SerializeField] private int price;
 
@@ -71,6 +72,8 @@ public class Item : AbilityInterface
     public string GetAbilityDesc() { return SetItemDescription(); }
 
     public string GetIconName() { return this.iconName; }
+
+    public int GetMaxPossessiongNumber() { return this.maxPossessionNumber; }
 
     public int GetSellingNumber() { return this.sellingNumber; }
     public int GetPrice() { return this.price; }

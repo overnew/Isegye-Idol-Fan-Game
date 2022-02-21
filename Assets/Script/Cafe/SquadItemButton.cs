@@ -7,10 +7,12 @@ public class SquadItemButton : MonoBehaviour, ButtonInterface
     public Text remainText;
 
     private CafePanel cafePanel;
+    private SquadItemPanel squadPanel;
     private Item item;
     private Outline outline;
 
     private bool isShoppingButton = false;
+    private int buttonIndex;
     private int remainNum;
 
     public void OnClickItem()
@@ -19,9 +21,16 @@ public class SquadItemButton : MonoBehaviour, ButtonInterface
         cafePanel.SetSelectdItem(item, this);
     }
 
-    internal void SetItemToButton(CafePanel _cafePanel ,Item _item,int _remainNum)
+    internal void Init(CafePanel _cafePanel, SquadItemPanel _squadPanel, int _buttonIndex)
     {
         this.cafePanel = _cafePanel;
+        this.squadPanel = _squadPanel;
+
+        this.buttonIndex = _buttonIndex;
+    }
+
+    internal void SetItemToButton(Item _item,int _remainNum)
+    {
         this.item = _item;
         this.remainNum = _remainNum;
         this.outline = gameObject.GetComponent<Outline>();
@@ -38,6 +47,8 @@ public class SquadItemButton : MonoBehaviour, ButtonInterface
     {
         --remainNum;
         remainText.text = remainNum.ToString();
+
+        squadPanel.ApplyChangeInItemList(this.buttonIndex, -1);
 
         if(remainNum <= 0)
             gameObject.GetComponent<Button>().interactable = false;

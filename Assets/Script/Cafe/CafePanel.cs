@@ -10,6 +10,7 @@ public class CafePanel : MonoBehaviour
     const string BALANCE_MARK = "잔돈: ";
 
     private CafeManager cafeManager;
+    private SquadItemPanel squadItemPanel;
     private SaveDataManager saveDataManager;
     private Button[] itemButtons;
 
@@ -86,12 +87,27 @@ public class CafePanel : MonoBehaviour
 
         int dealCost = selectedButton.GetPrice();  
         if (selectedButton.GetIsShoppingButton()) //구매시 잔액 차감
+        {
             dealCost *= -1;
+            ParchaseExecute();
+        }
 
         playerBalance += dealCost;
         balance.text = BALANCE_MARK + playerBalance.ToString() + MONEY_UNIT;
 
         dealButton.interactable = CheckPossibleToDeal();
+    }
+
+    private void ParchaseExecute() 
+    {
+        if (!squadItemPanel.GetHaveEmptySpace())
+        {
+            Debug.Log("꽉찼어~");
+            return;
+        }
+
+        squadItemPanel.SetItemToEmptySpace(selectedItem);
+
     }
 
     internal void SetSelectdItem(Item item, ButtonInterface itemButton) 
@@ -107,11 +123,16 @@ public class CafePanel : MonoBehaviour
     }
     private bool CheckPossibleToDeal()
     {
-        if (!selectedButton.GetIsShoppingButton() && selectedButton.GetRemainNumber() <= 0)
+        if (!selectedButton.GetIsShoppingButton())
+        {
+            if (selectedButton.GetRemainNumber() <= 0)
+                return false;
+            return true;
+        }
+
+        if (selectedButton.GetRemainNumber() <= 0 || playerBalance < selectedButton.GetPrice())   //구매의 경우
             return false;
 
-        if (selectedButton.GetRemainNumber() <= 0 || playerBalance < selectedButton.GetPrice())
-            return false;
         return true;
     }
 
@@ -130,5 +151,6 @@ public class CafePanel : MonoBehaviour
         itemPrice.text = PRICE+ selectedButton.GetPrice().ToString() + MONEY_UNIT;
     }
 
+    internal void SetSquadItemPanel(SquadItemPanel _squadItemPanel) { this.squadItemPanel = _squadItemPanel; }
     internal float GetSaleProbability() { return this.saleProbability; }
 }

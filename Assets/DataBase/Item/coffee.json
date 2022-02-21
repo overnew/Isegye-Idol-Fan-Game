@@ -17,6 +17,7 @@
     "iconName": "coffee",
     "itemDescription": "따뜻한 아메리카노.",
 
+    "maxPossessionNumber": 2,
     "sellingNumber": 2,
     "price" : 1000
 }
