@@ -100,7 +100,7 @@ public class CafePanel : MonoBehaviour
 
     private void ParchaseExecute() 
     {
-        if (!squadItemPanel.GetHaveEmptySpace())
+        if (!squadItemPanel.GetHaveEmptySpace(selectedItem))
         {
             Debug.Log("꽉찼어~");
             return;

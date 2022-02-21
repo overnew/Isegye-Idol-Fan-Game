@@ -5,13 +5,14 @@ using UnityEngine.UI;
 
 public class SquadItemPanel : MonoBehaviour
 {
+    public GameObject sortButton;
+
     private Button[] itemButtons;
     private SaveDataManager saveData;
     private SquadData squadData;
     private CafePanel cafePanel;
 
     private List<KeyValuePair<Item, int>> itemList;
-    private int emptyStartIndex;
 
     internal void Init(SaveDataManager _saveData, CafePanel _cafePanel)
     {
@@ -40,18 +41,12 @@ public class SquadItemPanel : MonoBehaviour
         Dictionary<Item, int> itemDictionary = squadData.GetItemDictionary();
         var items = itemDictionary.Keys;
 
-        int buttonIdx = 0;
         foreach (Item item in items)
         {
             itemList.Add(new KeyValuePair<Item, int>(item, itemDictionary[item]));
-            LoadEachItemToButton(itemButtons[buttonIdx++], item, itemDictionary[item]);
         }
 
-        emptyStartIndex = buttonIdx;    //빈 공간의 시작부를 저장
-        while (buttonIdx<itemButtons.Length)
-        {
-            itemButtons[buttonIdx++].interactable = false;
-        }
+        LoadItemListToPanel();
     }
     private void LoadEachItemToButton(Button button, Item item , int remainNum)
     {
@@ -60,9 +55,9 @@ public class SquadItemPanel : MonoBehaviour
         button.GetComponent<SquadItemButton>().SetItemToButton(item, remainNum);
     }
 
-    internal bool GetHaveEmptySpace()
+    internal bool GetHaveEmptySpace(Item item)      //아이템이 들어갈 장소가 있는지 확인
     {
-        if (emptyStartIndex >= itemButtons.Length)
+        if (FindRemainItemSpace(item) == -1 &&itemList.Count >= itemButtons.Length)
             return false;
         return true;
     }
@@ -73,8 +68,10 @@ public class SquadItemPanel : MonoBehaviour
 
         if (insertIdx == -1) // 같은 아이템창에 추가가 안되는 경우 끝에 추가
         {
-            itemButtons[emptyStartIndex].interactable = true;
-            LoadEachItemToButton(itemButtons[emptyStartIndex++], item, 1);
+            itemList.Add(new KeyValuePair<Item, int>(item, 1));
+            itemButtons[itemList.Count -1].interactable = true;
+            LoadEachItemToButton(itemButtons[itemList.Count - 1], item, 1);
+            
             return;
         }
 
@@ -94,7 +91,6 @@ public class SquadItemPanel : MonoBehaviour
             if (index == -1 || index >= itemList.Count ||index >= itemButtons.Length)
                 break;
 
-
         } while (itemList[index].Value >= itemList[index].Key.GetMaxPossessiongNumber());
         
         return index;
@@ -105,5 +101,79 @@ public class SquadItemPanel : MonoBehaviour
         Item item = itemList[idx].Key;
         int remainNum = itemList[idx].Value + changeNum;
         itemList[idx] = new KeyValuePair<Item, int>(item, remainNum);
+
+        if(remainNum <=0)   //빈 칸이 생기면 리스트 정렬
+            FillEmptySpaceOfPanel(idx);
+    }
+
+    private void FillEmptySpaceOfPanel(int emptyIdx)
+    {
+        int idx = emptyIdx;
+        for (;  idx< itemList.Count-1 ; ++idx)
+        {
+            LoadEachItemToButton(itemButtons[idx], itemList[idx+1].Key, itemList[idx+1].Value);
+            itemList[idx] = itemList[idx + 1];
+        }
+
+        BlockItemButton(idx);
+        itemList.RemoveAt(idx); //마지막 요소 삭제
+    }
+
+    private void BlockItemButton(int blockidx)
+    {
+        itemButtons[blockidx].GetComponent<Image>().sprite = null;
+        itemButtons[blockidx].GetComponent<SquadItemButton>().SetItemToButton(null, 0);
+
+        itemButtons[blockidx].interactable = false;
+    }
+
+    public void SortItemPanel()
+    {
+        List<KeyValuePair<Item, int>> totalItemList = new List<KeyValuePair<Item, int>>();
+        for (int idx=0; idx<itemList.Count ;++idx )
+        {
+            int itemIdx = totalItemList.FindIndex(pair => pair.Key.Equal(itemList[idx].Key));
+            
+            if(itemIdx == -1)   //totalList에 없는 아이템의 경우
+            {
+                totalItemList.Add(itemList[idx]);
+                continue;
+            }
+
+            //아이템이 있는 경우
+            Item item = itemList[idx].Key;
+            int sumNum = itemList[idx].Value + totalItemList[itemIdx].Value;
+            totalItemList[itemIdx] = new KeyValuePair<Item, int>(item, sumNum);
+        }
+
+        for(int idx = 0; idx < totalItemList.Count; ++idx )
+        {
+            int maxNumber = totalItemList[idx].Key.GetMaxPossessiongNumber();
+            if (totalItemList[idx].Value > maxNumber) //소지량 초과시
+            {
+                if (idx + 1 >= totalItemList.Count)
+                    totalItemList.Add(new KeyValuePair<Item, int>(totalItemList[idx].Key, totalItemList[idx].Value- maxNumber));
+                else
+                    totalItemList.Insert(idx+1, new KeyValuePair<Item, int>(totalItemList[idx].Key, totalItemList[idx].Value - maxNumber));
+
+                totalItemList[idx] = new KeyValuePair<Item, int>(totalItemList[idx].Key, maxNumber);
+            }
+        }
+
+        itemList = totalItemList;
+        LoadItemListToPanel();
+    }
+    private void LoadItemListToPanel()
+    {
+        int buttonIdx = 0;
+        foreach (var pair in itemList)
+        {
+            LoadEachItemToButton(itemButtons[buttonIdx++], pair.Key, pair.Value);
+        }
+
+        while (buttonIdx < itemButtons.Length)
+        {
+            BlockItemButton(buttonIdx++);
+        }
     }
 }

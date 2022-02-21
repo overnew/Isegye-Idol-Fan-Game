@@ -18,6 +18,6 @@
     "itemDescription": "따뜻한 아메리카노.",
 
     "maxPossessionNumber": 2,
-    "sellingNumber": 2,
+    "sellingNumber": 10,
     "price" : 1000
 }

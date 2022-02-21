@@ -27,15 +27,21 @@ public class SquadItemButton : MonoBehaviour, ButtonInterface
         this.squadPanel = _squadPanel;
 
         this.buttonIndex = _buttonIndex;
+        this.outline = gameObject.GetComponent<Outline>();
     }
 
     internal void SetItemToButton(Item _item,int _remainNum)
     {
         this.item = _item;
         this.remainNum = _remainNum;
-        this.outline = gameObject.GetComponent<Outline>();
 
         outline.enabled = false;
+        if (remainNum == 0)
+        {
+            remainText.text = "";
+            return;
+        }
+
         remainText.text = this.remainNum.ToString();
     }
 
