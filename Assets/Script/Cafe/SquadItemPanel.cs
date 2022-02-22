@@ -10,29 +10,32 @@ public class SquadItemPanel : MonoBehaviour
     private Button[] itemButtons;
     private SaveDataManager saveData;
     private SquadData squadData;
-    private CafePanel cafePanel;
+    private ShoppingPanel shoppingPanel;
+    private SquadPanel squadPanel;
 
     private List<KeyValuePair<Item, int>> itemList;
 
-    internal void Init(SaveDataManager _saveData, CafePanel _cafePanel)
+    internal void Init(SaveDataManager _saveData, ShoppingPanel _shoppingPanel, SquadPanel _squadPanel)
     {
         itemList = new List<KeyValuePair<Item, int>>();
+        this.shoppingPanel = _shoppingPanel;
+        this.squadPanel = _squadPanel;
 
         this.saveData = _saveData;
         squadData = saveData.GetSquadData();
 
-        this.cafePanel = _cafePanel;
         itemButtons = gameObject.GetComponentsInChildren<Button>();
 
         InitAllButton();
         LoadAllSquadItem();
+        BlockUnusableItem();
     }
 
     private void InitAllButton()
     {
         for (int i=0; i<itemButtons.Length ; ++i)
         {
-            itemButtons[i].GetComponent<SquadItemButton>().Init(cafePanel, this, i);
+            itemButtons[i].GetComponent<SquadItemButton>().Init(shoppingPanel, squadPanel, this, i);
         }
     }
 
@@ -115,11 +118,11 @@ public class SquadItemPanel : MonoBehaviour
             itemList[idx] = itemList[idx + 1];
         }
 
-        BlockItemButton(idx);
+        RemoveItemInButton(idx);
         itemList.RemoveAt(idx); //마지막 요소 삭제
     }
 
-    private void BlockItemButton(int blockidx)
+    private void RemoveItemInButton(int blockidx)
     {
         itemButtons[blockidx].GetComponent<Image>().sprite = null;
         itemButtons[blockidx].GetComponent<SquadItemButton>().SetItemToButton(null, 0);
@@ -173,7 +176,24 @@ public class SquadItemPanel : MonoBehaviour
 
         while (buttonIdx < itemButtons.Length)
         {
-            BlockItemButton(buttonIdx++);
+            RemoveItemInButton(buttonIdx++);
+        }
+    }
+
+    internal void BlockUnusableItem()
+    {
+        for (int idx = 0; idx<itemList.Count ; ++idx )
+        {
+            if (itemList[idx].Key.GetIsTargetedEnemy())
+                itemButtons[idx].interactable = false;
+        }
+    }
+
+    internal void UnblockAllButton()
+    {
+        for (int idx = 0; idx < itemList.Count; ++idx)
+        {
+            itemButtons[idx].interactable = true;
         }
     }
 }

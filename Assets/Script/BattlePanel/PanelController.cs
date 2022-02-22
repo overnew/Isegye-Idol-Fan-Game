@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class PanelController
+public class PanelController : PanelInterface
 {
     private const int POS_CHANGER_IDX = 4;
 
@@ -110,6 +110,20 @@ public class PanelController
             }
             ++buttonIdx;
         }
+    }
+
+    public void LoadUnitStatusText(GameObject unit, bool isEnter)
+    {
+        if (isEnter)
+        {
+            UnitData enemyData = unit.GetComponent<UnitInterface>().GetUnitData();
+            enemyInfoText.text = enemyData.GetUnitInfo();
+            enemyStatusText.text = enemyData.GetUnitStatus(unit);
+            return;
+        }
+
+        enemyInfoText.text = "";
+        enemyStatusText.text = "";
     }
 
     internal void LoadEnemyStatus(GameObject enemyUnit, bool isEnter)

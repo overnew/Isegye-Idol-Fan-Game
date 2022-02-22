@@ -5,7 +5,7 @@ using UnityEngine.UI;
 public class CafeItemButton : MonoBehaviour, ButtonInterface
 {
     const string MONEY_UNIT = "G";
-    private CafePanel cafePanel;
+    private ShoppingPanel cafePanel;
     private Item item;
     private int itemPrice;
     private int remainNum;
@@ -24,7 +24,7 @@ public class CafeItemButton : MonoBehaviour, ButtonInterface
         outline.enabled = false;
     }
 
-    internal void SetItemToButton(CafePanel _cafePanel, Item _item) 
+    internal void SetItemToButton(ShoppingPanel _cafePanel, Item _item) 
     {
         this.cafePanel = _cafePanel;
         this.item = _item;

@@ -1,13 +1,13 @@
-﻿using System.Collections;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
 public class SquadItemButton : MonoBehaviour, ButtonInterface
 {
     public Text remainText;
 
-    private CafePanel cafePanel;
-    private SquadItemPanel squadPanel;
+    private ShoppingPanel shoppingPanel;
+    private SquadPanel squadPanel;
+    private SquadItemPanel itemPenel;
     private Item item;
     private Outline outline;
 
@@ -18,13 +18,21 @@ public class SquadItemButton : MonoBehaviour, ButtonInterface
     public void OnClickItem()
     {
         outline.enabled = true;
-        cafePanel.SetSelectdItem(item, this);
+        if (shoppingPanel.GetIsShoppingMode())
+        {
+            shoppingPanel.SetSelectdItem(item, this);
+            return;
+        }
+
+        squadPanel.SetUsingItem(item);
+
     }
 
-    internal void Init(CafePanel _cafePanel, SquadItemPanel _squadPanel, int _buttonIndex)
+    internal void Init(ShoppingPanel _shoppingPanel, SquadPanel _squadPanel ,SquadItemPanel _itemPanel, int _buttonIndex)
     {
-        this.cafePanel = _cafePanel;
+        this.shoppingPanel = _shoppingPanel;
         this.squadPanel = _squadPanel;
+        this.itemPenel = _itemPanel;
 
         this.buttonIndex = _buttonIndex;
         this.outline = gameObject.GetComponent<Outline>();
@@ -54,7 +62,7 @@ public class SquadItemButton : MonoBehaviour, ButtonInterface
         --remainNum;
         remainText.text = remainNum.ToString();
 
-        squadPanel.ApplyChangeInItemList(this.buttonIndex, -1);
+        itemPenel.ApplyChangeInItemList(this.buttonIndex, -1);
 
         if(remainNum <= 0)
             gameObject.GetComponent<Button>().interactable = false;

@@ -1,39 +1,86 @@
-﻿using System.Collections;
+﻿using System.Collections.Generic;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class CafeManager : MonoBehaviour
 {
-    private GameObject cafePanel;
-    private GameObject squadItemPanel;
+    public GameObject cafeButton;
+
+    private ShoppingPanel shoppingPanel;
+    private SquadItemPanel itemPanel;
+    private SquadPanel squadPanel;
+
     private SaveDataManager saveDataManager;
+    private SquadData squadData;
+
+    private List<GameObject> squadList;
 
     void Awake()
     {
         saveDataManager = new SaveDataManager();
-        cafePanel = GameObject.Find("CafePanel");
-        cafePanel.GetComponent<CafePanel>().Init(saveDataManager);
+        squadData = saveDataManager.GetSquadData();
 
-        squadItemPanel = GameObject.Find("SquadItemPanel");
-        squadItemPanel.GetComponent<SquadItemPanel>().Init(saveDataManager, cafePanel.GetComponent<CafePanel>());
+        shoppingPanel = GameObject.Find("CafePanel").GetComponent<ShoppingPanel>();
+        shoppingPanel.Init(saveDataManager);
 
-        cafePanel.GetComponent<CafePanel>().SetSquadItemPanel(squadItemPanel.GetComponent<SquadItemPanel>());
+        squadPanel = GameObject.Find("SquadPanel").GetComponent<SquadPanel>();
+        squadPanel.Init(this);  //자신과 연결
+
+        itemPanel = GameObject.Find("SquadItemPanel").GetComponent<SquadItemPanel>();
+        itemPanel.Init(saveDataManager, shoppingPanel, squadPanel);
+
+        shoppingPanel.SetSquadItemPanel(itemPanel.GetComponent<SquadItemPanel>());
+
+        InstantSquadUnits();
     }
+
+    private int cnt = 0;
+    public void CafeOpen()
+    {
+        cnt++;
+        if (cnt % 2 == 0)
+        {
+            shoppingPanel.SetShoppingMode(false);
+            itemPanel.BlockUnusableItem();
+        }
+        else
+        {
+            shoppingPanel.SetShoppingMode(true);
+            itemPanel.UnblockAllButton();
+        }
+            
+    }
+
+    private void InstantSquadUnits()
+    {
+        List<GameObject> squadPrefabs = squadData.GetSquadUnitPrefabs();
+        string[] squadUnitsName = squadData.GetSquadUnitsName();
+        Vector3 instantPosition = new Vector3(transform.position.x - 2f, transform.position.y - 1.35f, 0);
+        squadList = new List<GameObject>();
+
+        for (int i = 0; i < squadPrefabs.Count; ++i)   //아군 유닛은 180 방향 전환
+        {
+            squadList.Add(Instantiate(squadPrefabs[i], instantPosition + (Vector3.left * (i * 2 + 1)), Quaternion.Euler(0, 180.0f, 0)));
+            squadList[i].GetComponent<UnitInterface>().SetUnitSaveData(squadData.GetUnitSaveDataByName(squadUnitsName[i]));
+        }
+    }
+
+    internal void TurnUnitButtonOn()
+    {
+        for (int i=0; i<squadList.Count ; ++i)
+        {
+            squadList[i].GetComponent<UnitInterface>().SetTargetBar(true);
+        }
+    }
+
 
     internal SaveDataManager GetSaveDataManager() { return this.saveDataManager; }
-
-    /*
-    private void OnMouseDown()
-    {
-        cafePanel.active = true;
-    }
-
-    private void OnMouseEnter()
-    {
-
-    }*/
     internal SquadItemPanel GetSquadItemPanel()
     {
-        return squadItemPanel.GetComponent<SquadItemPanel>();
+        return itemPanel.GetComponent<SquadItemPanel>();
     }
+
+    internal SquadPanel GetSquadPanel() { return squadPanel.GetComponent<SquadPanel>(); ; }
+
 }

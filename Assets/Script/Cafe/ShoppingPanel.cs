@@ -3,7 +3,7 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class CafePanel : MonoBehaviour
+public class ShoppingPanel : MonoBehaviour
 {
     const string PRICE = "가격 : ";
     const string MONEY_UNIT = "G";
@@ -26,9 +26,11 @@ public class CafePanel : MonoBehaviour
     public Text itemPrice;
     public Text balance;
 
+    private bool isShoppingMode = false;
+
     private void Awake()
     {
-        //gameObject.active = false;
+        gameObject.active = false;
     }
 
     internal void Init(SaveDataManager _saveDataManager)
@@ -153,4 +155,12 @@ public class CafePanel : MonoBehaviour
 
     internal void SetSquadItemPanel(SquadItemPanel _squadItemPanel) { this.squadItemPanel = _squadItemPanel; }
     internal float GetSaleProbability() { return this.saleProbability; }
+
+    internal void SetShoppingMode(bool setting) 
+    {
+        isShoppingMode = setting;
+        gameObject.active = setting; 
+    }
+
+    internal bool GetIsShoppingMode() { return this.isShoppingMode; }
 }

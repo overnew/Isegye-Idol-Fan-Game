@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class UnitControlloer : MonoBehaviour, UnitInterface
 {
@@ -60,8 +61,11 @@ public class UnitControlloer : MonoBehaviour, UnitInterface
     private int debuffCount = 0;
 
     private PanelController panelController;
+    private PanelInterface panelInterface;
     private SoundManager soundManager;
     public AudioClip attackClip;
+
+    private bool isBattleMode = false;
 
     private void Awake()
     {
@@ -74,11 +78,18 @@ public class UnitControlloer : MonoBehaviour, UnitInterface
         hpBarImage.fillAmount = 1;
         ScaleSet();
 
-        battleController = GameObject.Find("BattleController").GetComponent<BattleManager>();
-        soundManager = GameObject.Find("Sound").GetComponent<SoundManager>();
-        Canvas unitCanvas = UIcanvas.GetComponent<Canvas>();
-        Camera cam = GameObject.Find("Main Camera").GetComponent<Camera>();
-        unitCanvas.worldCamera = cam;
+        if (SceneManager.GetActiveScene().name.Equals("Battle"))
+        {
+            isBattleMode = true;
+
+            battleController = GameObject.Find("BattleController").GetComponent<BattleManager>();
+
+            Canvas unitCanvas = UIcanvas.GetComponent<Canvas>();
+            Camera cam = GameObject.Find("Main Camera").GetComponent<Camera>();
+            unitCanvas.worldCamera = cam;
+
+            soundManager = GameObject.Find("Sound").GetComponent<SoundManager>();
+        }
 
         buffEndRound = new List<KeyValuePair<int, List<AbilityInterface>>>();
 
@@ -103,8 +114,6 @@ public class UnitControlloer : MonoBehaviour, UnitInterface
         string jsonData = File.ReadAllText(path);
         unitData = JsonUtility.FromJson<UnitData>(jsonData);
         skillsData = unitData.LoadSkillData(unitData);
-
-        hp = unitData.GetMaxHp();
     }
 
     void Start()
@@ -112,7 +121,17 @@ public class UnitControlloer : MonoBehaviour, UnitInterface
         SetUnitUIPosition();
         SetTargetBar(false);
         conditionText.SetActive(false);
-        panelController = battleController.GetPanelController();
+
+        if (isBattleMode)
+        {
+            panelController = battleController.GetPanelController();
+            panelInterface = panelController;
+        }
+        else
+        {
+            panelInterface = GameObject.Find("CafeManager").GetComponent<CafeManager>().GetSquadPanel();
+        }
+            
     }
 
     void Update()
@@ -128,9 +147,9 @@ public class UnitControlloer : MonoBehaviour, UnitInterface
             this.animator.SetBool("walking", false);
         }
     }
-    private void OnMouseEnter(){panelController.LoadEnemyStatus(gameObject, true);}
+    private void OnMouseEnter(){ panelInterface.LoadUnitStatusText(gameObject, true);}
 
-    private void OnMouseExit(){panelController.LoadEnemyStatus(gameObject, false);}
+    private void OnMouseExit(){ panelInterface.LoadUnitStatusText(gameObject, false);}
 
     public void SetUnitUIPosition()
     {
@@ -212,6 +231,10 @@ public class UnitControlloer : MonoBehaviour, UnitInterface
     public void SetUnitSaveData(UnitSaveData _unitSaveData)
     {
         this.unitSaveData = _unitSaveData;
+        this.hp = unitSaveData.GetHp();
+
+        if (hp == -1)   // -1은 최대 체력을 의미
+            hp = unitData.GetMaxHp();
     }
 
     public void AIBattleExecute()
@@ -239,6 +262,30 @@ public class UnitControlloer : MonoBehaviour, UnitInterface
 
     public void OnClickUnit()
     {
+        if (isBattleMode)
+        {
+            BattelModeClick();
+            return;
+        }
+
+        UsuallModeClick();
+    }
+
+    private void UsuallModeClick()
+    {
+        Item item = GameObject.Find("SquadPanel").GetComponent<SquadPanel>().GetSelectedItem();
+        if (item.GetIsBuff())
+        {
+            if (item.GetBuffEffectedStatus().Equals("hp"))
+            {
+                HealExecute(item);
+                SetTargetBar(false);
+            }
+        }
+    }
+
+    private void BattelModeClick()
+    {
         soundManager.Play(attackClip);
         panelController.BlockAllButton();
 
@@ -260,7 +307,7 @@ public class UnitControlloer : MonoBehaviour, UnitInterface
         }
 
         battleController.SkillExcute(gameObject);
-        
+
         battleController.EndUnitTurn();
     }
 
@@ -307,14 +354,7 @@ public class UnitControlloer : MonoBehaviour, UnitInterface
     {
         if (buffSkill.GetBuffEffectedStatus().Equals("hp"))
         {
-            float healValue = buffSkill.GetEffectValue();
-            hp += healValue;
-            if (hp > unitData.GetMaxHp())
-                hp = unitData.GetMaxHp();
-
-            StartCoroutine(TextDisplayCoroutine("+ " + healValue,GREEN_HEXA_DECIMAL));
-
-            hpBarImage.fillAmount = hp / unitData.GetMaxHp();
+            HealExecute(buffSkill);
             return;
         }
         else if (buffSkill.GetBuffEffectedStatus().Equals(TAUNT))
@@ -347,6 +387,20 @@ public class UnitControlloer : MonoBehaviour, UnitInterface
         StoreRoundEndBuff(buffSkill, roundNum);
         unitData.ApplyBuffEffect(buffSkill, false);
     }
+
+    private void HealExecute(AbilityInterface buffSkill)
+    {
+        float healValue = buffSkill.GetEffectValue();
+        hp += healValue;
+        if (hp > unitData.GetMaxHp())
+            hp = unitData.GetMaxHp();
+
+        StartCoroutine(TextDisplayCoroutine("+ " + healValue, GREEN_HEXA_DECIMAL));
+
+        hpBarImage.fillAmount = hp / unitData.GetMaxHp();
+        return;
+    }
+
     private void GetPosionDamage()
     {
         StartCoroutine(TextDisplayCoroutine("중독  " + posionDamage.ToString(), RED_HEXA_DECIMAL));
@@ -360,6 +414,7 @@ public class UnitControlloer : MonoBehaviour, UnitInterface
     {
         if (hp <= 0)
         {
+            hp = 0;
             deathMark.enabled = true;
             battleController.ReserveUnitToDestory(gameObject);
         }
@@ -371,7 +426,9 @@ public class UnitControlloer : MonoBehaviour, UnitInterface
         DisplayCondition(text, textColor);
         yield return new WaitForSeconds(2f);
         conditionText.SetActive(false);
-        battleController.DestoryReservedUnits();
+
+        if(isBattleMode)
+            battleController.DestoryReservedUnits();
     }
 
     private void StoreRoundEndBuff(AbilityInterface buffSkill, int roundNum)
