@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class LineManager : MonoBehaviour
 {
@@ -47,10 +48,10 @@ public class LineManager : MonoBehaviour
         leaderUnit.transform.localScale /= 1.5f; 
     }
 
-    internal void MoveUnitToPoint(Vector3 pointPosition)
+    internal void MoveUnitToPoint(int pointIndex,Vector3 pointPosition)
     {
         BlockAllOtherPoint();
-        StartCoroutine(MoveToPointCoroutine(pointPosition));
+        StartCoroutine(MoveToPointCoroutine(pointIndex, pointPosition));
     }
 
     private void BlockAllOtherPoint()
@@ -62,7 +63,7 @@ public class LineManager : MonoBehaviour
         }
     }
 
-    private IEnumerator MoveToPointCoroutine(Vector3 destPosition)
+    private IEnumerator MoveToPointCoroutine(int pointIndex, Vector3 destPosition)
     {
         const float div = 60f;
         Vector3 moveVector = (destPosition - leaderUnit.transform.position)/ div;
@@ -78,6 +79,15 @@ public class LineManager : MonoBehaviour
 
         leaderUnit.transform.position = destPosition;
         leaderUnit.GetComponent<UnitControlloer>().SetWalkingAnimation(false);
+
+        yield return new WaitForSeconds(0.5f);  //잠시 대기 후 로드
+        
+        LoadPointScene(pointIndex);
+    }
+
+    private void LoadPointScene(int pointIndex)
+    {
+        SceneManager.LoadScene((int)stageList[pointIndex]);
     }
 
     private void SetNodeToPoints()
@@ -100,7 +110,7 @@ public class LineManager : MonoBehaviour
                 nextStagePoints.Add(stagePoints[nextIdx]);
             }
 
-            stagePoints[i].SetNextPoints(nextStagePoints);
+            stagePoints[i].Init(i, nextStagePoints);
         }
     }
 
@@ -122,7 +132,7 @@ public class LineManager : MonoBehaviour
 
             do
             {
-                stageIdx = Random.Range(1, StageNameLength - 1);
+                stageIdx = Random.Range(0, StageNameLength - 2);    //treasure과 start는 제외
             } while (!CheckUnderMaxPoints(stageIdx));
             
             stageList.Add((StageName)stageIdx);
@@ -154,11 +164,11 @@ public class LineManager : MonoBehaviour
 
 enum StageName
 {
-    start, 
     battle,
     cafe,
     random,
-    treasure
+    treasure,
+    start
 }
 
 enum MaxPoint

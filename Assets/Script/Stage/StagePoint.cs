@@ -5,6 +5,7 @@ using UnityEngine;
 public class StagePoint : MonoBehaviour
 {
     private Coroutine interactCoroutine = null;
+    private int pointIndex;
 
     private Vector3 originScale;
     private Node pointNode;
@@ -19,6 +20,12 @@ public class StagePoint : MonoBehaviour
 
         gameObject.GetComponent<BoxCollider2D>().enabled = false;
         originScale = gameObject.transform.localScale;
+    }
+
+    internal void Init(int index, List<StagePoint> stagePoints)
+    {
+        this.pointIndex = index;
+        SetNextPoints(stagePoints);
     }
 
     private void OnMouseEnter() 
@@ -36,7 +43,7 @@ public class StagePoint : MonoBehaviour
     {
         StopPointCoroutine();
         gameObject.transform.localScale = originScale * expansionRatio;
-        lineManager.MoveUnitToPoint(gameObject.transform.position);
+        lineManager.MoveUnitToPoint(pointIndex, gameObject.transform.position);
     }
 
     internal void StopPointCoroutine()
@@ -97,5 +104,7 @@ public class StagePoint : MonoBehaviour
             nextPoint.SetCanVisitable(true);
         }
     }
-    public void SetNextPoints(List<StagePoint> stagePoints) { this.nextStagePoints = stagePoints; }
+
+    internal int GetPointIndex() { return this.pointIndex; }
+    internal void SetNextPoints(List<StagePoint> stagePoints) { this.nextStagePoints = stagePoints; }
 }
