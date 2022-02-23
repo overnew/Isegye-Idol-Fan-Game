@@ -24,11 +24,15 @@ public class UnitControlloer : MonoBehaviour, UnitInterface
 
     public GameObject hpBar;
     public Image hpBarImage;
+    public Text hpText;
+
     public Image buffIcon;
     public Image debuffIcon;
     public Image posionIcon;
     public Image angryIcon;
-    public Image tauntIcon;
+    public Image shildIcon;
+
+    public Image tauntMark;
     public Image deathMark;
 
     private BattleManager battleController;
@@ -89,6 +93,8 @@ public class UnitControlloer : MonoBehaviour, UnitInterface
             unitCanvas.worldCamera = cam;
 
             soundManager = GameObject.Find("Sound").GetComponent<SoundManager>();
+
+            DisplayShildGauge();
         }
 
         buffEndRound = new List<KeyValuePair<int, List<AbilityInterface>>>();
@@ -105,7 +111,9 @@ public class UnitControlloer : MonoBehaviour, UnitInterface
         buffIcon.enabled = setting;
         posionIcon.enabled = setting;
         angryIcon.enabled = setting;
-        tauntIcon.enabled = setting;
+        shildIcon.enabled = setting;
+
+        tauntMark.enabled = setting;
         deathMark.enabled = setting;
     }
     void LoadUnitDataFromJson()
@@ -158,9 +166,10 @@ public class UnitControlloer : MonoBehaviour, UnitInterface
         Vector3 hpBarPos = new Vector3(transform.position.x, transform.position.y - barHeight, 0);
         targetBar.transform.position = turnBar.transform.position = changeBar.transform.position = hpBar.transform.position = hpBarPos;
         deathMark.transform.position = new Vector3(transform.position.x, transform.position.y + 1f, 0);
-        
+        tauntMark.transform.position = new Vector3(transform.position.x, transform.position.y + 1f, 0);
+
         angryIcon.transform.position = new Vector3(transform.position.x + buffXpos + 0.4f, transform.position.y + buffHeight, 0);
-        tauntIcon.transform.position = new Vector3(transform.position.x - buffXpos - 0.2f, transform.position.y + buffHeight, 0);
+        shildIcon.transform.position = new Vector3(transform.position.x - buffXpos - 0.2f, transform.position.y + buffHeight, 0);
 
         posionIcon.transform.position = new Vector3(transform.position.x + buffXpos + 0.2f, transform.position.y + buffHeight, 0);
         debuffIcon.transform.position = new Vector3(transform.position.x + buffXpos, transform.position.y + buffHeight, 0);
@@ -172,11 +181,14 @@ public class UnitControlloer : MonoBehaviour, UnitInterface
     private void ScaleSet()
     {
         if (!unitData.GetIsEnemy())
-            hpBar.transform.localEulerAngles = conditionText.transform.localEulerAngles = new Vector3(0, 180f, 0);
+        {
+            hpBar.transform.localEulerAngles = conditionText.transform.localEulerAngles = 
+                shildIcon.transform.localEulerAngles = new Vector3(0, 180f, 0);
+        }
 
         hpBar.transform.localScale = targetBar.transform.localScale = changeBar.transform.localScale = conditionText.transform.localScale
             = turnBar.transform.localScale = debuffIcon.transform.localScale = buffIcon.transform.localScale  = posionIcon.transform.localScale
-            = angryIcon.transform.localScale = tauntIcon.transform.localScale
+            = angryIcon.transform.localScale = tauntMark.transform.localScale = shildIcon.transform.localScale
             = deathMark.transform.localScale = new Vector3(0.025f, 0.025f,0f);
         unitButton.transform.localScale = new Vector3(0.5f, 0.5f, 0f);
     }
@@ -233,8 +245,12 @@ public class UnitControlloer : MonoBehaviour, UnitInterface
         this.unitSaveData = _unitSaveData;
         this.hp = unitSaveData.GetHp();
 
-        if (hp == -1)   // -1은 최대 체력을 의미
+        if (hp == -1)  // -1은 최대 체력을 의미
+        {
             hp = unitData.GetMaxHp();
+            hpText.text = hp + " / " + unitData.GetMaxHp();
+        }
+           
     }
 
     public void AIBattleExecute()
@@ -334,6 +350,8 @@ public class UnitControlloer : MonoBehaviour, UnitInterface
             DisplayCondition(skillDamage.ToString(), RED_HEXA_DECIMAL);
             hp -= skillDamage;
             hpBarImage.fillAmount = hp / unitData.GetMaxHp();
+
+            hpText.text = hp + " / " + unitData.GetMaxHp();
         }
 
         CheckHp();
@@ -385,6 +403,7 @@ public class UnitControlloer : MonoBehaviour, UnitInterface
 
         StoreRoundEndBuff(buffSkill, roundNum);
         unitData.ApplyBuffEffect(buffSkill, false);
+        DisplayShildGauge();
     }
 
     private void HealExecute(AbilityInterface buffSkill)
@@ -413,6 +432,8 @@ public class UnitControlloer : MonoBehaviour, UnitInterface
         if (hp <= 0)
         {
             hp = 0;
+
+            hpText.text = hp + " / " + unitData.GetMaxHp();
             deathMark.enabled = true;
             battleController.ReserveUnitToDestory(gameObject);
         }
@@ -475,7 +496,7 @@ public class UnitControlloer : MonoBehaviour, UnitInterface
             {
                 if (buffList[i].GetBuffEffectedStatus().Equals(TAUNT))
                 {
-                    tauntIcon.enabled = false;
+                    tauntMark.enabled = false;
                     continue;
                 }
 
@@ -495,9 +516,19 @@ public class UnitControlloer : MonoBehaviour, UnitInterface
             buffIcon.enabled = false;
     }
 
+    private void DisplayShildGauge()
+    {
+        if (unitData.GetDefense() <= 0)
+            return;
+
+        shildIcon.enabled = true;
+        Text depenseGauge = shildIcon.GetComponentInChildren<Text>();
+        depenseGauge.text = unitData.GetDefense().ToString();
+    }
+
     public void SetTauntIcon(bool setting)
     {
-        tauntIcon.enabled = setting;
+        tauntMark.enabled = setting;
     }
 
     public void SetTurnBar(bool Setting)

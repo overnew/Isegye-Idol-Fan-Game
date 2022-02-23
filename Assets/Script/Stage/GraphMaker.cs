@@ -24,6 +24,7 @@ public class GraphMaker
         string jsonData = File.ReadAllText(path);
         edgeData = JsonUtility.FromJson<EdgeData>(jsonData);
     }
+
     private void MakeGraph()
     {
         for (int idx=0; idx <edgeData.edges.Length ; ++idx)
