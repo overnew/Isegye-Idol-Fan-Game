@@ -13,6 +13,7 @@ public class LineManager : MonoBehaviour
 
     private List<SpriteRenderer> pointSprites = new List<SpriteRenderer>();
     private List<StagePoint> stagePoints;
+    private List<StagePoint> currentVisitablePoints;
 
     private List<StageName> stageList;
     private List<Node> graph;
@@ -34,7 +35,7 @@ public class LineManager : MonoBehaviour
         graph = new GraphMaker().GetLineGraph(lineType);
 
         SetNodeToPoints();
-        stagePoints[START_POINT_IDX].SetCanVisitable();
+        //stagePoints[START_POINT_IDX].SetCanVisitable();
         stagePoints[START_POINT_IDX].SetNextNodeEnabled();
 
         InstantLeaderUnit();
@@ -43,7 +44,40 @@ public class LineManager : MonoBehaviour
     private void InstantLeaderUnit()
     {
         leaderUnit = Instantiate(squadData.GetLeaderUnitPrefab(), stagePoints[START_POINT_IDX].GetPointPosition(), Quaternion.Euler(0, 180.0f, 0));
-        leaderUnit.transform.localScale /= 2; 
+        leaderUnit.transform.localScale /= 1.5f; 
+    }
+
+    internal void MoveUnitToPoint(Vector3 pointPosition)
+    {
+        BlockAllOtherPoint();
+        StartCoroutine(MoveToPointCoroutine(pointPosition));
+    }
+
+    private void BlockAllOtherPoint()
+    {
+        for (int i=0; i< currentVisitablePoints.Count; ++i)
+        {
+            currentVisitablePoints[i].StopPointCoroutine();
+            currentVisitablePoints[i].SetCanVisitable(false);
+        }
+    }
+
+    private IEnumerator MoveToPointCoroutine(Vector3 destPosition)
+    {
+        const float div = 60f;
+        Vector3 moveVector = (destPosition - leaderUnit.transform.position)/ div;
+
+        leaderUnit.GetComponent<UnitControlloer>().SetWalkingAnimation(true);
+
+        yield return new WaitForSeconds(0.5f);  //잠시 대기 후 출발
+        while (leaderUnit.transform.position.x <destPosition.x)
+        {
+            leaderUnit.transform.position += moveVector;
+            yield return new WaitForSeconds(0.02f);
+        }
+
+        leaderUnit.transform.position = destPosition;
+        leaderUnit.GetComponent<UnitControlloer>().SetWalkingAnimation(false);
     }
 
     private void SetNodeToPoints()
@@ -115,6 +149,7 @@ public class LineManager : MonoBehaviour
         return true;
     }
 
+    internal void SetCurrentVisitablePoints(List<StagePoint> points) { this.currentVisitablePoints = points;}
 }
 
 enum StageName

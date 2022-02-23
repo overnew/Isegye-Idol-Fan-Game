@@ -169,6 +169,11 @@ public class UnitControlloer : MonoBehaviour, UnitInterface
 
     private void OnMouseExit(){ panelInterface.LoadUnitStatusText(gameObject, false);}
 
+    internal void SetWalkingAnimation(bool setting)
+    {
+        this.animator.SetBool("walking", setting);
+    }
+
     public void SetUnitUIPosition()
     {
         if (!unitData.GetIsEnemy())

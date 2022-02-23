@@ -4,33 +4,47 @@ using UnityEngine;
 
 public class StagePoint : MonoBehaviour
 {
-    Coroutine interactCoroutine = null;
+    private Coroutine interactCoroutine = null;
+
     private Vector3 originScale;
     private Node pointNode;
     private List<StagePoint> nextStagePoints;
 
+    private LineManager lineManager;
+    private float expansionRatio = 1.5f;
+
     private void Start()
     {
+        lineManager = GameObject.Find("stageLine").GetComponent<LineManager>();
+
         gameObject.GetComponent<BoxCollider2D>().enabled = false;
+        originScale = gameObject.transform.localScale;
     }
 
     private void OnMouseEnter() 
     {
-        originScale = gameObject.transform.localScale;
-        interactCoroutine = StartCoroutine(InteractCoroutine()); 
+        StopPointCoroutine();
+        gameObject.transform.localScale = originScale * expansionRatio;
     }
 
     private void OnMouseExit()
+    {
+        interactCoroutine = StartCoroutine(InteractCoroutine());
+    }
+
+    private void OnMouseDown()
+    {
+        StopPointCoroutine();
+        gameObject.transform.localScale = originScale * expansionRatio;
+        lineManager.MoveUnitToPoint(gameObject.transform.position);
+    }
+
+    internal void StopPointCoroutine()
     {
         if (interactCoroutine != null)
             StopCoroutine(interactCoroutine);
 
         gameObject.transform.localScale = originScale;
-    }
-
-    private void OnMouseDown()
-    {
-        Debug.Log("stage Start");
     }
 
     private IEnumerator InteractCoroutine()
@@ -63,18 +77,24 @@ public class StagePoint : MonoBehaviour
 
     internal Vector3 GetPointPosition() {return gameObject.transform.position;}
 
-    public void SetCanVisitable() 
+    internal void SetCanVisitable(bool setting) 
     { 
-        gameObject.GetComponent<BoxCollider2D>().enabled = true;
+        gameObject.GetComponent<BoxCollider2D>().enabled = setting;
         originScale = gameObject.transform.localScale;
-        interactCoroutine = StartCoroutine(InteractCoroutine());
+
+        if (setting)
+        {
+            interactCoroutine = StartCoroutine(InteractCoroutine());
+            return;
+        }
     }
 
     public void SetNextNodeEnabled()
     {
+        lineManager.SetCurrentVisitablePoints(nextStagePoints);
         foreach (StagePoint nextPoint in  nextStagePoints)
         {
-            nextPoint.SetCanVisitable();
+            nextPoint.SetCanVisitable(true);
         }
     }
     public void SetNextPoints(List<StagePoint> stagePoints) { this.nextStagePoints = stagePoints; }
