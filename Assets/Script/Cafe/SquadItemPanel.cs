@@ -184,7 +184,8 @@ public class SquadItemPanel : MonoBehaviour
     {
         for (int idx = 0; idx<itemList.Count ; ++idx )
         {
-            if (itemList[idx].Key.GetIsTargetedEnemy())
+            Item item = itemList[idx].Key;  //체력 회복 아이템만 사용가능
+            if (item.GetIsTargetedEnemy() || item.GetIsBuff()|| !item.GetBuffEffectedStatus().Equals("hp"))
                 itemButtons[idx].interactable = false;
         }
     }

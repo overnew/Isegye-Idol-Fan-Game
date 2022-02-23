@@ -268,19 +268,17 @@ public class UnitControlloer : MonoBehaviour, UnitInterface
             return;
         }
 
-        UsuallModeClick();
+        UsualModeClick();
     }
 
-    private void UsuallModeClick()
+    private void UsualModeClick()
     {
-        Item item = GameObject.Find("SquadPanel").GetComponent<SquadPanel>().GetSelectedItem();
-        if (item.GetIsBuff())
+        SquadPanel squadPanel = GameObject.Find("SquadPanel").GetComponent<SquadPanel>();
+        Item item = squadPanel.GetSelectedItem();
+        if (item.GetBuffEffectedStatus().Equals("hp"))
         {
-            if (item.GetBuffEffectedStatus().Equals("hp"))
-            {
-                HealExecute(item);
-                SetTargetBar(false);
-            }
+            HealExecute(item);
+            SetTargetBar(false);
         }
     }
 
@@ -398,7 +396,6 @@ public class UnitControlloer : MonoBehaviour, UnitInterface
         StartCoroutine(TextDisplayCoroutine("+ " + healValue, GREEN_HEXA_DECIMAL));
 
         hpBarImage.fillAmount = hp / unitData.GetMaxHp();
-        return;
     }
 
     private void GetPosionDamage()

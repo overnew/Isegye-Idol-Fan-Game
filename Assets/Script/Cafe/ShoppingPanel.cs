@@ -25,12 +25,14 @@ public class ShoppingPanel : MonoBehaviour
     public Button dealButton;
     public Text itemPrice;
     public Text balance;
+    public GameObject message;
 
     private bool isShoppingMode = false;
 
     private void Awake()
     {
         gameObject.active = false;
+        message.active = false;
     }
 
     internal void Init(SaveDataManager _saveDataManager)
@@ -85,6 +87,14 @@ public class ShoppingPanel : MonoBehaviour
 
     private void DealExecute()
     {
+        if (selectedButton.GetIsShoppingButton() &&!squadItemPanel.GetHaveEmptySpace(selectedItem))
+        {
+            dealButton.interactable = false;
+            message.active = true;
+            StartCoroutine(MessageFadeAway());
+            return;
+        }
+
         selectedButton.DealExecute();
 
         int dealCost = selectedButton.GetPrice();  
@@ -102,14 +112,13 @@ public class ShoppingPanel : MonoBehaviour
 
     private void ParchaseExecute() 
     {
-        if (!squadItemPanel.GetHaveEmptySpace(selectedItem))
-        {
-            Debug.Log("꽉찼어~");
-            return;
-        }
-
         squadItemPanel.SetItemToEmptySpace(selectedItem);
+    }
 
+    private IEnumerator MessageFadeAway()
+    {
+        yield return new WaitForSeconds(2f);
+        message.active = false;
     }
 
     internal void SetSelectdItem(Item item, ButtonInterface itemButton) 
