@@ -17,6 +17,16 @@ public class LineManager : MonoBehaviour
     private List<StageName> stageList;
     private List<Node> graph;
 
+    private SaveDataManager saveData;
+    private SquadData squadData;
+    private GameObject leaderUnit;
+
+    private void Awake()
+    {
+        saveData = new SaveDataManager();
+        squadData = saveData.GetSquadData();
+    }
+
     void Start()
     {
         stageList = new List<StageName>();
@@ -26,7 +36,16 @@ public class LineManager : MonoBehaviour
         SetNodeToPoints();
         stagePoints[START_POINT_IDX].SetCanVisitable();
         stagePoints[START_POINT_IDX].SetNextNodeEnabled();
+
+        InstantLeaderUnit();
     }
+
+    private void InstantLeaderUnit()
+    {
+        leaderUnit = Instantiate(squadData.GetLeaderUnitPrefab(), stagePoints[START_POINT_IDX].GetPointPosition(), Quaternion.Euler(0, 180.0f, 0));
+        leaderUnit.transform.localScale /= 2; 
+    }
+
     private void SetNodeToPoints()
     {
         StagePoint[] stagePointInChildren = gameObject.GetComponentsInChildren<StagePoint>();
@@ -84,6 +103,7 @@ public class LineManager : MonoBehaviour
         pointSprites[pointSprites.Count - 1].sprite = pointImages[(int)StageName.treasure];
         stageList.Add(StageName.treasure);
     }
+
     private bool CheckUnderMaxPoints(int stageIdx)
     {
         if (stageIdx == (int)StageName.cafe && (int)MaxPoint.cafe <= cafeCount)

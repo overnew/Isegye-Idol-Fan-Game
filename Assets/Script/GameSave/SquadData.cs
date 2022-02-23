@@ -7,6 +7,7 @@ using UnityEngine;
 public class SquadData
 {
     [SerializeField] private string[] squadUnitNames;
+    [SerializeField] private string leaderUnitName;
     private Dictionary<string, UnitSaveData> unitsSaveData;
 
     [SerializeField] private string[] itemNames;
@@ -54,6 +55,11 @@ public class SquadData
             squadList.Add(GetPrefabByName(squadUnitNames[i]));
         }
         return squadList;
+    }
+
+    internal GameObject GetLeaderUnitPrefab()
+    {
+        return GetPrefabByName(leaderUnitName);
     }
 
     private GameObject GetPrefabByName(string prefabName)

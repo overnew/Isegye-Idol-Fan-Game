@@ -69,7 +69,8 @@ public class UnitControlloer : MonoBehaviour, UnitInterface
     private SoundManager soundManager;
     public AudioClip attackClip;
 
-    private bool isBattleMode = false;
+    private ControllerMode controllerMode = ControllerMode.usual;
+    private LineManager lineManager;
 
     private void Awake()
     {
@@ -84,7 +85,7 @@ public class UnitControlloer : MonoBehaviour, UnitInterface
 
         if (SceneManager.GetActiveScene().name.Equals("Battle"))
         {
-            isBattleMode = true;
+            controllerMode = ControllerMode.battle;
 
             battleController = GameObject.Find("BattleController").GetComponent<BattleManager>();
 
@@ -95,6 +96,9 @@ public class UnitControlloer : MonoBehaviour, UnitInterface
             soundManager = GameObject.Find("Sound").GetComponent<SoundManager>();
 
             DisplayShildGauge();
+        }else if (SceneManager.GetActiveScene().name.Equals("Map"))
+        {
+            controllerMode = ControllerMode.animation;
         }
 
         buffEndRound = new List<KeyValuePair<int, List<AbilityInterface>>>();
@@ -130,16 +134,22 @@ public class UnitControlloer : MonoBehaviour, UnitInterface
         SetTargetBar(false);
         conditionText.SetActive(false);
 
-        if (isBattleMode)
+        if (controllerMode == ControllerMode.battle)
         {
             panelController = battleController.GetPanelController();
             panelInterface = panelController;
+            return;
         }
-        else
+
+        if(controllerMode == ControllerMode.usual)
         {
             panelInterface = GameObject.Find("CafeManager").GetComponent<CafeManager>().GetSquadPanel();
+            return;
         }
-            
+
+        // ControllerMode.animation
+        lineManager = GameObject.Find("stageLine").GetComponent<LineManager>();
+        hpBar.active = false;
     }
 
     void Update()
@@ -278,7 +288,7 @@ public class UnitControlloer : MonoBehaviour, UnitInterface
 
     public void OnClickUnit()
     {
-        if (isBattleMode)
+        if (controllerMode == ControllerMode.battle)
         {
             BattelModeClick();
             return;
@@ -446,7 +456,7 @@ public class UnitControlloer : MonoBehaviour, UnitInterface
         yield return new WaitForSeconds(2f);
         conditionText.SetActive(false);
 
-        if(isBattleMode)
+        if(controllerMode == ControllerMode.battle)
             battleController.DestoryReservedUnits();
     }
 
@@ -549,6 +559,12 @@ public class UnitControlloer : MonoBehaviour, UnitInterface
     public bool GetIsTaunt() { return this.isTaunted; }
 }
 
+public enum ControllerMode
+{
+    battle,
+    usual,
+    animation
+}
 
 /*
 [ContextMenu("To Json Data")]

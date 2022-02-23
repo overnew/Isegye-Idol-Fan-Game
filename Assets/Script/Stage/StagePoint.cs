@@ -60,6 +60,9 @@ public class StagePoint : MonoBehaviour
         }
 
     }
+
+    internal Vector3 GetPointPosition() {return gameObject.transform.position;}
+
     public void SetCanVisitable() 
     { 
         gameObject.GetComponent<BoxCollider2D>().enabled = true;
