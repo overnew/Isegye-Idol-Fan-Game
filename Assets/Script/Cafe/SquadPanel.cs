@@ -8,10 +8,12 @@ public class SquadPanel : MonoBehaviour, PanelInterface
     private SquadItemPanel itemPanel;
 
     private Item selectedItem;
+    private SquadItemButton selectedButton;
 
     public Image unitIcon;
     public Text unitInfoText;
     public Text unitStatusText;
+
     internal void Init(CafeManager _cafeManager)
     {
         unitIcon.enabled = false;
@@ -19,10 +21,17 @@ public class SquadPanel : MonoBehaviour, PanelInterface
         this.cafeManager = _cafeManager;
     }
 
-    internal void SetUsingItem(Item _item)
+    internal void SetUsingItem(Item _item, SquadItemButton _button)
     {
+        this.selectedButton = _button;
         this.selectedItem = _item;
         cafeManager.TurnUnitButtonOn();
+    }
+
+    internal void ItemUseExecute()
+    {
+        selectedButton.DealExecute();
+        selectedButton.SetOutline(false);
     }
 
     public void LoadUnitStatusText(GameObject unit, bool isEnter)

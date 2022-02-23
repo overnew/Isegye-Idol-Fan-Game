@@ -268,10 +268,10 @@ public class UnitControlloer : MonoBehaviour, UnitInterface
             return;
         }
 
-        UsualModeClick();
+        ItemUseModeClick();
     }
 
-    private void UsualModeClick()
+    private void ItemUseModeClick()
     {
         SquadPanel squadPanel = GameObject.Find("SquadPanel").GetComponent<SquadPanel>();
         Item item = squadPanel.GetSelectedItem();
@@ -279,6 +279,7 @@ public class UnitControlloer : MonoBehaviour, UnitInterface
         {
             HealExecute(item);
             SetTargetBar(false);
+            squadPanel.ItemUseExecute();
         }
     }
 

@@ -24,18 +24,22 @@ public class SquadItemButton : MonoBehaviour, ButtonInterface
             return;
         }
 
-        squadPanel.SetUsingItem(item);
+        squadPanel.SetUsingItem(item, this);
 
     }
 
     internal void Init(ShoppingPanel _shoppingPanel, SquadPanel _squadPanel ,SquadItemPanel _itemPanel, int _buttonIndex)
     {
+        isShoppingButton = false; 
+
         this.shoppingPanel = _shoppingPanel;
         this.squadPanel = _squadPanel;
         this.itemPenel = _itemPanel;
 
         this.buttonIndex = _buttonIndex;
         this.outline = gameObject.GetComponent<Outline>();
+
+        SetItemToButton(null, 0);
     }
 
     internal void SetItemToButton(Item _item,int _remainNum)

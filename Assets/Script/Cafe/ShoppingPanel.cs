@@ -95,9 +95,9 @@ public class ShoppingPanel : MonoBehaviour
             return;
         }
 
+        int dealCost = selectedButton.GetPrice();
         selectedButton.DealExecute();
 
-        int dealCost = selectedButton.GetPrice();  
         if (selectedButton.GetIsShoppingButton()) //구매시 잔액 차감
         {
             dealCost *= -1;
@@ -138,6 +138,7 @@ public class ShoppingPanel : MonoBehaviour
         {
             if (selectedButton.GetRemainNumber() <= 0)
                 return false;
+
             return true;
         }
 
