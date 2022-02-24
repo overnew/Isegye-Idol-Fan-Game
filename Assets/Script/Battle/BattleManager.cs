@@ -16,7 +16,10 @@ public class BattleManager : MonoBehaviour
     public GameObject[] enemys;
     private List<GameObject> squadList = new List<GameObject>();
     private List<GameObject> enemyList = new List<GameObject>();
-    
+
+    public Image battleStartImage;
+    public GameObject resultPanel;
+
     private GameObject turnUnit;
     private UnitData turnUnitData;
     private int turnUnitPosition;
@@ -57,13 +60,14 @@ public class BattleManager : MonoBehaviour
         prevSceneName = SceneManager.GetActiveScene().name;
         SceneManager.SetActiveScene(SceneManager.GetSceneByName("Battle"));
 
+        battleStartImage.enabled = true;
+
         InstantBattleUnits(); 
         blurCamera = GameObject.Find("BlurCamera");
 
         postVolume.enabled = false;
         BattleStart();
     }
-
 
     private void InstantBattleUnits()
     {
@@ -83,11 +87,20 @@ public class BattleManager : MonoBehaviour
 
     private void BattleStart()
     {
-        StartCoroutine(WaitTurnEnding());
+        StartCoroutine(PlayTurnRoutine());
     }
 
-    private IEnumerator WaitTurnEnding()
+    /*
+    private void DisplayBattleStartImage()
     {
+        StartCoroutine(Utils.WaitThenCallBack(2f, () => battleStartImage.enabled = false  ));
+    }*/
+
+    private IEnumerator PlayTurnRoutine()
+    {
+        yield return new WaitForSeconds(2f);
+        battleStartImage.enabled = false;
+
         while (true)
         {
             if (turnList.Count == 0)
@@ -107,10 +120,13 @@ public class BattleManager : MonoBehaviour
     private void CheckEndBattle()
     {
         if (enemyList.Count <= 0)
-            ReturnToPrevScene();
+        {
+            resultPanel.active = true;
+            resultPanel.GetComponent<ResultPanelManager>().DisplayBattleResult(saveData);
+        }
     }
 
-    private void ReturnToPrevScene()
+    internal void ReturnToPrevScene()
     {
         SceneManager.SetActiveScene(SceneManager.GetSceneByName(prevSceneName));
         GameObject.Find("MapActivater").GetComponent<MapActivater>().SetActivate(true);
@@ -589,4 +605,6 @@ public class BattleManager : MonoBehaviour
 
     public bool GetPosChanger(){return this.posChangerActive;}
     internal PanelController GetPanelController() { return this.panelController; }
+
+    internal List<GameObject> GetSquadList() { return this.squadList; }
 }

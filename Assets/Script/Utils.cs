@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -18,5 +19,11 @@ public class Utils
         {
             ChangeLayersRecursively(child, name);
         }
+    }
+
+    public static IEnumerator WaitThenCallBack(float waitTime, Action callBackFunc) 
+    {
+        yield return new WaitForSeconds(waitTime);
+        callBackFunc();
     }
 }
