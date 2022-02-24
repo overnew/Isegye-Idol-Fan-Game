@@ -9,6 +9,7 @@ public class LineManager : MonoBehaviour
     const int StageNameLength = 5;
     private int cafeCount = 0, randomCount = 0;
 
+    public GameObject sceneGroup;
     public string lineType;
     public Sprite[] pointImages;
 
@@ -45,7 +46,8 @@ public class LineManager : MonoBehaviour
     private void InstantLeaderUnit()
     {
         leaderUnit = Instantiate(squadData.GetLeaderUnitPrefab(), stagePoints[START_POINT_IDX].GetPointPosition(), Quaternion.Euler(0, 180.0f, 0));
-        leaderUnit.transform.localScale /= 1.5f; 
+        leaderUnit.transform.localScale /= 1.5f;
+        leaderUnit.transform.parent = sceneGroup.transform;
     }
 
     internal void MoveUnitToPoint(int pointIndex,Vector3 pointPosition)
@@ -87,7 +89,8 @@ public class LineManager : MonoBehaviour
 
     private void LoadPointScene(int pointIndex)
     {
-        SceneManager.LoadScene((int)stageList[pointIndex]);
+        SceneManager.LoadScene((int)stageList[pointIndex], LoadSceneMode.Additive); // 이전 씬은 그대로
+        sceneGroup.active = false;
     }
 
     private void SetNodeToPoints()
@@ -173,6 +176,6 @@ enum StageName
 
 enum MaxPoint
 {
-    cafe = 2,
-    random = 3
+    cafe = 0,
+    random = 0
 }

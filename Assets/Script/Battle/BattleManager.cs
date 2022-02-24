@@ -4,6 +4,7 @@ using System.IO;
 using UnityEngine;
 using UnityEngine.Rendering.PostProcessing;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class BattleManager : MonoBehaviour
 {
@@ -40,11 +41,12 @@ public class BattleManager : MonoBehaviour
     private SaveDataManager saveData;
     private SquadData squadData;
 
+    private string prevSceneName;   //전투 종료 후 이전 씬으로 복귀
+
     void Awake()
     {
         saveData = new SaveDataManager();
         squadData = saveData.GetSquadData();
-        InstantBattleUnits();
 
         panelController = new PanelController(squadData);
         roundManager = gameObject.GetComponent<RoundManager>();
@@ -52,11 +54,16 @@ public class BattleManager : MonoBehaviour
 
     void Start()
     {
+        prevSceneName = SceneManager.GetActiveScene().name;
+        SceneManager.SetActiveScene(SceneManager.GetSceneByName("Battle"));
+
+        InstantBattleUnits(); 
         blurCamera = GameObject.Find("BlurCamera");
 
         postVolume.enabled = false;
         BattleStart();
     }
+
 
     private void InstantBattleUnits()
     {
@@ -91,7 +98,23 @@ public class BattleManager : MonoBehaviour
 
             EndTurnOperate();
             yield return new WaitForSeconds(1.5f);  //잠시 대기
+
+            CheckEndBattle();
+            yield return new WaitForSeconds(1f);  //잠시 대기
         }
+    }
+
+    private void CheckEndBattle()
+    {
+        if (enemyList.Count <= 0)
+            ReturnToPrevScene();
+    }
+
+    private void ReturnToPrevScene()
+    {
+        SceneManager.SetActiveScene(SceneManager.GetSceneByName(prevSceneName));
+        GameObject.Find("MapActivater").GetComponent<MapActivater>().SetActivate(true);
+        SceneManager.UnloadScene(SceneManager.GetSceneByName("battle"));
     }
 
     private void EndRoundOperate()  //라운드 종료시 필요한 작업들

@@ -35,7 +35,7 @@ public class UnitControlloer : MonoBehaviour, UnitInterface
     public Image tauntMark;
     public Image deathMark;
 
-    private BattleManager battleController;
+    private BattleManager battleController = null;
 
     private const string dataBasePath = "DataBase";
     public string unintDataName = "unitData.json";
@@ -83,23 +83,6 @@ public class UnitControlloer : MonoBehaviour, UnitInterface
         hpBarImage.fillAmount = 1;
         ScaleSet();
 
-        if (SceneManager.GetActiveScene().name.Equals("Battle"))
-        {
-            controllerMode = ControllerMode.battle;
-
-            battleController = GameObject.Find("BattleController").GetComponent<BattleManager>();
-
-            Canvas unitCanvas = UIcanvas.GetComponent<Canvas>();
-            Camera cam = GameObject.Find("Main Camera").GetComponent<Camera>();
-            unitCanvas.worldCamera = cam;
-
-            soundManager = GameObject.Find("Sound").GetComponent<SoundManager>();
-
-            DisplayShildGauge();
-        }else if (SceneManager.GetActiveScene().name.Equals("Map"))
-        {
-            controllerMode = ControllerMode.animation;
-        }
 
         buffEndRound = new List<KeyValuePair<int, List<AbilityInterface>>>();
 
@@ -130,6 +113,24 @@ public class UnitControlloer : MonoBehaviour, UnitInterface
 
     void Start()
     {
+        if (SceneManager.GetActiveScene().name.Equals("Battle"))
+        {
+            controllerMode = ControllerMode.battle;
+            battleController = GameObject.Find("BattleController").GetComponent<BattleManager>();
+
+            Canvas unitCanvas = UIcanvas.GetComponent<Canvas>();
+            Camera cam = GameObject.Find("Main Camera").GetComponent<Camera>();
+            unitCanvas.worldCamera = cam;
+
+            soundManager = GameObject.Find("Sound").GetComponent<SoundManager>();
+
+            DisplayShildGauge();
+        }
+        else if (SceneManager.GetActiveScene().name.Equals("Map"))
+        {
+            controllerMode = ControllerMode.animation;
+        }
+
         SetUnitUIPosition();
         SetTargetBar(false);
         conditionText.SetActive(false);
@@ -273,6 +274,9 @@ public class UnitControlloer : MonoBehaviour, UnitInterface
         System.Random random = new System.Random();
         int randomSkillIdx;
         GameObject[] enemysInRange;
+
+        if(battleController == null)
+            battleController = GameObject.Find("BattleController").GetComponent<BattleManager>();
 
         do
         {
