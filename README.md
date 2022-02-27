@@ -10,4 +10,4 @@ Isegye Idol Fan Game Making Project
 ### System Flow 
 <br>
 
-![SystemFlow](SystemFlow.png)
+![BattleFlow](BattleFlow.png)
