@@ -10,6 +10,7 @@ public class ResultPanelManager : MonoBehaviour
 
     private BattleManager battleManager;
     private SaveDataManager saveData;
+    private SquadData squadData;
 
     private void Init()
     {
@@ -29,14 +30,19 @@ public class ResultPanelManager : MonoBehaviour
 
         this.saveData = _saveData;
 
+
         LoadAllUnitIconInPanel(battleManager.GetSquadList());
     }
 
     private void LoadAllUnitIconInPanel(List<GameObject> squadList)
     {
-        for (int i=0; i<squadList.Count ;++i )
+        this.squadData = saveData.GetSquadData();
+        string[] nameList = squadData.GetSquadUnitsName();
+
+        for (int i = 0; i < squadList.Count; ++i)
         {
             unitIcons[i].sprite = squadList[i].GetComponent<UnitInterface>().GetUnitIcon();
+            unitIcons[i].GetComponentInChildren<Text>().text = "Lv: " + squadData.GetUnitSaveDataByName(nameList[i]).GetLevel().ToString();
         }
     }
 

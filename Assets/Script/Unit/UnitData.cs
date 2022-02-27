@@ -10,6 +10,7 @@ public class UnitData
     [SerializeField] private string unitName;
     [SerializeField] private string unitType;
     [SerializeField] private bool isEnemyUnit;
+
     [SerializeField] private float maxHp;
     [SerializeField] private float stepSpeed;
     [SerializeField] private int[] attackPowerRange;
