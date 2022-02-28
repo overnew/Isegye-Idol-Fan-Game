@@ -10,6 +10,7 @@ public class UnitData
     [SerializeField] private string unitName;
     [SerializeField] private string unitType;
     [SerializeField] private bool isEnemyUnit;
+    [SerializeField] private float rewardExp;
 
     [SerializeField] private float maxHp;
     [SerializeField] private float stepSpeed;
@@ -133,8 +134,10 @@ public class UnitData
 
     public string GetName() { return unitName; }
     public string GetUnitIconName() { return unitIconName; }
-    public float GetMaxHp() { return maxHp; }
     public bool GetIsEnemy() { return isEnemyUnit; }
+
+    public float GetRewardExp() { return rewardExp; }
+    public float GetMaxHp() { return maxHp; }
     public float GetStepSpeed() { return stepSpeed; }
     public int[] GetAttackPower() { return attackPowerRange; }
     public float GetBonusPower() { return bonusPower; }

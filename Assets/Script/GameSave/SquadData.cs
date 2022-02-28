@@ -64,10 +64,9 @@ public class SquadData
 
     private GameObject GetPrefabByName(string prefabName)
     {
-        string prefabPath = Path.Combine("Prefab", prefabName);
+        string prefabPath = Path.Combine("Prefab", "PlayerUnit", prefabName);
         return Resources.Load<GameObject>(prefabPath);
     }
-    
 
     private UnitSaveData LoadUnitStatus(string unitName)
     {
