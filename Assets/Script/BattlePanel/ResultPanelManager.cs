@@ -6,7 +6,7 @@ using UnityEngine.UI;
 public class ResultPanelManager : MonoBehaviour
 {
     private Button endButton;
-    private Image[] unitIcons;
+    private GameObject iconGroup;
 
     private BattleManager battleManager;
     private SaveDataManager saveData;
@@ -14,7 +14,7 @@ public class ResultPanelManager : MonoBehaviour
 
     private void Init()
     {
-        unitIcons = GameObject.Find("IconGroup").GetComponentsInChildren<Image>();
+        iconGroup = GameObject.Find("IconGroup");
         endButton = gameObject.GetComponentInChildren<Button>();
         battleManager = GameObject.Find("BattleController").GetComponent<BattleManager>();
     }
@@ -30,7 +30,6 @@ public class ResultPanelManager : MonoBehaviour
 
         this.saveData = _saveData;
 
-
         LoadAllUnitIconInPanel(battleManager.GetSquadList());
     }
 
@@ -41,8 +40,15 @@ public class ResultPanelManager : MonoBehaviour
 
         for (int i = 0; i < squadList.Count; ++i)
         {
-            unitIcons[i].sprite = squadList[i].GetComponent<UnitInterface>().GetUnitIcon();
-            unitIcons[i].GetComponentInChildren<Text>().text = "Lv: " + squadData.GetUnitSaveDataByName(nameList[i]).GetLevel().ToString();
+            GameObject icon = iconGroup.transform.Find("Icon" + (i+1)).gameObject;
+            icon.GetComponentInChildren<Image>().sprite = squadList[i].GetComponent<UnitInterface>().GetUnitIcon();
+
+            UnitSaveData unitSaveData = squadData.GetUnitSaveDataByName(nameList[i]);
+            icon.GetComponentInChildren<Text>().text = "Lv: " + unitSaveData.GetLevel().ToString();
+            
+            Image expBar = icon.transform.Find("expBarBack").Find("expBar").GetComponent<Image>();
+            expBar.fillAmount = unitSaveData.GetExp() / unitSaveData.GetMaxExp();
+            Debug.Log(expBar);
         }
     }
 

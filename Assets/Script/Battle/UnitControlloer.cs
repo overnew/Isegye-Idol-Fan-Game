@@ -108,7 +108,7 @@ public class UnitControlloer : MonoBehaviour, UnitInterface
         string path = Path.Combine(Application.dataPath, dataBasePath, unintDataName);
         string jsonData = File.ReadAllText(path);
         unitData = JsonUtility.FromJson<UnitData>(jsonData);
-        skillsData = unitData.LoadSkillData(unitData);
+        skillsData = unitData.LoadSkillData();
     }
 
     void Start()

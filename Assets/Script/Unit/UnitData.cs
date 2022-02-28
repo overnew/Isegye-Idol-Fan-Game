@@ -30,6 +30,9 @@ public class UnitData
     private const string BUFF_COLOR = "#4BE198";
     private const string DEBUFF_COLOR = "#FE4554";
 
+    private const string dataBasePath = "DataBase";
+    private const string saveDataPath = "SaveData\\UnitData";
+
     private struct OriginStatus
     {
         float stepSpeed;
@@ -56,9 +59,10 @@ public class UnitData
         }
     }
 
-    public List<SkillData> LoadSkillData(UnitData unitData)
+    public List<SkillData> LoadSkillData()
     {
-        originStatus = new OriginStatus(unitData);
+        Init();
+        
         List<SkillData> skillsData = new List<SkillData>();
         for (int i = 0; i <skillNames.Length; ++i)
         {
@@ -66,6 +70,47 @@ public class UnitData
         }
         return skillsData;
     }
+
+    private void Init()
+    {
+        ApplyLevelBonus();
+
+        originStatus = new OriginStatus(this);
+    }
+
+    private void ApplyLevelBonus()  //LevelUp 했을때 적용시키기
+    {
+        if (isEnemyUnit)
+            return;
+
+        LevelBonus lvBonus = GetLevelBonus();
+        this.maxHp += lvBonus.hp;
+        this.stepSpeed += lvBonus.stepSpeed;
+
+        this.attackPowerRange[0] += lvBonus.bonusPower;
+        this.attackPowerRange[1] += lvBonus.bonusPower;
+
+        this.defense += lvBonus.defense;
+
+        this.accuracy += lvBonus.accuracy;
+        if (accuracy >= 100) accuracy = 100;
+
+        this.critical += lvBonus.critical;
+        if (critical >= 100) critical = 100;
+
+        this.avoidability += lvBonus.avoidability;
+        if (avoidability >= 100) avoidability = 100;
+    }
+
+    private LevelBonus GetLevelBonus()
+    {
+        string lvDataName = this.unitIconName + "LevelData.json";
+        string path = Path.Combine(Application.dataPath, dataBasePath, saveDataPath, lvDataName);
+        string jsonData = File.ReadAllText(path);
+
+        return JsonUtility.FromJson<LevelBonus>(jsonData);
+    }
+
     private SkillData LoadSkillDataFromJson(string skillName)
     {
         string path = Path.Combine(Application.dataPath, skillDataPath, skillName + ".json");

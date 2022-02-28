@@ -2,16 +2,15 @@
 using UnityEngine;
 
 [System.Serializable]
-public class LevelBonus : MonoBehaviour
+public class LevelBonus
 {
-    [SerializeField] private float hp;
-    [SerializeField] private float stepSpeed;
-    [SerializeField] private int[] attackPowerRange;
-    [SerializeField] private float bonusPower;
-    [SerializeField] private float defense;
-    [SerializeField] private float accuracy;
-    [SerializeField] private float critical;
-    [SerializeField] private float avoidability;
+    [SerializeField] public float hp;
+    [SerializeField] public float stepSpeed;
+    [SerializeField] public int bonusPower;
+    [SerializeField] public float defense;
+    [SerializeField] public float accuracy;
+    [SerializeField] public float critical;
+    [SerializeField] public float avoidability;
 
     public LevelBonus GetLevelBonus() { return this; }
 }
