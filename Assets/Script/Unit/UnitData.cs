@@ -10,7 +10,7 @@ public class UnitData
     [SerializeField] private string unitName;
     [SerializeField] private string unitType;
     [SerializeField] private bool isEnemyUnit;
-    [SerializeField] private float rewardExp;
+    [SerializeField] private float rewardExp = 0;
 
     [SerializeField] private float maxHp;
     [SerializeField] private float stepSpeed;

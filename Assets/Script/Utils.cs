@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class Utils
 {
+    public static float[] LEVEL_MAX_EXP = {0,100,150,200,300,500 };
     public static void Swap<T>(ref T lhs, ref T rhs)
     {
         T temp;

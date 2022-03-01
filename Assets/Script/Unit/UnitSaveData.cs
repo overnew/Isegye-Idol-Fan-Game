@@ -6,13 +6,9 @@ using UnityEngine;
 [System.Serializable]
 public class UnitSaveData
 {
-    const float EXP_DEFAULT = 100;
-
     [SerializeField] private float hp;
     [SerializeField] private int level;
     [SerializeField] private float exp;
-
-    public float GetMaxExp() { return level * EXP_DEFAULT; }
     public float GetExp() { return this.exp; }
     public int GetLevel() { return this.level; }
 

@@ -2,6 +2,8 @@
     "unitName": "릴파",
     "unitType": "메인 댄서",
     "isEnemyUnit": true,
+    "rewardExp" : 120,
+
     "maxHp": 30.0,
     "stepSpeed": 1,
     "attackPowerRange": [1,5],

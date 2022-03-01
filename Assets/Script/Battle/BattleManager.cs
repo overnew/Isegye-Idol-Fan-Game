@@ -13,7 +13,6 @@ public class BattleManager : MonoBehaviour
     private const int STEP_BONUS_MAX = 8;
     private const int FRONT_IDX = 0;
 
-    public GameObject[] enemys;
     private List<GameObject> squadList = new List<GameObject>();
     private List<GameObject> enemyList = new List<GameObject>();
 
@@ -43,6 +42,7 @@ public class BattleManager : MonoBehaviour
 
     private SaveDataManager saveData;
     private SquadData squadData;
+    private EnemySquadData enemySquadData;
 
     private string prevSceneName;   //전투 종료 후 이전 씬으로 복귀
 
@@ -51,8 +51,18 @@ public class BattleManager : MonoBehaviour
         saveData = new SaveDataManager();
         squadData = saveData.GetSquadData();
 
+        enemySquadData = LoadEnemySquadData();
+
         panelController = new PanelController(squadData);
         roundManager = gameObject.GetComponent<RoundManager>();
+    }
+
+    private EnemySquadData LoadEnemySquadData()
+    {
+        string enemyDataPath = Path.Combine("DataBase", "SaveData", "EnemyData");
+        string path = Path.Combine(Application.dataPath, enemyDataPath,"enemyData" + ".json");
+        string jsonData = File.ReadAllText(path);
+        return JsonUtility.FromJson<EnemySquadData>(jsonData);
     }
 
     void Start()
@@ -63,9 +73,10 @@ public class BattleManager : MonoBehaviour
         battleStartImage.enabled = true;
 
         InstantBattleUnits(); 
-        blurCamera = GameObject.Find("BlurCamera");
 
+        blurCamera = GameObject.Find("BlurCamera");
         postVolume.enabled = false;
+
         BattleStart();
     }
 
@@ -81,12 +92,14 @@ public class BattleManager : MonoBehaviour
             squadList[i].GetComponent<UnitInterface>().SetUnitSaveData(squadData.GetUnitSaveDataByName(squadUnitsName[i]));   
         }
 
-        for (int i = 0; i < enemys.Length; ++i)
-            enemyList.Add(Instantiate(enemys[i], instantPosition + (Vector3.right * (i * 2 + 1)), Quaternion.identity)) ;
+        List<GameObject> enemyPrefabs = enemySquadData.GetSquadUnitPrefabs();
+        for (int i = 0; i < enemyPrefabs.Count; ++i)
+            enemyList.Add(Instantiate(enemyPrefabs[i], instantPosition + (Vector3.right * (i * 2 + 1)), Quaternion.identity)) ;
     }
 
     private void BattleStart()
     {
+        enemySquadData.SetTotalRewardExp(enemyList);    //적 경험치 set
         StartCoroutine(PlayTurnRoutine());
     }
 
@@ -122,7 +135,7 @@ public class BattleManager : MonoBehaviour
         if (enemyList.Count <= 0)
         {
             resultPanel.active = true;
-            resultPanel.GetComponent<ResultPanelManager>().DisplayBattleResult(saveData);
+            resultPanel.GetComponent<ResultPanelManager>().DisplayBattleResult(saveData, enemySquadData.GetTotalRewardExp());
         }
     }
 
