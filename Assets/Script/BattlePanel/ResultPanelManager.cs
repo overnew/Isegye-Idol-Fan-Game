@@ -6,8 +6,10 @@ using UnityEngine.UI;
 public class ResultPanelManager : MonoBehaviour
 {
     private const string LEVEL = "Lv: ";
-    private Button endButton;
     private GameObject iconGroup;
+    private Button endButton;
+    private Text resultText;
+    private Text rewardText;
 
     private BattleManager battleManager;
     private SaveDataManager saveData;
@@ -21,6 +23,11 @@ public class ResultPanelManager : MonoBehaviour
     {
         iconGroup = GameObject.Find("IconGroup");
         endButton = gameObject.GetComponentInChildren<Button>();
+
+        Text[] texts = gameObject.GetComponentsInChildren<Text>();
+        rewardText = texts[0];
+        resultText = texts[1];
+
         battleManager = GameObject.Find("BattleController").GetComponent<BattleManager>();
     }
 
@@ -29,7 +36,7 @@ public class ResultPanelManager : MonoBehaviour
         battleManager.ReturnToPrevScene();
     }
 
-    internal void DisplayBattleResult(SaveDataManager _saveData, float totalRewardExp)
+    internal void DisplayBattleResult(SaveDataManager _saveData, EnemySquadData enemyData)
     {
         Init();
         this.saveData = _saveData;
@@ -37,7 +44,9 @@ public class ResultPanelManager : MonoBehaviour
         List<GameObject> squadList = battleManager.GetSquadList();
         LoadAllUnitIconInPanel(squadList);
 
-        float dividedExp = (float)System.Math.Ceiling((double)(totalRewardExp / squadList.Count));
+        float dividedExp = (float)System.Math.Ceiling((double)(enemyData.GetTotalRewardExp() / squadList.Count));
+        rewardText.text ="보상: " +enemyData.GetTotalRewardGold().ToString() + "G";
+
         StartCoroutine(ResultAnimation(dividedExp));
     }
 
@@ -64,7 +73,6 @@ public class ResultPanelManager : MonoBehaviour
             expBarList.Add(expBar);
         }
     }
-
     
     private IEnumerator ResultAnimation(float dividedExp)
     {

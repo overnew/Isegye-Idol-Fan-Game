@@ -1,7 +1,9 @@
 {
     "unitName": "릴파",
     "unitType": "메인 댄서",
+
     "isEnemyUnit": true,
+    "rewardGold" : 100,
     "rewardExp" : 120,
 
     "maxHp": 30.0,

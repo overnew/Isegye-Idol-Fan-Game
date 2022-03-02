@@ -8,6 +8,7 @@ public class EnemySquadData
 {
     [SerializeField] private string[] enemyNames;
     private float totalExp =0;
+    private int totalGold = 0;
 
     public List<GameObject> GetSquadUnitPrefabs()
     {
@@ -28,14 +29,17 @@ public class EnemySquadData
     }
 
 
-    public void SetTotalRewardExp(List<GameObject> enemyList) 
+    public void SetTotalReward(List<GameObject> enemyList) 
     {
-        totalExp = 0;
+        totalExp = totalGold = 0;
         foreach (GameObject unit in enemyList)
         {
-            totalExp += unit.GetComponent<UnitInterface>().GetUnitData().GetRewardExp();
+            UnitData unitData = unit.GetComponent<UnitInterface>().GetUnitData();
+            totalExp += unitData.GetRewardExp();
+            totalGold += unitData.GetRewardGold();
         }
     }
 
     public float GetTotalRewardExp() { return this.totalExp; }
+    public int GetTotalRewardGold() { return this.totalGold; }
 }

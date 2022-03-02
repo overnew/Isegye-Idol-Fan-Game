@@ -99,7 +99,7 @@ public class BattleManager : MonoBehaviour
 
     private void BattleStart()
     {
-        enemySquadData.SetTotalRewardExp(enemyList);    //적 경험치 set
+        enemySquadData.SetTotalReward(enemyList);    //적 경험치 set
         StartCoroutine(PlayTurnRoutine());
     }
 
@@ -135,7 +135,7 @@ public class BattleManager : MonoBehaviour
         if (enemyList.Count <= 0)
         {
             resultPanel.active = true;
-            resultPanel.GetComponent<ResultPanelManager>().DisplayBattleResult(saveData, enemySquadData.GetTotalRewardExp());
+            resultPanel.GetComponent<ResultPanelManager>().DisplayBattleResult(saveData, enemySquadData);
         }
     }
 
