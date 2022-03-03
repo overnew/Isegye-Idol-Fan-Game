@@ -12,11 +12,10 @@ public class SquadData
 
     [SerializeField] private string[] itemNames;
     [SerializeField] private int[] itemNumbers;
+    private List<Item> itemList;
     private Dictionary<Item, int> itemDictionary;
 
     [SerializeField] private int balance;
-
-
 
     public void Init()
     {
@@ -32,13 +31,16 @@ public class SquadData
             unitsSaveData.Add(squadUnitNames[i], LoadUnitStatus(squadUnitNames[i]));
         }
     }
+
     private void LoadItemList()
     {
+        itemList = new List<Item>();
         itemDictionary = new Dictionary<Item, int>();
 
         for (int i = 0; i < itemNames.Length; ++i)
         {
-            itemDictionary.Add(LoadItemFromJson(itemNames[i]), itemNumbers[i]);
+            itemList.Add(LoadItemFromJson(itemNames[i]));
+            itemDictionary.Add(itemList[i], itemNumbers[i]);
         }
     }
 
@@ -50,10 +52,18 @@ public class SquadData
         return JsonUtility.FromJson<Item>(jsonData);
     }
 
-    public void SaveRemainSquadData(List<GameObject> squadList)
+    public void SaveSquadData(List<GameObject> squadList)
+    {
+        SaveRemainSquadData(squadList);
+        SaveRemainItem();
+    
+        SaveSquadDataToJson();
+    }
+
+    private void SaveRemainSquadData(List<GameObject> squadList)
     {
         squadUnitNames = new string[squadList.Count];
-        for(int idx =0; idx< squadList.Count ; ++idx)
+        for (int idx = 0; idx < squadList.Count; ++idx)
         {
             this.squadUnitNames[idx] = squadList[idx].GetComponent<UnitInterface>().GetUnitData().GetUnitIconName();
         }
@@ -71,6 +81,30 @@ public class SquadData
                 return true;
 
         return false;
+    }
+
+    private void SaveRemainItem()
+    {
+        int itemTypeCnt = 0;
+        for (int i = 0; i < itemList.Count; ++i)
+        {
+            if (itemDictionary[itemList[i]] > 0)
+                ++itemTypeCnt;
+        }
+
+        //size 재조정
+        itemNames = new string[itemTypeCnt];
+        itemNumbers = new int[itemTypeCnt];
+
+        int idx = 0;
+        for (int i = 0; i < itemList.Count; ++i)  //개수가 0이 아닌값만 저장
+        {
+            if (itemDictionary[itemList[idx]] <= 0)
+                continue;
+
+            itemNames[idx] = itemList[i].GetIconName();
+            itemNumbers[idx] = itemDictionary[itemList[i]];
+        }
     }
 
     private void SaveSquadDataToJson()

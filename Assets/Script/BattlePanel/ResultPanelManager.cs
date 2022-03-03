@@ -58,7 +58,7 @@ public class ResultPanelManager : MonoBehaviour
 
     private void SaveBattleResult(List<GameObject> squadList)
     {
-        squadData.SaveRemainSquadData(squadList);
+        squadData.SaveSquadData(squadList);
     }
 
     private void LoadAllUnitIconInPanel(List<GameObject> squadList)

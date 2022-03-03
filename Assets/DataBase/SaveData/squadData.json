@@ -1,9 +1,13 @@
 {
-    "squadUnitNames": ["Ine" ],
-    "leaderUnitName" : "Ine",
-
-    "itemNames": ["coffee"],
-    "itemNumbers" : [2],
-
+    "squadUnitNames": [
+        "Ine"
+    ],
+    "leaderUnitName": "Ine",
+    "itemNames": [
+        "coffee"
+    ],
+    "itemNumbers": [
+        2
+    ],
     "balance": 100
 }
