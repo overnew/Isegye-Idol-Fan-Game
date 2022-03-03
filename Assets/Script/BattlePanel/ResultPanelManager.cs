@@ -36,23 +36,33 @@ public class ResultPanelManager : MonoBehaviour
         battleManager.ReturnToPrevScene();
     }
 
-    internal void DisplayBattleResult(SaveDataManager _saveData, EnemySquadData enemyData)
+    internal void DisplayBattleResult(SaveDataManager _saveData, EnemySquadData enemyData, List<GameObject> squadList)
     {
         Init();
         this.saveData = _saveData;
+        this.squadData = saveData.GetSquadData();
+        saveData.AddBalance(enemyData.GetTotalRewardGold());
 
-        List<GameObject> squadList = battleManager.GetSquadList();
+        SaveBattleResult(squadList);
+
         LoadAllUnitIconInPanel(squadList);
 
         float dividedExp = (float)System.Math.Ceiling((double)(enemyData.GetTotalRewardExp() / squadList.Count));
-        rewardText.text ="보상: " +enemyData.GetTotalRewardGold().ToString() + "G";
+
+
+        rewardText.text = "보상:   +" + enemyData.GetTotalRewardGold().ToString() + "G"
+            + "\n" + _saveData.GetBalance() + "G";
 
         StartCoroutine(ResultAnimation(dividedExp));
     }
 
+    private void SaveBattleResult(List<GameObject> squadList)
+    {
+        squadData.SaveRemainSquadData(squadList);
+    }
+
     private void LoadAllUnitIconInPanel(List<GameObject> squadList)
     {
-        this.squadData = saveData.GetSquadData();
         string[] nameList = squadData.GetSquadUnitsName();
 
         for (int i = 0; i < squadList.Count; ++i)

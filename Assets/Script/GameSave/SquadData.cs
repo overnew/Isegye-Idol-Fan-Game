@@ -14,6 +14,10 @@ public class SquadData
     [SerializeField] private int[] itemNumbers;
     private Dictionary<Item, int> itemDictionary;
 
+    [SerializeField] private int balance;
+
+
+
     public void Init()
     {
         LoadSquadUnitSaveData();
@@ -44,6 +48,39 @@ public class SquadData
         string path = Path.Combine(Application.dataPath, itemDataPath, itemName + ".json");
         string jsonData = File.ReadAllText(path);
         return JsonUtility.FromJson<Item>(jsonData);
+    }
+
+    public void SaveRemainSquadData(List<GameObject> squadList)
+    {
+        squadUnitNames = new string[squadList.Count];
+        for(int idx =0; idx< squadList.Count ; ++idx)
+        {
+            this.squadUnitNames[idx] = squadList[idx].GetComponent<UnitInterface>().GetUnitData().GetUnitIconName();
+        }
+
+        if (!CheckLeaderUnitIsRemain())
+            leaderUnitName = squadUnitNames[0];
+
+        SaveSquadDataToJson();
+    }
+
+    private bool CheckLeaderUnitIsRemain()
+    {
+        for (int idx = 0; idx < squadUnitNames.Length; ++idx)
+            if (squadUnitNames[idx].Equals(leaderUnitName))
+                return true;
+
+        return false;
+    }
+
+    private void SaveSquadDataToJson()
+    {
+        string dataPath = Path.Combine("DataBase" ,"SaveData");
+        string dataFileName = "squadData.json";
+
+        string jsonData = JsonUtility.ToJson(this, true);
+        string path = Path.Combine(Application.dataPath, dataPath, dataFileName);
+        File.WriteAllText(path, jsonData);
     }
 
     public List<GameObject> GetSquadUnitPrefabs()
@@ -89,4 +126,7 @@ public class SquadData
     public string[] GetSquadUnitsName() { return this.squadUnitNames; }
 
     public Dictionary<Item,int> GetItemDictionary() { return this.itemDictionary; }
+
+    public int GetBalance() { return this.balance; }
+    public void SetBalance(int _balance) { this.balance = _balance; }
 }

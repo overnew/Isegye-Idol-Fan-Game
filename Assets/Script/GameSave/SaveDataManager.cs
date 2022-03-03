@@ -12,9 +12,10 @@ public class SaveDataManager
     
     public SaveDataManager()   //객체 생성시 세이브 파일 로드
     {
-        balance = START_BALANCE;
         LoadSquadData();
         LoadItemSaveData();
+
+        this.balance = squadData.GetBalance();
     }
     private void LoadSquadData()
     {
@@ -36,8 +37,22 @@ public class SaveDataManager
         itemSaveData.Init();
     }
 
+    public void SaveCurrentData()
+    {
+        squadData.SetBalance(this.balance);
+    }
+
     public SquadData GetSquadData() { return this.squadData; }
     public ItemSaveData GetItemSaveData() { return itemSaveData; }
 
     internal int GetBalance() { return this.balance; }
+    internal void AddBalance(int change) 
+    { 
+        this.balance += change; 
+        if(this.balance < 0)
+        {
+            balance = 0;
+            throw new System.Exception("잔액이 음수입니다.");
+        } 
+    }
 }

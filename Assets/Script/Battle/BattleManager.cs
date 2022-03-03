@@ -135,7 +135,7 @@ public class BattleManager : MonoBehaviour
         if (enemyList.Count <= 0)
         {
             resultPanel.active = true;
-            resultPanel.GetComponent<ResultPanelManager>().DisplayBattleResult(saveData, enemySquadData);
+            resultPanel.GetComponent<ResultPanelManager>().DisplayBattleResult(saveData, enemySquadData, squadList);
         }
     }
 
