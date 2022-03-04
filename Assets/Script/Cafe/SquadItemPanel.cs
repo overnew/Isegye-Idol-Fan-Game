@@ -42,11 +42,18 @@ public class SquadItemPanel : MonoBehaviour
     private void LoadAllSquadItem()
     {
         Dictionary<Item, int> itemDictionary = squadData.GetItemDictionary();
-        var items = itemDictionary.Keys;
 
-        foreach (Item item in items)
+        foreach (KeyValuePair<Item, int> itemPair in itemDictionary)
         {
-            itemList.Add(new KeyValuePair<Item, int>(item, itemDictionary[item]));
+            int itemRemainNum = itemPair.Value;
+            int maxPossessionNum = itemPair.Key.GetMaxPossessionNumber();
+
+            do   // 한칸에 최대 용량을 넘을 경우 다음칸에 채워넣음
+            {
+                itemList.Add(new KeyValuePair<Item, int>(itemPair.Key, System.Math.Min(itemRemainNum, maxPossessionNum)));
+                itemRemainNum -= maxPossessionNum;
+            } while (itemRemainNum > 0);
+
         }
 
         LoadItemListToPanel();
@@ -196,5 +203,23 @@ public class SquadItemPanel : MonoBehaviour
         {
             itemButtons[idx].interactable = true;
         }
+    }
+
+    internal void SaveRemainItem()
+    {
+        Dictionary<Item, int> remainItemDictionary = new Dictionary<Item, int>();
+
+        for (int i=0; i<itemList.Count ;++i )
+        {
+            if (remainItemDictionary.ContainsKey(itemList[i].Key))
+            {
+                remainItemDictionary[itemList[i].Key] += itemList[i].Value;
+                continue;
+            }
+
+            remainItemDictionary.Add(itemList[i].Key, itemList[i].Value);
+        }
+
+        squadData.SaveRemainItem(remainItemDictionary);
     }
 }

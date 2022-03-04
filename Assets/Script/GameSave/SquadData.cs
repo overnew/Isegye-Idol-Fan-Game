@@ -93,17 +93,34 @@ public class SquadData
         }
 
         //size 재조정
+        SetNewItemList(itemTypeCnt, itemList, itemDictionary);
+    }
+
+    public void SaveRemainItem(Dictionary<Item, int> remainItemDictionary)
+    {
+        List<Item> remainItemList = new List<Item>();
+
+        var dictionaryItems = remainItemDictionary.Keys;
+        remainItemList.AddRange(dictionaryItems);
+
+        SetNewItemList(remainItemList.Count, remainItemList, remainItemDictionary);
+
+        SaveSquadDataToJson();
+    }
+
+    private void SetNewItemList(int itemTypeCnt, List<Item> _itemList, Dictionary<Item, int> _itemDictionary)
+    {
         itemNames = new string[itemTypeCnt];
         itemNumbers = new int[itemTypeCnt];
 
         int idx = 0;
-        for (int i = 0; i < itemList.Count; ++i)  //개수가 0이 아닌값만 저장
+        for (int i = 0; i < _itemList.Count; ++i)  //개수가 0이 아닌값만 저장
         {
-            if (itemDictionary[itemList[idx]] <= 0)
+            if (_itemDictionary[_itemList[idx]] <= 0)
                 continue;
 
-            itemNames[idx] = itemList[i].GetIconName();
-            itemNumbers[idx] = itemDictionary[itemList[i]];
+            itemNames[idx] = _itemList[i].GetIconName();
+            itemNumbers[idx++] = _itemDictionary[_itemList[i]];
         }
     }
 
