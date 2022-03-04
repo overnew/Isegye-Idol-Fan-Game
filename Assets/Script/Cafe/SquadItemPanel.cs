@@ -94,7 +94,7 @@ public class SquadItemPanel : MonoBehaviour
             if (index == -1 || index >= itemList.Count ||index >= itemButtons.Length)
                 break;
 
-        } while (itemList[index].Value >= itemList[index].Key.GetMaxPossessiongNumber());
+        } while (itemList[index].Value >= itemList[index].Key.GetMaxPossessionNumber());
         
         return index;
     }
@@ -151,7 +151,7 @@ public class SquadItemPanel : MonoBehaviour
 
         for(int idx = 0; idx < totalItemList.Count; ++idx )
         {
-            int maxNumber = totalItemList[idx].Key.GetMaxPossessiongNumber();
+            int maxNumber = totalItemList[idx].Key.GetMaxPossessionNumber();
             if (totalItemList[idx].Value > maxNumber) //소지량 초과시
             {
                 if (idx + 1 >= totalItemList.Count)

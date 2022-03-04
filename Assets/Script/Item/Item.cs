@@ -73,7 +73,7 @@ public class Item : AbilityInterface
 
     public string GetIconName() { return this.iconName; }
 
-    public int GetMaxPossessiongNumber() { return this.maxPossessionNumber; }
+    public int GetMaxPossessionNumber() { return this.maxPossessionNumber; }
 
     public int GetSellingNumber() { return this.sellingNumber; }
     public int GetPrice() { return this.price; }

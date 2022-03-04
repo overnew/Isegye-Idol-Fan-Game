@@ -84,13 +84,21 @@ public class PanelController : PanelInterface
         int buttonIdx = 0;
         foreach (KeyValuePair<Item, int> itemPair in itemDictionary)
         {
-            itemButtons[buttonIdx].GetComponent<Image>().sprite = Resources.Load<Sprite>(itemIconPath + itemPair.Key.GetIconName());
-            itemButtons[buttonIdx++].GetComponent<ItemButton>().SetItemToButton(itemPair.Key, itemPair.Value);
+            int itemRemainNum = itemPair.Value;
+            int maxPossessionNum = itemPair.Key.GetMaxPossessionNumber();
+
+            do   // 한칸에 최대 용량을 넘을 경우 다음칸에 채워넣음
+            {
+                itemButtons[buttonIdx].GetComponent<Image>().sprite = Resources.Load<Sprite>(itemIconPath + itemPair.Key.GetIconName());
+                itemButtons[buttonIdx++].GetComponent<ItemButton>().SetItemToButton(itemPair.Key, System.Math.Min(itemRemainNum, maxPossessionNum) );
+                itemRemainNum -= maxPossessionNum;
+            } while (itemRemainNum > 0);
+
         }
-        
-        for (int i = buttonIdx; i< itemButtons.Length ; ++buttonIdx )
+
+        for (int i = buttonIdx; i< itemButtons.Length ; ++i )
         {
-            itemButtons[buttonIdx].enabled = false;
+            itemButtons[buttonIdx].interactable = false;
         }
     }
 
