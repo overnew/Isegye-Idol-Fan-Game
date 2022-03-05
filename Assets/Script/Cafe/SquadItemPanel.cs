@@ -205,7 +205,7 @@ public class SquadItemPanel : MonoBehaviour
         }
     }
 
-    internal void SaveRemainItem()
+    internal Dictionary<Item, int> GetRemainItem()  //아이템 저장
     {
         Dictionary<Item, int> remainItemDictionary = new Dictionary<Item, int>();
 
@@ -220,6 +220,6 @@ public class SquadItemPanel : MonoBehaviour
             remainItemDictionary.Add(itemList[i].Key, itemList[i].Value);
         }
 
-        squadData.SaveRemainItem(remainItemDictionary);
+        return remainItemDictionary;
     }
 }

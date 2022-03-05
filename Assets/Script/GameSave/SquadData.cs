@@ -62,6 +62,13 @@ public class SquadData
         SaveSquadDataToJson();
     }
 
+    public void SaveSquadData(List<GameObject> squadList, List<UnitSaveData> unitSaveDataList, Dictionary<Item, int> itemDictionary)
+    {
+        SaveRemainItem(itemDictionary);
+        SaveSquadUnitSaveDataList(squadList, unitSaveDataList);
+        SaveSquadDataToJson();
+    }
+
     private void SaveRemainSquadData(List<GameObject> squadList)
     {
         squadUnitNames = new string[squadList.Count];
@@ -98,7 +105,7 @@ public class SquadData
         SetNewItemList(itemTypeCnt, itemList, itemDictionary);
     }
 
-    public void SaveRemainItem(Dictionary<Item, int> remainItemDictionary)
+    private void SaveRemainItem(Dictionary<Item, int> remainItemDictionary)
     {
         List<Item> remainItemList = new List<Item>();
 
@@ -106,8 +113,6 @@ public class SquadData
         remainItemList.AddRange(dictionaryItems);
 
         SetNewItemList(remainItemList.Count, remainItemList, remainItemDictionary);
-
-        SaveSquadDataToJson();
     }
 
     private void SetNewItemList(int itemTypeCnt, List<Item> _itemList, Dictionary<Item, int> _itemDictionary)

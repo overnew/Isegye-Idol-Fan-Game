@@ -15,6 +15,7 @@ public class CafeManager : MonoBehaviour
     private SquadData squadData;
 
     private List<GameObject> squadList;
+    private List<UnitSaveData> unitSaveDataList;
 
     void Awake()
     {
@@ -74,6 +75,24 @@ public class CafeManager : MonoBehaviour
         }
     }
 
+    public void SaveChanges()   // cafe 종료시 사용
+    {
+        SaveSquadUnitSaveData(squadList);
+        squadData.SaveSquadData(squadList, unitSaveDataList, itemPanel.GetRemainItem());
+    }
+
+    private void SaveSquadUnitSaveData(List<GameObject> squadList)
+    {
+        unitSaveDataList = new List<UnitSaveData>();
+
+        for (int i = 0; i < squadList.Count; ++i)
+        {
+            UnitSaveData unitSaveData = squadList[i].GetComponent<UnitInterface>().GetUnitSaveData();
+            unitSaveData.SetHp(squadList[i].GetComponent<UnitInterface>().GetHp());
+            unitSaveDataList.Add(unitSaveData);
+        }
+
+    }
 
     internal SaveDataManager GetSaveDataManager() { return this.saveDataManager; }
     internal SquadItemPanel GetSquadItemPanel()

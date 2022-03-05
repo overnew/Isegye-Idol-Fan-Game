@@ -17,6 +17,8 @@ public class UnitSaveData
         this.exp = _exp;
     }
 
+    public void SetHp(float _hp) { this.hp = _hp; }
+
     public float GetExp() { return this.exp; }
     public int GetLevel() { return this.level; }
 
