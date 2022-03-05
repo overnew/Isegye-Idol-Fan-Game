@@ -6,7 +6,7 @@ using UnityEngine.UI;
 public interface UnitInterface
 {
     public void SetUnitSaveData(UnitSaveData unitSaveData);
-
+    public UnitSaveData GetUnitSaveData();
     public void AIBattleExecute();
     public void BuffSkillExcute(AbilityInterface buffSkill, int roundNum);
     public void CheckEndedEffect(int roundNum);

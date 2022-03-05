@@ -261,13 +261,13 @@ public class UnitControlloer : MonoBehaviour, UnitInterface
         this.unitSaveData = _unitSaveData;
         this.hp = unitSaveData.GetHp();
 
-        if (hp == -1)  // -1은 최대 체력을 의미
-        {
+        if (hp == -1 || hp >= unitData.GetMaxHp())  // -1은 최대 체력을 의미
             hp = unitData.GetMaxHp();
-            hpText.text = hp + " / " + unitData.GetMaxHp();
-        }
-           
+
+        hpText.text = hp + " / " + unitData.GetMaxHp();
     }
+
+    public UnitSaveData GetUnitSaveData() { return this.unitSaveData; }
 
     public void AIBattleExecute()
     {

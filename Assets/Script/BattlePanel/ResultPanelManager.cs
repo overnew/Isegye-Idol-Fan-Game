@@ -15,7 +15,8 @@ public class ResultPanelManager : MonoBehaviour
     private SaveDataManager saveData;
     private SquadData squadData;
 
-    private List<UnitSaveData> saveDataList = new List<UnitSaveData>();
+    private List<UnitSaveData> prevUnitSaveDataList = new List<UnitSaveData>();
+    private List<UnitSaveData> unitSaveDataList = new List<UnitSaveData>();
     private List<Text> levelTextList = new List<Text>();
     private List<Image> expBarList = new List<Image>();
 
@@ -43,12 +44,11 @@ public class ResultPanelManager : MonoBehaviour
         this.squadData = saveData.GetSquadData();
         saveData.AddBalance(enemyData.GetTotalRewardGold());
 
-        SaveBattleResult(squadList);
-
-        LoadAllUnitIconInPanel(squadList);
-
         float dividedExp = (float)System.Math.Ceiling((double)(enemyData.GetTotalRewardExp() / squadList.Count));
 
+        SaveBattleResult(squadList, dividedExp);
+
+        LoadAllUnitIconInPanel(squadList);
 
         rewardText.text = "보상:   +" + enemyData.GetTotalRewardGold().ToString() + "G"
             + "\n" + _saveData.GetBalance() + "G";
@@ -56,9 +56,48 @@ public class ResultPanelManager : MonoBehaviour
         StartCoroutine(ResultAnimation(dividedExp));
     }
 
-    private void SaveBattleResult(List<GameObject> squadList)
+    private void SaveBattleResult(List<GameObject> squadList, float dividedExp)
     {
-        squadData.SaveSquadData(squadList);
+        SaveSquadUnitSaveData(squadList,dividedExp);
+
+        squadData.SaveSquadData(squadList, unitSaveDataList);
+    }
+
+    private void SaveSquadUnitSaveData(List<GameObject> squadList, float dividedExp)
+    {
+        unitSaveDataList = new List<UnitSaveData>();
+
+        for (int i = 0; i < squadList.Count; ++i)
+        {
+            UnitSaveData prevSaveData = squadList[i].GetComponent<UnitInterface>().GetUnitSaveData();
+            prevUnitSaveDataList.Add(prevSaveData);
+            
+            KeyValuePair<int, float> resultPair = GetResultLevelAndExpPair(prevSaveData, dividedExp);
+
+            UnitSaveData resultSaveData = new UnitSaveData(squadList[i].GetComponent<UnitInterface>().GetHp(), resultPair.Key, resultPair.Value);
+
+            unitSaveDataList.Add(resultSaveData);
+        }
+
+    }
+
+    private KeyValuePair<int, float> GetResultLevelAndExpPair(UnitSaveData saveData, float addedExp)
+    {
+        float currnetExp = saveData.GetExp();
+        float totalExp = currnetExp + addedExp;
+
+        int currentLevel = saveData.GetLevel();
+        int finalLevel = currentLevel;
+        float maxExpSum = Utils.LEVEL_MAX_EXP[finalLevel];
+
+        while (maxExpSum <= totalExp)
+        {
+            maxExpSum += Utils.LEVEL_MAX_EXP[++finalLevel];
+        }
+
+        float finalExp = totalExp - (maxExpSum - Utils.LEVEL_MAX_EXP[finalLevel]);
+
+        return new KeyValuePair<int, float>(finalLevel, finalExp);
     }
 
     private void LoadAllUnitIconInPanel(List<GameObject> squadList)
@@ -70,8 +109,7 @@ public class ResultPanelManager : MonoBehaviour
             GameObject icon = iconGroup.transform.Find("Icon" + (i+1)).gameObject;
             icon.GetComponentInChildren<Image>().sprite = squadList[i].GetComponent<UnitInterface>().GetUnitIcon();
 
-            UnitSaveData unitSaveData = squadData.GetUnitSaveDataByName(nameList[i]);
-            saveDataList.Add(unitSaveData);
+            UnitSaveData unitSaveData = unitSaveDataList[i];
 
             Text levelText = icon.GetComponentInChildren<Text>();
             levelText.text = "Lv: " + unitSaveData.GetLevel().ToString();
@@ -88,9 +126,9 @@ public class ResultPanelManager : MonoBehaviour
     {
         yield return new WaitForSeconds(1f);    //잠시 대기
 
-        for (int i=0; i< saveDataList.Count ; ++i)
+        for (int i=0; i< prevUnitSaveDataList.Count ; ++i)
         {
-            StartCoroutine(ExpBarAnimation(saveDataList[i], expBarList[i],levelTextList[i] ,dividedExp));
+            StartCoroutine(ExpBarAnimation(prevUnitSaveDataList[i], expBarList[i],levelTextList[i] ,dividedExp));
         }
     }
     
@@ -104,7 +142,11 @@ public class ResultPanelManager : MonoBehaviour
         float maxExpSum = Utils.LEVEL_MAX_EXP[finalLevel];
 
         while (maxExpSum <= totalExp)
+        {
             maxExpSum += Utils.LEVEL_MAX_EXP[++finalLevel];
+        }
+
+        float finalExp = totalExp - (maxExpSum - Utils.LEVEL_MAX_EXP[finalLevel]);
 
         const float div = 50f;
         float speed = addedExp / div;
@@ -127,7 +169,7 @@ public class ResultPanelManager : MonoBehaviour
             currnetExp = currnetExp - currentLevelMaxExp;
             currentLevelMaxExp = Utils.LEVEL_MAX_EXP[++currentLevel];
             lvText.text = LEVEL + currentLevel.ToString();
-            expBar.fillAmount = currnetExp / maxExpSum;
+            expBar.fillAmount = currnetExp / currentLevelMaxExp;
         }
         
     }

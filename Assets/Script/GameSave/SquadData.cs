@@ -52,11 +52,13 @@ public class SquadData
         return JsonUtility.FromJson<Item>(jsonData);
     }
 
-    public void SaveSquadData(List<GameObject> squadList)
+    public void SaveSquadData(List<GameObject> squadList, List<UnitSaveData> unitSaveDataList)
     {
         SaveRemainSquadData(squadList);
         SaveRemainItem();
-    
+
+        SaveSquadUnitSaveDataList(squadList, unitSaveDataList);
+
         SaveSquadDataToJson();
     }
 
@@ -124,6 +126,19 @@ public class SquadData
         }
     }
 
+    private void SaveSquadUnitSaveDataList(List<GameObject> squadList, List<UnitSaveData> unitSaveDataList)
+    {
+        string dataPath = Path.Combine("DataBase", "SaveData", "UnitData");
+
+        for (int i=0; i<squadList.Count ;++i )
+        {
+            string dataFileName = squadList[i].GetComponent<UnitInterface>().GetUnitData().GetUnitIconName() + "Data.json";
+            string jsonData = JsonUtility.ToJson(unitSaveDataList[i], true);
+            string path = Path.Combine(Application.dataPath, dataPath, dataFileName);
+            File.WriteAllText(path, jsonData);
+        }
+    }
+    
     private void SaveSquadDataToJson()
     {
         string dataPath = Path.Combine("DataBase" ,"SaveData");

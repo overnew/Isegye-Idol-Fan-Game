@@ -9,6 +9,14 @@ public class UnitSaveData
     [SerializeField] private float hp;
     [SerializeField] private int level;
     [SerializeField] private float exp;
+
+    public UnitSaveData(float _hp, int _level, float _exp )
+    {
+        this.hp = _hp;
+        this.level = _level;
+        this.exp = _exp;
+    }
+
     public float GetExp() { return this.exp; }
     public int GetLevel() { return this.level; }
 
