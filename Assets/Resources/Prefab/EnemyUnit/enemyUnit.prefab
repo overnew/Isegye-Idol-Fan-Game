@@ -9,7 +9,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1123126070507994949, guid: 7a5005b5a46b6ac47a3880336802c0b1, type: 3}
       propertyPath: unintDataName
-      value: enemyData.json
+      value: EnemyUnitData.json
       objectReference: {fileID: 0}
     - target: {fileID: 2183422662604369417, guid: 7a5005b5a46b6ac47a3880336802c0b1, type: 3}
       propertyPath: m_RootOrder
@@ -57,7 +57,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8944514579612543995, guid: 7a5005b5a46b6ac47a3880336802c0b1, type: 3}
       propertyPath: m_Name
-      value: billrun Variant
+      value: enemyUnit
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7a5005b5a46b6ac47a3880336802c0b1, type: 3}

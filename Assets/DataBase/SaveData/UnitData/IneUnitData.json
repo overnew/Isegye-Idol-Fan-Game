@@ -1,0 +1,25 @@
+{
+    "unitName": "아이네",
+    "unitType": "메인 보컬",
+    "isEnemyUnit": false,
+    "rewardGold": 0,
+    "rewardExp": 0.0,
+    "maxHp": 60.0,
+    "stepSpeed": 6.0,
+    "attackPowerRange": [
+        6,
+        10
+    ],
+    "bonusPower": 0.0,
+    "defense": 2.0,
+    "accuracy": 100.0,
+    "critical": 20.0,
+    "avoidability": 10.0,
+    "skillNames": [
+        "skillData",
+        "gugu",
+        "debuff",
+        "posChange"
+    ],
+    "unitIconName": "Ine"
+}

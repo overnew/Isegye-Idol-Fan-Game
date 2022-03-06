@@ -137,7 +137,7 @@ public class SquadData
 
         for (int i=0; i<squadList.Count ;++i )
         {
-            string dataFileName = squadList[i].GetComponent<UnitInterface>().GetUnitData().GetUnitIconName() + "Data.json";
+            string dataFileName = squadList[i].GetComponent<UnitInterface>().GetUnitData().GetUnitIconName() + "SaveData.json";
             string jsonData = JsonUtility.ToJson(unitSaveDataList[i], true);
             string path = Path.Combine(Application.dataPath, dataPath, dataFileName);
             File.WriteAllText(path, jsonData);
@@ -179,7 +179,7 @@ public class SquadData
     private UnitSaveData LoadUnitStatus(string unitName)
     {
         string saveDataPath = Path.Combine("DataBase", "SaveData", "UnitData");
-        string path = Path.Combine(Application.dataPath, saveDataPath, unitName + "Data.json");
+        string path = Path.Combine(Application.dataPath, saveDataPath, unitName + "SaveData.json");
         string jsonData = File.ReadAllText(path);
 
         return JsonUtility.FromJson<UnitSaveData>(jsonData);

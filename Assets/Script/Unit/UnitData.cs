@@ -76,11 +76,18 @@ public class UnitData
 
     private void Init()
     {
-        ApplyLevelBonus();
-
         originStatus = new OriginStatus(this);
     }
 
+    public void ApplyLevelUpBonus(int upLevel)
+    {
+        for (; upLevel>0 ;--upLevel )
+        {
+            ApplyLevelBonus();
+        }
+
+        SaveUnitDataToJson();
+    }
     private void ApplyLevelBonus()  //LevelUp 했을때 적용시키기
     {
         if (isEnemyUnit)
@@ -107,11 +114,21 @@ public class UnitData
 
     private LevelBonus GetLevelBonus()
     {
-        string lvDataName = this.unitIconName + "LevelData.json";
+        string lvDataName = this.unitIconName + "LevelBonusData.json";
         string path = Path.Combine(Application.dataPath, dataBasePath, saveDataPath, lvDataName);
         string jsonData = File.ReadAllText(path);
 
         return JsonUtility.FromJson<LevelBonus>(jsonData);
+    }
+
+    private void SaveUnitDataToJson()
+    {
+        string dataPath = Path.Combine("DataBase", "SaveData", "UnitData");
+        string dataFileName = this.unitIconName + "UnitData.json";
+
+        string jsonData = JsonUtility.ToJson(this, true);
+        string path = Path.Combine(Application.dataPath, dataPath, dataFileName);
+        File.WriteAllText(path, jsonData);
     }
 
     private SkillData LoadSkillDataFromJson(string skillName)

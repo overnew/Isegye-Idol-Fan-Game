@@ -2400,5 +2400,5 @@ MonoBehaviour:
   shildIcon: {fileID: 6738024873615265407}
   tauntMark: {fileID: 4423319524323186768}
   deathMark: {fileID: 6366513685912154861}
-  unintDataName: unitData.json
+  unintDataName: IneUnitData.json
   attackClip: {fileID: 8300000, guid: 6c2f2421adfd65f4b983e7b85244f81b, type: 3}

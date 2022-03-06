@@ -58,12 +58,12 @@ public class ResultPanelManager : MonoBehaviour
 
     private void SaveBattleResult(List<GameObject> squadList, float dividedExp)
     {
-        SaveSquadUnitSaveData(squadList,dividedExp);
+        SaveSquadUnitChangedData(squadList,dividedExp);
 
         squadData.SaveSquadData(squadList, unitSaveDataList);
     }
 
-    private void SaveSquadUnitSaveData(List<GameObject> squadList, float dividedExp)
+    private void SaveSquadUnitChangedData(List<GameObject> squadList, float dividedExp)
     {
         unitSaveDataList = new List<UnitSaveData>();
 
@@ -73,7 +73,11 @@ public class ResultPanelManager : MonoBehaviour
             prevUnitSaveDataList.Add(prevSaveData);
             
             KeyValuePair<int, float> resultPair = GetResultLevelAndExpPair(prevSaveData, dividedExp);
-
+            
+            int levelCap = resultPair.Key - prevSaveData.GetLevel();
+            if (levelCap >0)    // level up한 경우
+                squadList[i].GetComponent<UnitInterface>().GetUnitData().ApplyLevelUpBonus(levelCap);
+            
             UnitSaveData resultSaveData = new UnitSaveData(squadList[i].GetComponent<UnitInterface>().GetHp(), resultPair.Key, resultPair.Value);
 
             unitSaveDataList.Add(resultSaveData);
