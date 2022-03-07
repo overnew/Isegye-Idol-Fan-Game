@@ -44,6 +44,9 @@ TagManager:
   - name: backGround
     uniqueID: 2234545813
     locked: 0
+  - name: ObjectOutline
+    uniqueID: 4163595425
+    locked: 0
   - name: Object
     uniqueID: 4289695845
     locked: 0
@@ -58,4 +61,7 @@ TagManager:
     locked: 0
   - name: UnitUi
     uniqueID: 501164069
+    locked: 0
+  - name: TopFront
+    uniqueID: 3977734065
     locked: 0
