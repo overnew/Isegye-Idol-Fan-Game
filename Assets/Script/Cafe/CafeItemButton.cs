@@ -4,7 +4,6 @@ using UnityEngine.UI;
 
 public class CafeItemButton : MonoBehaviour, ButtonInterface
 {
-    const string MONEY_UNIT = "G";
     private ShoppingPanel cafePanel;
     private Item item;
     private int itemPrice;
@@ -14,14 +13,15 @@ public class CafeItemButton : MonoBehaviour, ButtonInterface
     private bool isShoppingButton = true;
 
     private Outline outline;
-    public Text nameText;
+    public Image itemImage;
+    public Image saleMark;
     public Text remainText;
-    public Text prictText;
 
     void Awake()
     {
         outline = gameObject.GetComponent<Outline>();
         outline.enabled = false;
+        saleMark.enabled = false;
     }
 
     internal void SetItemToButton(ShoppingPanel _cafePanel, Item _item) 
@@ -30,27 +30,23 @@ public class CafeItemButton : MonoBehaviour, ButtonInterface
         this.item = _item;
         this.saleProbability = cafePanel.GetSaleProbability();
 
+        itemImage.sprite = Utils.GetItemIconByIconName(item.GetIconName());
 
         remainNum = item.GetSellingNumber();
         remainText.text = remainNum.ToString();
 
-        nameText.text = item.GetName().ToString();
         SetItemPrice();
     }
+    
 
     private void SetItemPrice()
     {
         int salePrice = item.GetPrice();
-        string addedInfo = "50% 할인 특가 ";
 
         if (Random.Range(0,100) <= saleProbability)//반값 할인
         {
             salePrice /= 2;
-            prictText.text = addedInfo + salePrice.ToString() + MONEY_UNIT;
-        }
-        else
-        {
-            prictText.text = salePrice.ToString() + MONEY_UNIT;
+            saleMark.enabled = true;
         }
             
         itemPrice = salePrice;

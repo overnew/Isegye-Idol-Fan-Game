@@ -27,4 +27,10 @@ public class Utils
         yield return new WaitForSeconds(waitTime);
         callBackFunc();
     }
+
+    public static Sprite GetItemIconByIconName(string iconName)
+    {
+        const string iconPath = "ItemIcon/";
+        return Resources.Load<Sprite>(iconPath + iconName);
+    }
 }

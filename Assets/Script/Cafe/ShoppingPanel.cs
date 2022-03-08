@@ -150,8 +150,7 @@ public class ShoppingPanel : MonoBehaviour
 
     private void SetSelectedPanel()
     {
-        const string iconPath = "ItemIcon/";
-        itemImage.sprite = Resources.Load<Sprite>(iconPath + selectedItem.GetIconName());
+        itemImage.sprite = Utils.GetItemIconByIconName(selectedItem.GetIconName());
         itemInfo.text = selectedItem.GetAbilityDesc();
 
         string buttonType = "판매";
