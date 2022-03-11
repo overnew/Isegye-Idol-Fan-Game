@@ -4,7 +4,9 @@ using UnityEngine.UI;
 
 public class ShopItemButton : MonoBehaviour, ButtonInterface
 {
-    private ShoppingPanel cafePanel;
+    private ShoppingPanel cafeShoppingPanel = null;
+    private Assets.Script.Office.ShoppingPanel officeShoppingPanel;
+
     private Item item;
     private int itemPrice;
     private int remainNum;
@@ -26,9 +28,9 @@ public class ShopItemButton : MonoBehaviour, ButtonInterface
 
     internal void SetItemToButton(ShoppingPanel _cafePanel, Item _item) 
     {
-        this.cafePanel = _cafePanel;
+        this.cafeShoppingPanel = _cafePanel;
         this.item = _item;
-        this.saleProbability = cafePanel.GetSaleProbability();
+        this.saleProbability = cafeShoppingPanel.GetSaleProbability();
 
         itemImage.sprite = Utils.GetItemIconByIconName(item.GetIconName());
 
@@ -37,16 +39,18 @@ public class ShopItemButton : MonoBehaviour, ButtonInterface
 
         SetItemPrice();
     }
-    internal void SetItemToButton(Item _item)
+
+    internal void SetItemToButton(Assets.Script.Office.ShoppingPanel _shoppingPanel, Item _item)
     {
+        officeShoppingPanel = _shoppingPanel;
         this.item = _item;
-        //this.saleProbability = cafePanel.GetSaleProbability();
+        this.saleProbability = officeShoppingPanel.GetSaleProbability();
 
         itemImage.sprite = Utils.GetItemIconByIconName(item.GetIconName());
 
         remainNum = item.GetSellingNumber();
         remainText.text = remainNum.ToString();
-
+        
         SetItemPrice();
     }
 
@@ -65,7 +69,11 @@ public class ShopItemButton : MonoBehaviour, ButtonInterface
 
     public void OnClickButton()
     {
-        cafePanel.SetSelectdItem(this.item, this);
+        if (cafeShoppingPanel != null)
+            cafeShoppingPanel.SetSelectdItem(this.item, this);
+        else
+            officeShoppingPanel.SetSelectdItem(item, this);
+
         outline.enabled = true;
     }
 

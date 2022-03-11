@@ -30,7 +30,7 @@ public class SaveDataManager
     private void LoadItemSaveData()
     {
         string saveDataPath = Path.Combine("DataBase", "SaveData");
-        string path = Path.Combine(Application.dataPath, saveDataPath, "itemData" + ".json");
+        string path = Path.Combine(Application.dataPath, saveDataPath, "AllItemData" + ".json");
         string jsonData = File.ReadAllText(path);
 
         itemSaveData = JsonUtility.FromJson<ItemSaveData>(jsonData);
