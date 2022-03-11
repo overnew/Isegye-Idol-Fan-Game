@@ -3,16 +3,17 @@ using UnityEngine;
 
 public class OfficeManager : MonoBehaviour
 {
+    private SaveDataManager saveDataManager;
+    private SquadData squadData;
+    private ItemSaveData itemSaveData;
 
-    // Use this for initialization
-    void Start()
+    private void Awake()
     {
-
+        saveDataManager = new SaveDataManager();
+        squadData = saveDataManager.GetSquadData();
+        itemSaveData = saveDataManager.GetItemSaveData();
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
+    internal SaveDataManager GetSaveDataManager() { return this.saveDataManager; }
+    
 }

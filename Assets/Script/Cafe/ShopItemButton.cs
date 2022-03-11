@@ -2,13 +2,13 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public class CafeItemButton : MonoBehaviour, ButtonInterface
+public class ShopItemButton : MonoBehaviour, ButtonInterface
 {
     private ShoppingPanel cafePanel;
     private Item item;
     private int itemPrice;
     private int remainNum;
-    private float saleProbability;
+    private float saleProbability =0;
 
     private bool isShoppingButton = true;
 
@@ -37,7 +37,18 @@ public class CafeItemButton : MonoBehaviour, ButtonInterface
 
         SetItemPrice();
     }
-    
+    internal void SetItemToButton(Item _item)
+    {
+        this.item = _item;
+        //this.saleProbability = cafePanel.GetSaleProbability();
+
+        itemImage.sprite = Utils.GetItemIconByIconName(item.GetIconName());
+
+        remainNum = item.GetSellingNumber();
+        remainText.text = remainNum.ToString();
+
+        SetItemPrice();
+    }
 
     private void SetItemPrice()
     {

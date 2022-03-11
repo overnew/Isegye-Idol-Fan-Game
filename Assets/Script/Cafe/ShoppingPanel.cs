@@ -66,7 +66,7 @@ public class ShoppingPanel : MonoBehaviour
 
     private void LoadItemToButton(int buttomIdx , Item item)
     {
-        itemButtons[buttomIdx].GetComponent<CafeItemButton>().SetItemToButton(this, item);
+        itemButtons[buttomIdx].GetComponent<ShopItemButton>().SetItemToButton(this, item);
     }
 
     private int GetUnreapedIdxInList(List<int> selectedItemIdx) //리스트 내의 중복된 index는 제외함
