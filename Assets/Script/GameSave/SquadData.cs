@@ -46,7 +46,7 @@ public class SquadData
 
     private Item LoadItemFromJson(string itemName)
     {
-        string itemDataPath = Path.Combine("DataBase", "Item");
+        string itemDataPath = Path.Combine("DataBase", "Item" , "Supply");
         string path = Path.Combine(Application.dataPath, itemDataPath, itemName + ".json");
         string jsonData = File.ReadAllText(path);
         return JsonUtility.FromJson<Item>(jsonData);

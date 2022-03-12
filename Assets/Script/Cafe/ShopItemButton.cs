@@ -54,6 +54,22 @@ public class ShopItemButton : MonoBehaviour, ButtonInterface
         SetItemPrice();
     }
 
+    //판매용 버튼 set
+    internal void SetItemToButton(Assets.Script.Office.ShoppingPanel _shoppingPanel, Item _item, int itemNumber)
+    {
+        officeShoppingPanel = _shoppingPanel;
+        this.item = _item;
+        this.saleProbability = officeShoppingPanel.GetSaleProbability();
+
+        itemImage.sprite = Utils.GetItemIconByIconName(item.GetIconName());
+
+        remainNum = itemNumber;
+        remainText.text = itemNumber.ToString();
+
+        isShoppingButton = false;
+        SetItemPrice();
+    }
+
     private void SetItemPrice()
     {
         int salePrice = item.GetPrice();

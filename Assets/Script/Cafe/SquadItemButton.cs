@@ -5,7 +5,8 @@ public class SquadItemButton : MonoBehaviour, ButtonInterface
 {
     public Text remainText;
 
-    private ShoppingPanel shoppingPanel;
+    private ShoppingPanel cafeShoppingPanel = null;
+
     private SquadPanel squadPanel;
     private SquadItemPanel itemPenel;
     private Item item;
@@ -18,9 +19,9 @@ public class SquadItemButton : MonoBehaviour, ButtonInterface
     public void OnClickItem()
     {
         outline.enabled = true;
-        if (shoppingPanel.GetIsShoppingMode())
+        if (cafeShoppingPanel.GetIsShoppingMode())
         {
-            shoppingPanel.SetSelectdItem(item, this);
+            cafeShoppingPanel.SetSelectdItem(item, this);
             return;
         }
 
@@ -32,7 +33,7 @@ public class SquadItemButton : MonoBehaviour, ButtonInterface
     {
         isShoppingButton = false; 
 
-        this.shoppingPanel = _shoppingPanel;
+        this.cafeShoppingPanel = _shoppingPanel;
         this.squadPanel = _squadPanel;
         this.itemPenel = _itemPanel;
 

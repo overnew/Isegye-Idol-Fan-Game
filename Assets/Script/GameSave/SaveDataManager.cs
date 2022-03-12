@@ -5,7 +5,6 @@ using UnityEngine;
 
 public class SaveDataManager
 {
-    const int START_BALANCE = 10000;
     private SquadData squadData;
     private int balance;
     private ItemSaveData itemSaveData;

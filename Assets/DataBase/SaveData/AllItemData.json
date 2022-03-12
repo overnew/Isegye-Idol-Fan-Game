@@ -1,3 +1,5 @@
 {
-    "names": ["coffee"]
+    "supplyItemNames": ["coffee"],
+    "usableItemNames" : [],
+    "restItemNames" : []
 }
