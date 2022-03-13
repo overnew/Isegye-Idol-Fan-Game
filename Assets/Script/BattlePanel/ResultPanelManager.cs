@@ -13,7 +13,7 @@ public class ResultPanelManager : MonoBehaviour
 
     private BattleManager battleManager;
     private SaveDataManager saveData;
-    private SquadData squadData;
+    private PlayerData squadData;
 
     private List<UnitSaveData> prevUnitSaveDataList = new List<UnitSaveData>();
     private List<UnitSaveData> unitSaveDataList = new List<UnitSaveData>();
@@ -41,7 +41,7 @@ public class ResultPanelManager : MonoBehaviour
     {
         Init();
         this.saveData = _saveData;
-        this.squadData = saveData.GetSquadData();
+        this.squadData = saveData.GetPlayerData();
         saveData.AddBalance(enemyData.GetTotalRewardGold());
 
         float dividedExp = (float)System.Math.Ceiling((double)(enemyData.GetTotalRewardExp() / squadList.Count));

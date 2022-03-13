@@ -9,7 +9,7 @@ public class SquadItemPanel : MonoBehaviour
 
     private Button[] itemButtons;
     private SaveDataManager saveData;
-    private SquadData squadData;
+    private PlayerData squadData;
     private ShoppingPanel shoppingPanel;
     private SquadPanel squadPanel;
 
@@ -22,7 +22,7 @@ public class SquadItemPanel : MonoBehaviour
         this.squadPanel = _squadPanel;
 
         this.saveData = _saveData;
-        squadData = saveData.GetSquadData();
+        squadData = saveData.GetPlayerData();
 
         itemButtons = gameObject.GetComponentsInChildren<Button>();
 

@@ -24,7 +24,7 @@ namespace Assets.Script.Office
 
         private OfficeManager officeManager;
         private SaveDataManager saveDataManager;
-        private SquadData squadData;
+        private PlayerData squadData;
         private ItemSaveData itemSaveData;
 
         private float playerBalance;
@@ -37,7 +37,7 @@ namespace Assets.Script.Office
         {
             officeManager = GameObject.Find("OfficeManager").GetComponent<OfficeManager>();
             saveDataManager = officeManager.GetSaveDataManager();
-            squadData = saveDataManager.GetSquadData();
+            squadData = saveDataManager.GetPlayerData();
             itemSaveData = saveDataManager.GetItemSaveData();
 
             playerBalance = saveDataManager.GetBalance();
@@ -77,13 +77,26 @@ namespace Assets.Script.Office
         private void DealExecute()
         {
             int dealCost = selectedItem.GetPrice();
-            playerBalance -= dealCost;
-            balanceText.text = playerBalance.ToString() + MONEY_UNIT;
-
             selectedButton.DealExecute();
 
             if (isPurchaseMode)
-                dealButton.interactable = CheckPurchasePossible();
+                PurchaseExecute(dealCost);
+            else
+                SellExecute(dealCost);
+
+            balanceText.text = playerBalance.ToString() + MONEY_UNIT;   //update apply
+        }
+
+        private void PurchaseExecute(int dealCost)
+        {
+            playerBalance -= dealCost;
+            dealButton.interactable = CheckPurchasePossible();
+        }
+
+        private void SellExecute(int dealCost)
+        {
+            playerBalance += dealCost;
+            dealButton.interactable = CheckSellPossible();
         }
 
         public void OnClickModeChanger()
@@ -101,17 +114,19 @@ namespace Assets.Script.Office
         {
             playerItemPanel.SetActive(false);
             shopItemPanel.SetActive(true);
-            shopModeChangerButton.GetComponentInChildren<Text>().text = "Sale";
 
+            shopModeChangerButton.GetComponentInChildren<Text>().text = "Sale";
+            dealButton.GetComponentInChildren<Text>().text = "구매";
         }
 
         private void ChangeToSellMode()
         {
             shopItemPanel.SetActive(false);
             playerItemPanel.SetActive(true);
+
             shopModeChangerButton.GetComponentInChildren<Text>().text = "Shop";
+            dealButton.GetComponentInChildren<Text>().text = "판매";
         }
-        
 
         internal void SetSelectdItem(Item item, ShopItemButton itemButton)
         {
@@ -126,11 +141,20 @@ namespace Assets.Script.Office
 
             if (isPurchaseMode)
                 dealButton.interactable = CheckPurchasePossible();
+            else
+                dealButton.interactable = CheckSellPossible();
         }
 
         private bool CheckPurchasePossible()
         {
             if (playerBalance < selectedItem.GetPrice())
+                return false;
+            return true;
+        }
+
+        private bool CheckSellPossible()
+        {
+            if (selectedButton.GetRemainNumber() <= 0)
                 return false;
             return true;
         }

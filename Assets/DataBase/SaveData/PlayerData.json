@@ -1,0 +1,35 @@
+{
+    "squadUnitNames": [
+        "Ine"
+    ],
+    "leaderUnitName": "Ine",
+    "squadItemNames": [
+        "coffee"
+    ],
+    "squadItemNumbers": [
+        5
+    ],
+
+    "supplyItemNames": [
+        
+    ],
+    "supplyItemNumbers": [
+        
+    ],
+
+    "usableItemNames": [
+        
+    ],
+    "usableItemNumbers": [
+        
+    ],
+
+    "restItemNames": [
+        
+    ],
+    "restItemNumbers": [
+        
+    ],
+
+    "balance": 5000
+}

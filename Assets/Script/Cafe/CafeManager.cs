@@ -12,7 +12,7 @@ public class CafeManager : MonoBehaviour
     private SquadPanel squadPanel;
 
     private SaveDataManager saveDataManager;
-    private SquadData squadData;
+    private PlayerData squadData;
 
     private List<GameObject> squadList;
     private List<UnitSaveData> unitSaveDataList;
@@ -20,7 +20,7 @@ public class CafeManager : MonoBehaviour
     void Awake()
     {
         saveDataManager = new SaveDataManager();
-        squadData = saveDataManager.GetSquadData();
+        squadData = saveDataManager.GetPlayerData();
 
         shoppingPanel = GameObject.Find("CafePanel").GetComponent<ShoppingPanel>();
         shoppingPanel.Init(saveDataManager);

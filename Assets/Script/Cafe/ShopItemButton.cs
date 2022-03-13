@@ -93,7 +93,7 @@ public class ShopItemButton : MonoBehaviour, ButtonInterface
         outline.enabled = true;
     }
 
-    public void DealExecute()
+    public void DealExecute() 
     {
         --remainNum;
         remainText.text = remainNum.ToString();

@@ -21,13 +21,13 @@ public class LineManager : MonoBehaviour
     private List<Node> graph;
 
     private SaveDataManager saveData;
-    private SquadData squadData;
+    private PlayerData squadData;
     private GameObject leaderUnit;
 
     private void Awake()
     {
         saveData = new SaveDataManager();
-        squadData = saveData.GetSquadData();
+        squadData = saveData.GetPlayerData();
     }
 
     void Start()

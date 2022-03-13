@@ -17,16 +17,16 @@ public class PanelController : PanelInterface
     private List<SkillData> skills;
     private Button[] skillButtons;
 
-    private SquadData squadData;
+    private PlayerData squadData;
     private GameObject itemPanel;
     private Button[] itemButtons;
 
-    internal PanelController(SquadData _squadData)
+    internal PanelController(PlayerData _squadData)
     {
         Initialize(_squadData);
     }
 
-    internal void Initialize(SquadData _squadData)
+    internal void Initialize(PlayerData _squadData)
     {
         turnUnitIcon = GameObject.Find("unitIcon").GetComponent<Image>();
         unitStatusText = GameObject.Find("unitStatus").GetComponent<Text>();

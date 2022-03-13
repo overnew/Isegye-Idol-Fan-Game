@@ -41,7 +41,7 @@ public class BattleManager : MonoBehaviour
     private RoundManager roundManager;
 
     private SaveDataManager saveData;
-    private SquadData squadData;
+    private PlayerData squadData;
     private EnemySquadData enemySquadData;
 
     private string prevSceneName;   //전투 종료 후 이전 씬으로 복귀
@@ -49,7 +49,7 @@ public class BattleManager : MonoBehaviour
     void Awake()
     {
         saveData = new SaveDataManager();
-        squadData = saveData.GetSquadData();
+        squadData = saveData.GetPlayerData();
 
         enemySquadData = LoadEnemySquadData();
 

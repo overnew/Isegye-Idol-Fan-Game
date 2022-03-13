@@ -5,25 +5,25 @@ using UnityEngine;
 
 public class SaveDataManager
 {
-    private SquadData squadData;
+    private PlayerData playerData;
     private int balance;
     private ItemSaveData itemSaveData;
     
     public SaveDataManager()   //객체 생성시 세이브 파일 로드
     {
-        LoadSquadData();
+        LoadPlayerData();
         LoadItemSaveData();
 
-        this.balance = squadData.GetBalance();
+        this.balance = playerData.GetBalance();
     }
-    private void LoadSquadData()
+    private void LoadPlayerData()
     {
         string saveDataPath = Path.Combine("DataBase", "SaveData");
-        string path = Path.Combine(Application.dataPath, saveDataPath, "squadData" + ".json");
+        string path = Path.Combine(Application.dataPath, saveDataPath, "PlayerData" + ".json");
         string jsonData = File.ReadAllText(path);
 
-        squadData = JsonUtility.FromJson<SquadData>(jsonData);
-        squadData.Init();
+        playerData = JsonUtility.FromJson<PlayerData>(jsonData);
+        playerData.Init();
     }
 
     private void LoadItemSaveData()
@@ -38,10 +38,10 @@ public class SaveDataManager
 
     public void SaveCurrentData()
     {
-        squadData.SetBalance(this.balance);
+        playerData.SetBalance(this.balance);
     }
 
-    public SquadData GetSquadData() { return this.squadData; }
+    public PlayerData GetPlayerData() { return this.playerData; }
     public ItemSaveData GetItemSaveData() { return itemSaveData; }
 
     internal int GetBalance() { return this.balance; }

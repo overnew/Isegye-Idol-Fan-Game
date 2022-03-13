@@ -4,13 +4,13 @@ using UnityEngine;
 public class OfficeManager : MonoBehaviour
 {
     private SaveDataManager saveDataManager;
-    private SquadData squadData;
+    private PlayerData squadData;
     private ItemSaveData itemSaveData;
 
     private void Awake()
     {
         saveDataManager = new SaveDataManager();
-        squadData = saveDataManager.GetSquadData();
+        squadData = saveDataManager.GetPlayerData();
         itemSaveData = saveDataManager.GetItemSaveData();
     }
 
