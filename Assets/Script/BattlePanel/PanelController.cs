@@ -79,7 +79,7 @@ public class PanelController : PanelInterface
     private void ItemPanelLoad()
     {
         const string itemIconPath = "ItemIcon/";
-        Dictionary<Item, int> itemDictionary = squadData.GetItemDictionary();
+        Dictionary<Item, int> itemDictionary = squadData.GetSquadItemDictionary();
 
         int buttonIdx = 0;
         foreach (KeyValuePair<Item, int> itemPair in itemDictionary)
@@ -106,7 +106,7 @@ public class PanelController : PanelInterface
     {
         squadData.ApplyItemUse(item);
 
-        Dictionary<Item, int> itemDictionary = squadData.GetItemDictionary();
+        Dictionary<Item, int> itemDictionary = squadData.GetSquadItemDictionary();
         int buttonIdx = 0;
 
         foreach (KeyValuePair<Item, int> itemPair in itemDictionary)

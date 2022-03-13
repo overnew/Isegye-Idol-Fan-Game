@@ -41,7 +41,7 @@ public class SquadItemPanel : MonoBehaviour
 
     private void LoadAllSquadItem()
     {
-        Dictionary<Item, int> itemDictionary = squadData.GetItemDictionary();
+        Dictionary<Item, int> itemDictionary = squadData.GetSquadItemDictionary();
 
         foreach (KeyValuePair<Item, int> itemPair in itemDictionary)
         {

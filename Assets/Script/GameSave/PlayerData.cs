@@ -224,7 +224,10 @@ public class PlayerData
     }
     public string[] GetSquadUnitsName() { return this.squadUnitNames; }
 
-    public Dictionary<Item,int> GetItemDictionary() { return this.squadItemDictionary; }
+    public Dictionary<Item,int> GetSquadItemDictionary() { return this.squadItemDictionary; }
+    public Dictionary<Item, int> GetSupplyItemDictionary() { return this.supplyItemDictionary; }
+    public Dictionary<Item, int> GetUsableItemDictionary() { return this.usableItemDictionary; }
+    public Dictionary<Item, int> GetRestItemDictionary() { return this.restItemDictionary; }
 
     public int GetBalance() { return this.balance; }
     public void SetBalance(int _balance) { this.balance = _balance; }

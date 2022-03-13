@@ -9,8 +9,12 @@ namespace Assets.Script.Office
     {
         const string MONEY_UNIT = "G";
 
-        public GameObject shopItemPanel;
-        public GameObject playerItemPanel;
+        public GameObject shopPanelGroup;
+        private List<Image> shopItemPanelList;
+
+        public GameObject playerPanelGroup;
+        private List<Image> playerItemPanelList;
+
         public GameObject selectPanel;
 
         public GameObject itemButtonPrefab;
@@ -24,7 +28,7 @@ namespace Assets.Script.Office
 
         private OfficeManager officeManager;
         private SaveDataManager saveDataManager;
-        private PlayerData squadData;
+        private PlayerData playerData;
         private ItemSaveData itemSaveData;
 
         private float playerBalance;
@@ -37,35 +41,77 @@ namespace Assets.Script.Office
         {
             officeManager = GameObject.Find("OfficeManager").GetComponent<OfficeManager>();
             saveDataManager = officeManager.GetSaveDataManager();
-            squadData = saveDataManager.GetPlayerData();
+            playerData = saveDataManager.GetPlayerData();
             itemSaveData = saveDataManager.GetItemSaveData();
 
             playerBalance = saveDataManager.GetBalance();
             balanceText.text = playerBalance.ToString() + MONEY_UNIT;
             shopModeChangerButton.GetComponentInChildren<Text>().text = "Sale";
 
-            InstantItemButtons();
+            InitItemPanels();
 
-            playerItemPanel.SetActive(false);
+            playerPanelGroup.SetActive(false);
             selectPanel.active = false;
         }
 
-        private void InstantItemButtons()
+        private void InitItemPanels()
         {
-            Dictionary<string, Item> shopItemDictionary = itemSaveData.GetAllItemDictionary();
-            var itemNames = shopItemDictionary.Keys;
+            InitShopItemPanel();
+
+            InitPlayerItemPanel();
+        }
+
+        private void InitShopItemPanel()
+        {
+            shopItemPanelList = new List<Image>();
+            Image[] shopPanels = shopPanelGroup.GetComponentsInChildren<Image>();
+            List<Dictionary<string, Item>> itemDictionaryList = new List<Dictionary<string, Item>>();
+
+            itemDictionaryList.Add(itemSaveData.GetSupplyItemDictionary());
+            itemDictionaryList.Add(itemSaveData.GetUsableItemDictionary());
+            itemDictionaryList.Add(itemSaveData.GetRestItemDictionary());
+
+            for (int i = 0; i < shopPanels.Length; ++i)
+            {
+                shopItemPanelList.Add(shopPanels[i]);
+                InitShopItemPanels(shopPanels[i], itemDictionaryList[i]);
+            }
+        }
+        private void InitPlayerItemPanel()
+        {
+            playerItemPanelList = new List<Image>();
+            Image[] playerPanels = playerPanelGroup.GetComponentsInChildren<Image>();
+
+            List<Dictionary<Item, int>> itemDictionaryList = new List<Dictionary<Item, int>>();
+
+            itemDictionaryList.Add(playerData.GetSupplyItemDictionary());
+            itemDictionaryList.Add(playerData.GetUsableItemDictionary());
+            itemDictionaryList.Add(playerData.GetRestItemDictionary());
+
+            for (int i = 0; i < playerPanels.Length; ++i)
+            {
+                shopItemPanelList.Add(playerPanels[i]);
+                InitPlayerItemPanels(playerPanels[i], itemDictionaryList[i]);
+            }
+        }
+
+        private void InitShopItemPanels(Image panel, Dictionary<string, Item> itemDictionary)
+        {
+            var itemNames = itemDictionary.Keys;
 
             foreach (var itemName in itemNames)
             {
-                Instantiate(itemButtonPrefab, shopItemPanel.transform).GetComponent<ShopItemButton>().SetItemToButton(this, shopItemDictionary[itemName]);
+                Instantiate(itemButtonPrefab, panel.transform).GetComponent<ShopItemButton>().SetItemToButton(this, itemDictionary[itemName]);
             }
+        }
 
-            Dictionary<Item, int> playerItemDictionary = squadData.GetItemDictionary();
-            var playItems = playerItemDictionary.Keys;
+        private void InitPlayerItemPanels(Image panel, Dictionary<Item, int> itemDictionary)
+        {
+            var items = itemDictionary.Keys;
 
-            foreach (var item in playItems)
+            foreach (var item in items)
             {
-                Instantiate(itemButtonPrefab, playerItemPanel.transform).GetComponent<ShopItemButton>().SetItemToButton(this,item, playerItemDictionary[item]);
+                Instantiate(itemButtonPrefab, panel.transform).GetComponent<ShopItemButton>().SetItemToButton(this, item, itemDictionary[item]);
             }
         }
 
@@ -112,8 +158,8 @@ namespace Assets.Script.Office
 
         private void ChangeToPurchaseMode()
         {
-            playerItemPanel.SetActive(false);
-            shopItemPanel.SetActive(true);
+            playerPanelGroup.SetActive(false);
+            shopPanelGroup.SetActive(true);
 
             shopModeChangerButton.GetComponentInChildren<Text>().text = "Sale";
             dealButton.GetComponentInChildren<Text>().text = "구매";
@@ -121,8 +167,8 @@ namespace Assets.Script.Office
 
         private void ChangeToSellMode()
         {
-            shopItemPanel.SetActive(false);
-            playerItemPanel.SetActive(true);
+            shopPanelGroup.SetActive(false);
+            playerPanelGroup.SetActive(true);
 
             shopModeChangerButton.GetComponentInChildren<Text>().text = "Shop";
             dealButton.GetComponentInChildren<Text>().text = "판매";
