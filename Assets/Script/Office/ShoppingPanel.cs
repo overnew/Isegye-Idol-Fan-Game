@@ -10,10 +10,10 @@ namespace Assets.Script.Office
         const string MONEY_UNIT = "G";
 
         public GameObject shopPanelGroup;
-        private List<Image> shopItemPanelList;
+        private List<GameObject> shopItemPanelList;
 
         public GameObject playerPanelGroup;
-        private List<Image> playerItemPanelList;
+        private List<GameObject> playerItemPanelList;
 
         public GameObject selectPanel;
 
@@ -51,6 +51,7 @@ namespace Assets.Script.Office
             InitItemPanels();
 
             playerPanelGroup.SetActive(false);
+            OnClickChangeToSupplyPanel();
             selectPanel.active = false;
         }
 
@@ -63,24 +64,35 @@ namespace Assets.Script.Office
 
         private void InitShopItemPanel()
         {
-            shopItemPanelList = new List<Image>();
-            Image[] shopPanels = shopPanelGroup.GetComponentsInChildren<Image>();
+            shopItemPanelList = new List<GameObject>();
+            EmptyMonoBehaviour[] monoBehaviours = shopPanelGroup.GetComponentsInChildren<EmptyMonoBehaviour>();
+
+            for (int i=0; i<monoBehaviours.Length ; ++i)
+            {
+                shopItemPanelList.Add(monoBehaviours[i].gameObject);
+            }
+
             List<Dictionary<string, Item>> itemDictionaryList = new List<Dictionary<string, Item>>();
 
             itemDictionaryList.Add(itemSaveData.GetSupplyItemDictionary());
             itemDictionaryList.Add(itemSaveData.GetUsableItemDictionary());
             itemDictionaryList.Add(itemSaveData.GetRestItemDictionary());
 
-            for (int i = 0; i < shopPanels.Length; ++i)
+            for (int i = 0; i < shopItemPanelList.Count; ++i)
             {
-                shopItemPanelList.Add(shopPanels[i]);
-                InitShopItemPanels(shopPanels[i], itemDictionaryList[i]);
+                InstantShopItemToPanel(shopItemPanelList[i], itemDictionaryList[i]);
             }
         }
+
         private void InitPlayerItemPanel()
         {
-            playerItemPanelList = new List<Image>();
-            Image[] playerPanels = playerPanelGroup.GetComponentsInChildren<Image>();
+            playerItemPanelList = new List<GameObject>();
+            EmptyMonoBehaviour[] monoBehaviours = playerPanelGroup.GetComponentsInChildren<EmptyMonoBehaviour>();
+
+            for (int i = 0; i < monoBehaviours.Length; ++i)
+            {
+                playerItemPanelList.Add(monoBehaviours[i].gameObject);
+            }
 
             List<Dictionary<Item, int>> itemDictionaryList = new List<Dictionary<Item, int>>();
 
@@ -88,14 +100,13 @@ namespace Assets.Script.Office
             itemDictionaryList.Add(playerData.GetUsableItemDictionary());
             itemDictionaryList.Add(playerData.GetRestItemDictionary());
 
-            for (int i = 0; i < playerPanels.Length; ++i)
+            for (int i = 0; i < playerItemPanelList.Count; ++i)
             {
-                shopItemPanelList.Add(playerPanels[i]);
-                InitPlayerItemPanels(playerPanels[i], itemDictionaryList[i]);
+                InstantPlayerItemToPanel(playerItemPanelList[i], itemDictionaryList[i]);
             }
         }
 
-        private void InitShopItemPanels(Image panel, Dictionary<string, Item> itemDictionary)
+        private void InstantShopItemToPanel(GameObject panel, Dictionary<string, Item> itemDictionary)
         {
             var itemNames = itemDictionary.Keys;
 
@@ -105,8 +116,11 @@ namespace Assets.Script.Office
             }
         }
 
-        private void InitPlayerItemPanels(Image panel, Dictionary<Item, int> itemDictionary)
+        private void InstantPlayerItemToPanel(GameObject panel, Dictionary<Item, int> itemDictionary)
         {
+            if (itemDictionary.Count <= 0)
+                return; 
+
             var items = itemDictionary.Keys;
 
             foreach (var item in items)
@@ -154,6 +168,8 @@ namespace Assets.Script.Office
                 ChangeToPurchaseMode();
             else
                 ChangeToSellMode();
+
+            OnClickChangeToSupplyPanel();
         }
 
         private void ChangeToPurchaseMode()
@@ -203,6 +219,40 @@ namespace Assets.Script.Office
             if (selectedButton.GetRemainNumber() <= 0)
                 return false;
             return true;
+        }
+
+        public void OnClickChangeToSupplyPanel()
+        {
+            SetPanelEnableByIndex(ItemTypeToIndex.supplyItem);
+        }
+
+        public void OnClickChangeToUsablePanel()
+        {
+            SetPanelEnableByIndex(ItemTypeToIndex.usableItem);
+        }
+
+        public void OnClickChangeToRestPanel()
+        {
+            SetPanelEnableByIndex(ItemTypeToIndex.restItem);
+        }
+
+        private void SetPanelEnableByIndex(ItemTypeToIndex idx)
+        {
+            if (isPurchaseMode)
+            {
+                SetAllPanelEnableInList(shopItemPanelList);
+                shopItemPanelList[(int)idx].SetActive(true);
+                return;
+            }
+
+            SetAllPanelEnableInList(playerItemPanelList);
+            playerItemPanelList[(int)idx].SetActive(true);
+        }
+
+        private void SetAllPanelEnableInList(List<GameObject> panels)
+        {
+            for (int i = 0; i < panels.Count; ++i)
+                panels[i].SetActive(false);
         }
 
         internal float GetSaleProbability() { return this.saleProbability; }

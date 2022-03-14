@@ -17,19 +17,19 @@ public class PlayerData
     [SerializeField] private string[] squadItemNames;
     [SerializeField] private int[] squadItemNumbers;
     private List<Item> squadItemList;
-    private Dictionary<Item, int> squadItemDictionary;
+    private Dictionary<Item, int> squadItemDictionary = new Dictionary<Item, int>();
 
     [SerializeField] string[] supplyItemNames = { };
     [SerializeField] int[] supplyItemNumbers = { };
-    private Dictionary<Item, int> supplyItemDictionary;
+    private Dictionary<Item, int> supplyItemDictionary = new Dictionary<Item, int>();
 
     [SerializeField] string[] usableItemNames = { };
     [SerializeField] int[] usableItemNumbers = { };
-    private Dictionary<Item, int> usableItemDictionary;
+    private Dictionary<Item, int> usableItemDictionary = new Dictionary<Item, int>();
 
     [SerializeField] string[] restItemNames = { };
     [SerializeField] int[] restItemNumbers = { };
-    private Dictionary<Item, int> restItemDictionary;
+    private Dictionary<Item, int> restItemDictionary= new Dictionary<Item, int>();
     [SerializeField] private int balance;
 
     public void Init()
@@ -50,7 +50,6 @@ public class PlayerData
     private void LoadPlayerItemList()
     {
         squadItemList = new List<Item>();
-        squadItemDictionary = new Dictionary<Item, int>();
 
         for (int i = 0; i < squadItemNames.Length; ++i)
         {
@@ -66,8 +65,6 @@ public class PlayerData
 
     private void LoadEachItemType(Dictionary<Item, int> itemDictionary, string[] itemNames, int[] itemNumbers, string itemType)
     {
-        itemDictionary = new Dictionary<Item, int>();
-
         for (int i = 0; i < itemNames.Length; ++i)
             itemDictionary.Add(LoadItemFromJson(itemNames[i], itemType), itemNumbers[i]);
     }

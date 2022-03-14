@@ -63,5 +63,11 @@ public class ItemSaveData
     internal Dictionary<string, Item> GetUsableItemDictionary() { return this.usableItemDictionary; }
     internal Dictionary<string, Item> GetRestItemDictionary() { return this.restItemDictionary; }
 
+}
 
+public enum ItemTypeToIndex
+{
+    supplyItem =0,
+    usableItem = 1,
+    restItem = 2
 }
