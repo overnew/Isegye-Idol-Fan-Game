@@ -25,6 +25,8 @@ namespace Assets.Script.Office
 
         public Button dealButton;
         public Button shopModeChangerButton;
+        public GameObject itemTypeButtonGroup;
+        private Outline[] itemTypeBottonOutlines;
 
         private OfficeManager officeManager;
         private SaveDataManager saveDataManager;
@@ -33,7 +35,7 @@ namespace Assets.Script.Office
 
         private float playerBalance;
         private Item selectedItem;
-        private ShopItemButton selectedButton;
+        private ShopItemButton selectedButton = null;
         private float saleProbability = 0;
         private bool isPurchaseMode = true;
 
@@ -50,9 +52,10 @@ namespace Assets.Script.Office
 
             InitItemPanels();
 
+            itemTypeBottonOutlines = itemTypeButtonGroup.GetComponentsInChildren<Outline>();
+
             playerPanelGroup.SetActive(false);
             OnClickChangeToSupplyPanel();
-            selectPanel.active = false;
         }
 
         private void InitItemPanels()
@@ -161,7 +164,7 @@ namespace Assets.Script.Office
 
         public void OnClickModeChanger()
         {
-            selectPanel.active = false; // select 창은 일단 비워둠
+            SetSelectedThingsEnable(false);
             isPurchaseMode = !isPurchaseMode;
 
             if (isPurchaseMode)
@@ -192,10 +195,10 @@ namespace Assets.Script.Office
 
         internal void SetSelectdItem(Item item, ShopItemButton itemButton)
         {
-            selectPanel.active = true;  //아이템 선택시 등장하도록
 
             selectedItem = item;
             selectedButton = itemButton;
+            SetSelectedThingsEnable(true);
 
             selectedImage.sprite = Utils.GetItemIconByIconName(item.GetIconName());
             selectedInfo.text = item.GetAbilityDesc();
@@ -238,21 +241,38 @@ namespace Assets.Script.Office
 
         private void SetPanelEnableByIndex(ItemTypeToIndex idx)
         {
+            SetSelectedThingsEnable(false);
+
             if (isPurchaseMode)
             {
                 SetAllPanelEnableInList(shopItemPanelList);
                 shopItemPanelList[(int)idx].SetActive(true);
+                itemTypeBottonOutlines[(int)idx].enabled = true;
                 return;
             }
 
             SetAllPanelEnableInList(playerItemPanelList);
             playerItemPanelList[(int)idx].SetActive(true);
+            itemTypeBottonOutlines[(int)idx].enabled = true;
         }
 
         private void SetAllPanelEnableInList(List<GameObject> panels)
         {
+
+            for (int i=0; i< itemTypeBottonOutlines.Length; ++i )
+                itemTypeBottonOutlines[i].enabled = false;
+
             for (int i = 0; i < panels.Count; ++i)
                 panels[i].SetActive(false);
+        }
+
+        private void SetSelectedThingsEnable(bool setting)
+        {
+            if (selectedButton != null)
+                selectedButton.SetOutline(setting);
+
+            selectPanel.active = setting;  //아이템 선택시 등장하도록 일단 false
+
         }
 
         internal float GetSaleProbability() { return this.saleProbability; }

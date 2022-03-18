@@ -90,7 +90,7 @@ public class ShopItemButton : MonoBehaviour, ButtonInterface
         else
             officeShoppingPanel.SetSelectdItem(item, this);
 
-        outline.enabled = true;
+        SetOutline(true);
     }
 
     public void DealExecute() 
