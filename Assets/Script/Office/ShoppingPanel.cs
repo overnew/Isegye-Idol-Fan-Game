@@ -164,7 +164,6 @@ namespace Assets.Script.Office
 
         public void OnClickModeChanger()
         {
-            SetSelectedThingsEnable(false);
             isPurchaseMode = !isPurchaseMode;
 
             if (isPurchaseMode)
@@ -195,9 +194,9 @@ namespace Assets.Script.Office
 
         internal void SetSelectdItem(Item item, ShopItemButton itemButton)
         {
-
             selectedItem = item;
             selectedButton = itemButton;
+
             SetSelectedThingsEnable(true);
 
             selectedImage.sprite = Utils.GetItemIconByIconName(item.GetIconName());
